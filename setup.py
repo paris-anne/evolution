@@ -29,11 +29,14 @@ pygame.display.flip()
 
 running = True
 while running:
-  for event in pygame.event.get():
-  	for particle in my_particles:
-  		particle.move()
-  		particle.bounce(width, height)
-  		particle.display(screen)
-  		pygame.display.flip()
-  	if event.type == pygame.QUIT:
-  		running = False
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			running = False
+	for particle in my_particles:
+		particle.move()
+		particle.bounce(width, height)
+		particle.display(screen)
+		pygame.display.flip()
+
+	screen.fill(background_colour)
+
