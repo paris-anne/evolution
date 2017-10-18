@@ -1,35 +1,55 @@
 import numpy as np
 import random
 
-class Environment(object):
+
+class Environment:
 	"""Create environment for agents to interact in """
-	def __init__(self, pos = [0,0]):
-		self.__width  = 10
-		self.__height = 10
-		self.__food = self.addfood(0.1)
+	def __init__(self, numagents, numfood, width = 10, height = 10):
+		self.__width  = width
+		self.__height = height
+		self.__numfood = numfood
+		self.__numagents = numagents
+		self.__foodslist = foods
+		self.__agentslist = agents
 
-	def pos(self):
-		return self.pos
+	def maxposy(self):
+		return self.__height
 
-	def maxposw(self):
-		return np.abs(self.__width)
-
-	def maxposh(self):
-		return np.abs(self.__height)
-
+	def maxposx(self):
+		return self.__width
 
 	def plotdimensions(self):
 		return np.array[self.__width, self.__height]
 
+	def add_ag(self, key):
+		return agents.append(key)
+
+	def remove_ag(self,key):
+
+
+
 	def food(self):
 		return self.__food
 
-	def addfood(self, percentage):
-		food = np.zeros(self.__width, self.width)
-		points = self.__width * self.__height
-		foodpoints = np.round(points * percentage)
+	def addfood(self, number):
+		food = np.zeros((self.__width, self.__height))
+	
 
-		for i in range (1,foodpoints):
-			np.random.choice(food)[np.random.randrange(len(choice))] += 1
+		newfood =[]
+		for i in range(number):
+			newfood.append((np.random.random_integers(0,height),(np.random.random_integers(0,width))))
+
+		#newfood = [(3,2), (3,3)]
+		#for i in range(len(newfood)):
+		#	row = newfood[i][0] 
+		#	column = newfood[i][1]
+		#	food[row][column] += 1
+
+	def removefood(self,k):
+
+
+
 
 		return food
+
+
