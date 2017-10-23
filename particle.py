@@ -2,7 +2,7 @@ import pygame
 import math
 
 class Particle:
-	def __init__(self, x, y, size):
+	def __init__(self, x, y, size, speed):
 		self.x = x
 		self.y = y
 		self.size = size
