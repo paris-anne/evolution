@@ -2,6 +2,7 @@ import pygame
 import math
 
 class Particle:
+
 	def __init__(self, x, y, size, colour = (0, 0, 255), speed = 1):
 		self.x = x
 		self.y = y
@@ -32,3 +33,17 @@ class Particle:
 
 	def display(self, screen):
 		pygame.draw.circle(screen, self.colour, (int(self.x), int(self.y)), self.size, self.thickness)
+
+class Food(Particle):
+	def __init__(self, size):
+		self.x = 50
+		self.y = 50
+		self.speed = 0
+		self.colour(255,0,0)
+		self.size = size
+
+	def set_x(self, x):
+		self.x = x
+		
+	def set_y(self, y):
+		self.y = y

@@ -3,18 +3,20 @@ import random
 import pygame
 import random
 import particle as p
+import agent as ag
 import math
 
 class Environment(object):
 	"""Create environment for agents to interact in """
-	def __init__(self, food_percentage, pos = [0,0], colour = (255,255,255)):
+	def __init__(self, colour = (255,255,255)):
 		self.__width  = 100
-		self.__height = 100
-		#self.__food = self.addfood(food_percentage)
-		
+		self.__height = 100		
 		self.particles = []
 		self.colour = (255,255,255)
 		self.screen = pygame.display.set_mode((self.__width, self.__height))
+
+	def particles_list(self):
+		return self.particles
 
 	def width(self):
 		return self.width
@@ -47,24 +49,23 @@ class Environment(object):
 		return self.food
 
 	def addfood(self):
-		food = p.Particle(-50, -50, 3, colour = (255,255,0), speed = 0)
-		food.display(self.screen)
-		pygame.display.flip()
+		food = p.Food(1) #size = 1
+		self.particles.append(food)
 
-	def create(self):
-		self.screen.fill(self.colour)
-
-	def add_particles(self, number_of_particles = 10, size = 3, speed = 2):
+	def add_agent(self, x, y, size, speed):
+		agent = ag.Agent(x, y, size, speed)
+		agent.angle = random.uniform(0, math.pi*2)
+		self.particles.append(agent)
+		
+	def add_agents(self, number_of_agents = 10, size = 3, speed = 2):
 		for i in range(number_of_particles):
-			x = random.randint(size, self.__width - size)
-			y = random.randint(size, self.__height - size)
-			particle = p.Particle(x, y, size)
-			particle.angle = random.uniform(0, math.pi*2)
-			
-			self.particles.append(particle)
-			particle.display(self.screen)
+			x = random.randint(size, self.width - size)
+			y = random.randint(size, self.height - size)
+			agent = ag.Agent(x, y, size, speed)
+			agent.angle = random.uniform(0, math.pi*2)
+			self.particles.append(agent)
 
-	def run(self):
+	def display(self):
 		running = True
 		while running:
 			for event in pygame.event.get():
@@ -74,7 +75,7 @@ class Environment(object):
 			self.screen.fill(self.colour)
 			for particle in self.particles:
 				particle.move()
-				particle.bounce(self.__width, self.__height)
+				particle.bounce(self.width, self.height)
 				particle.display(self.screen)
 
 			pygame.display.flip()

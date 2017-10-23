@@ -12,6 +12,8 @@ screen.fill(background_colour)
 
 number_of_particles = 10
 my_particles = []
+# my_particles = enviro.Environment.particles_list()
+
 
 for n in range(number_of_particles):
 	size = random.randint(10, 20)
