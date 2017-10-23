@@ -3,12 +3,12 @@ import math
 
 class Particle:
 
-	def __init__(self, x, y, size, colour = (0, 0, 255), speed = 1):
+	def __init__(self, x, y, size, colour = (0, 0, 255), speed = 1, thickness = 1):
 		self.x = x
 		self.y = y
 		self.size = size
 		self.colour = colour
-		self.thickness = 1
+		self.thickness = thickness
 		self.speed = speed
 		self.angle = math.pi/2
 
@@ -27,23 +27,11 @@ class Particle:
 			self.y = 2*self.size - self.y
 			self.angle = math.pi - self.angle
 
+	# check the maths and check self.angle is set correctly (currently set by enviro.add_particles)
+	# should a decrease of food happen in this method (tricky as refers to child class field) 
 	def move(self):
 		self.x += math.sin(self.angle) * self.speed
 		self.y -= math.cos(self.angle) * self.speed
 
 	def display(self, screen):
 		pygame.draw.circle(screen, self.colour, (int(self.x), int(self.y)), self.size, self.thickness)
-
-class Food(Particle):
-	def __init__(self, size):
-		self.x = 50
-		self.y = 50
-		self.speed = 0
-		self.colour(255,0,0)
-		self.size = size
-
-	def set_x(self, x):
-		self.x = x
-		
-	def set_y(self, y):
-		self.y = y
