@@ -1,60 +1,29 @@
 import numpy as np
+import environment as enviro
+import particle as p
 
-class Agent:
-
-	def __init__(self, position, reproduce, environment):
+class Agent(p.Particle):
+	def __init__(self, reproduce, environment):
 		self.key = key
-		self.__position = position
-		self.__food_level = food_level
-		self.__reproduce = reproduce
-		self.__enviro = environment
-	
-	def position(self):
-		return self.position
-
-	def set_position(self, position):
-		self.position = position
-		return
-
-	def food_level(self):
-		return self.food_level
-
-	def set_food_level(self, food_level):
 		self.food_level = food_level
-		return
-
-	def reproduce(self):
-		return self.reproduce
-
-	def set_reproduce(self, reproduce):
 		self.reproduce = reproduce
-		return
-
-	def enviro(self):
-		return self.enviro
-
-	def set_enviro(self, environment):
 		self.enviro = environment
-		return
 
 	def reproduce(self):
 		self.food_level = self.food_level / 2.0
-		return Agent(self.position(), 0.5, self.reproduce(), self.enviro())
+		child = Agent(self.reproduce, self.enviro)
+		self.enviro.particles.append(child)
+		self.enviro.add_agent(self.x, self.y, self.size, self.speed)
 
 	def eat(self):
-		self.food_level += 0.1
-		return
+		# foodpos_x = p.Food(1).x
+		# foodpos_y = p.Food(1).y
+		foodpos_x = 0.5 * enviro.width()
+		foodpos_y = 0.5 * enviro.height()
+		for i in range(enviro.particles_list()):
+			particles = enviro.particles_list()
+			if np.sqrt((particles[i].x - foodpos_x)**2 + (particles[i].y - foodpos_y)**2)< p.Food.size:
+				self.food_level += 0.1
 
 	def die(self):
 		self.enviro().remove_ag(key)
-
-
-	def living_cycle(self):
-		agent.move()
-		if enviro.food(agent.pos()) == 1:
-			agent.eat()
-		if agent.food_level() == 1:
-			agent.reproduce()
-		elif agent.food_level() == 0:
-			agent.die() 
-		return
