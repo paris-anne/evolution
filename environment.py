@@ -19,13 +19,13 @@ import math
 
 class Environment(object):
 	"""Create environment for agents to interact in """
-	def __init__(self, food_percentage, pos = [0,0], colour = (255,255,255)):
+	def __init__(self, food_percentage, colour = (255,255,255)):
 		self.__width  = 100
 		self.__height = 100
 		#self.__food = self.addfood(food_percentage)
 		
-		self.particles = []
-		self.food = []
+		self.food = Particle(self__width*0.5, self__height*0.5, 1)
+		self.particles = [self.food]
 		self.colour = (255,255,255)
 		self.screen = pygame.display.set_mode((self.__width, self.__height))
 
@@ -35,6 +35,9 @@ class Environment(object):
 	def set_width(self):
 		self.width = width
 		return
+
+	def particles_list(self):
+		return self.particles
 
 	def height(self):
 		return self.height
@@ -56,8 +59,6 @@ class Environment(object):
 	def plotdimensions(self):
 		return np.array(self.width(), self.height())
 
-	def food(self):
-		return self.fonp.round(od
 
 	def addfood(self, food_percentage):
 		food = np.zeros((self.__width, self.__height))

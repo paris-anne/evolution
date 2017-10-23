@@ -9,11 +9,11 @@ enviro.create()
 enviro.add_particles()
 enviro.run()
 
-#agent = Agent([0,0], 0.5, 1.0, enviro)
-#enviro.add_agent(agent.pos())
+agent = ag.Agent([0,0], 0.5, 1.0, enviro)
+enviro.add_agent(agent.pos())
 
-#for i in range(100):
-#	agent.living_cycle()
+for i in range(100):
+	agent.living_cycle()
 
-#window = Window()
-#window.add_particles()
+window = Window()
+window.add_particles()

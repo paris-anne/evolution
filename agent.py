@@ -48,21 +48,6 @@ class Agent:
 	def die(self):
 		self.enviro().remove_ag(key)
 
-	def move(self):
-		max_pos = enviro.max()
-		min_pos = enviro.min()
-		position = self.position()
-		for i in position:
-			if min_pos < i and i < max_pos:
-				direction = np.random.randint(-1,1)
-			elif position == max_pos:
-				direction = np.random.randint(-1,0)
-			else:
-				direction = np.random.randint(0,1)
-			i += direction
-		self.set_position(position)
-		self.food_level -= 0.1
-		return
 
 	def living_cycle(self):
 		agent.move()
