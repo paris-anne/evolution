@@ -46,13 +46,10 @@ class Environment(object):
 	def food(self):
 		return self.food
 
-	#def addfood(self, percentage):
-	#	food = np.zeros((self.width(), self.width()))
-#		points = self.width() * self.height()
-#		foodpoints = np.round(points * (percentage/100))
-#		for i in range(1, foodpoints):
-#			np.random.choice(food) += 1
-#		return food
+	def addfood(self):
+		food = p.Particle(-50, -50, 3, colour = (255,255,0), speed = 0)
+		food.display(self.screen)
+		pygame.display.flip()
 
 	def create(self):
 		self.screen.fill(self.colour)

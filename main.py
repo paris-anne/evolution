@@ -8,6 +8,7 @@ enviro = env.Environment(0.1)
 enviro.create()
 enviro.add_particles()
 enviro.run()
+enviro.addfood()
 
 #agent = Agent([0,0], 0.5, 1.0, enviro)
 #enviro.add_agent(agent.pos())

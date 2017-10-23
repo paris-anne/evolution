@@ -2,13 +2,13 @@ import pygame
 import math
 
 class Particle:
-	def __init__(self, x, y, size):
+	def __init__(self, x, y, size, colour = (0, 0, 255), speed = 1):
 		self.x = x
 		self.y = y
 		self.size = size
-		self.colour = (0, 0, 255)
+		self.colour = colour
 		self.thickness = 1
-		self.speed = 1
+		self.speed = speed
 		self.angle = math.pi/2
 
 	def bounce(self, width, height):
