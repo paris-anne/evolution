@@ -3,7 +3,7 @@ import math
 
 class Particle:
 
-	def __init__(self, x, y, size, colour = (0, 0, 255), speed = 1, thickness = 1):
+	def __init__(self, x, y, size, colour = (0, 0, 255), speed = 1, thickness = 0):
 		self.x = x
 		self.y = y
 		self.size = size
@@ -16,7 +16,6 @@ class Particle:
 		if self.x > width - self.size:
 			self.x = 2*(width - self.size) - self.x
 			self.angle = - self.angle
-
 		elif self.x < self.size:
 			self.x = 2*self.size - self.x
 			self.angle = - self.angle

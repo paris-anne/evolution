@@ -76,9 +76,8 @@ class Environment(object):
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					running = False
-
-			self.screen.fill(self.colour)
-			self.food.display(self.screen)
+				self.screen.fill(self.colour)
+				self.food.display(self.screen)
 			for agent in self.agents:
 				#due to pygame set-up these conditions are currently only applied once at the 
 				#start and do not interate
