@@ -14,7 +14,7 @@ class Environment(object):
 		self.agents = []
 		self.colour = colour
 		self.screen = pygame.display.set_mode((int(self.width), int(self.height)))
-		self.food 
+		self.food = []
 
 	def particles_list(self):
 		return self.particles
@@ -49,25 +49,24 @@ class Environment(object):
 		return self.food
 
 	def addfood(self, x, y, size):
-		self.food = p.Particle(x, y, size, speed = 0, colour = (139, 119, 101)) #size = 1
+		self.food.append(p.Particle(x, y, size, speed = 0, colour = (139, 119, 101)))
 
 	def add_agent(self, agent):
 		self.agents.append(agent)
 		
-	def add_agents(self, number_of_agents = 10, size = 3.0, speed = 2.0):
+	def add_agents(self, number_of_agents = 10, size = 3.0, speed = 0.8):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
 			agent = ag.Agent(x, y, self, size = size, speed = speed)
 			self.agents.append(agent)
 
-#index will change as agents are removed therefore the key no longer matches up
 	def remove_agent(self, key):
-		self.agents.pop(key) #find better way of keeping data of dead agents whilst removing from screen
+		self.agents.pop(key) 
 
-# current pygame functionality does not run on a loop therefore hard to iterate changes, 
-# also does not have a time interval atm
+# does not have a time interval atm
 	def display(self):
+		clock = pygame.time.Clock()
 		running = True
 		while running:
 			for event in pygame.event.get():
@@ -75,22 +74,22 @@ class Environment(object):
 					running = False
 
 			for agent in self.agents:
-				#due to pygame set-up these conditions are currently only applied once at the 
-				#start and do not interate
 				agent.eat()
-				if agent.food_level == agent.reproduce_level: 
+				if agent.food_level > agent.reproduce_level: 
 					agent.reproduce()
 				agent.move()
 				agent.bounce(self.width, self.height)
-				agent.food_level -= 0.3
+				agent.food_level -= 0.01
 				# should food_level be used up proportionally with speed or set at a constant?
 				#agent.food_level -= 0.1
 				if agent.food_level < 0:
 					agent.die()
+
 				
 			self.screen.fill(self.colour)
-			self.food.display(self.screen)
+			for food in self.food: food.display(self.screen)
 
 			for agent in self.agents: 
 				agent.display(self.screen)
 			pygame.display.flip()
+		clock.get_time()
