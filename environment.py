@@ -13,7 +13,7 @@ class Environment(object):
 		self.height = height		
 		self.agents = []
 		self.colour = colour
-		self.screen = pygame.display.set_mode((self.width, self.height))
+		self.screen = pygame.display.set_mode((int(self.width), int(self.height)))
 		self.food 
 
 	def particles_list(self):
@@ -51,17 +51,14 @@ class Environment(object):
 	def addfood(self, x, y, size):
 		self.food = p.Particle(x, y, size, speed = 0, colour = (139, 119, 101)) #size = 1
 
-	def add_agent(self, x, y, size, speed):
-		agent = ag.Agent(x, y, self, size = size, speed = speed)
-		agent.angle = random.uniform(0, math.pi*2)
+	def add_agent(self, agent):
 		self.agents.append(agent)
 		
-	def add_agents(self, number_of_agents = 10, size = 3, speed = 2):
+	def add_agents(self, number_of_agents = 10, size = 3.0, speed = 2.0):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
 			agent = ag.Agent(x, y, self, size = size, speed = speed)
-			agent.angle = random.uniform(0, math.pi*2)
 			self.agents.append(agent)
 
 #index will change as agents are removed therefore the key no longer matches up
@@ -76,20 +73,24 @@ class Environment(object):
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					running = False
-				self.screen.fill(self.colour)
-				self.food.display(self.screen)
+
 			for agent in self.agents:
 				#due to pygame set-up these conditions are currently only applied once at the 
 				#start and do not interate
-				if agent.food_level == 1.0: 
-					agent.reproduce()
-				if agent.food_level == 0.0:
-					agent.die()
 				agent.eat()
+				if agent.food_level == agent.reproduce_level: 
+					agent.reproduce()
 				agent.move()
-				# should food_level be used up proportionally with speed or set at a constant?
-				agent.food_level -= 0.1
 				agent.bounce(self.width, self.height)
-				agent.display(self.screen)
+				agent.food_level -= 0.3
+				# should food_level be used up proportionally with speed or set at a constant?
+				#agent.food_level -= 0.1
+				if agent.food_level < 0:
+					agent.die()
+				
+			self.screen.fill(self.colour)
+			self.food.display(self.screen)
 
+			for agent in self.agents: 
+				agent.display(self.screen)
 			pygame.display.flip()
