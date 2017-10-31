@@ -56,8 +56,7 @@ class Environment(object):
 
 	def add_agent(self, agent):
 		self.agents.append(agent)
-		
-	def add_agents(self, number_of_agents = 10, size = 3.0, speed = 0.5):
+	def add_agents(self, number_of_agents = 10, size = 3.0, speed = 1.0):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
@@ -83,10 +82,8 @@ class Environment(object):
 						agent.reproduce()
 					agent.move()
 					agent.bounce(self.width, self.height)
-					agent.food_level -= 0.3
-					# should food_level be used up proportionally with speed or set at a constant?
-					#agent.food_level -= 0.1
-					if agent.food_level == 0.0:
+					agent.food_level -= 0.01
+					if agent.food_level < 0.0:
 						agent.die()
 				
 			self.screen.fill(self.colour)
