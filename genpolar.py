@@ -1,0 +1,48 @@
+import matplotlib.pyplot as plt 
+import numpy as np 
+
+
+def make_list(num):
+    R = np.array([0,1,2,3,4,5,6,7,8,9])
+    T = np.zeros(shape=(1,10))
+    
+    T[0,0] = 1
+    for i in range(1,9):
+        T[0,i] = num/10
+    T[0,9]= int(num - (1 + (8 * int(num/10))))
+
+    new_T = []
+    for item in T[0]:
+        new_T.append(int(item))
+    
+    return (list(R),list(new_T))
+    
+def rtpairs(R,N):
+    """ 
+    yield uniformly distributed points on a circle for a given list of radii
+    Args:    
+        R: list of radii 
+        N: list contain number of points to draw for each corresponding radius value in R  
+    """
+
+    for i in range(len(R)): 
+        for j in range(0,N[i]):
+            yield R[i],(2*np.pi/N[i])*j
+        
+def rtuniform(n,rmax,m):
+    """
+    Args:
+        n: number of inner circles
+        rmax: maximum radius to be drawn 
+        m: number of points to draw for each circle
+    """
+    
+    theta =[m*i for i in range(n)]
+    theta[0]=1
+    return genpolar.rtpairs(list(np.linspace(0,rmax,n)),theta)      
+
+P = make_list(45)[0]
+Q = make_list(45)[1]
+
+for r, t in genpolar.rtpairs(P, Q):
+    plt.plot(r * np.cos(t), r * np.sin(t), 'bo')
