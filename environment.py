@@ -1,35 +1,106 @@
 import numpy as np
 import random
+import pygame
+import random
+import particle as p
+import agent as ag
+import matplotlib.pyplot as pl
+import math
 
 class Environment(object):
 	"""Create environment for agents to interact in """
-	def __init__(self, pos = [0,0]):
-		self.__width  = 10
-		self.__height = 10
-		self.__food = self.addfood(0.1)
+	def __init__(self, width = 100, height = 100, colour = (255,255,255)):
+		self.width  = width
+		self.height = height		
+		self.agents = []
+		self.colour = colour
+		self.screen = pygame.display.set_mode((int(self.width), int(self.height)))
+		self.food = []
+		self.time_elapsed =[]
+		self.population = []
+		self.deadpopulation = []
 
-	def pos(self):
-		return self.pos
+	def width(self):
+		return self.width
 
-	def maxposw(self):
-		return np.abs(self.__width)
+	def set_width(self):
+		self.width = width
+		return
 
-	def maxposh(self):
-		return np.abs(self.__height)
+	def height(self):
+		return self.height
 
-
-	def plotdimensions(self):
-		return np.array[self.__width, self.__height]
+	def set_height(self):
+		self.height = height
+		return
 
 	def food(self):
-		return self.__food
+		return self.food
 
-	def addfood(self, percentage):
-		food = np.zeros(self.__width, self.width)
-		points = self.__width * self.__height
-		foodpoints = np.round(points * percentage)
+	def addfood(self, x, y, size):
+		self.food.append(p.Particle(x, y, size, speed = 0, colour = (139, 119, 101)))
 
-		for i in range (1,foodpoints):
-			np.random.choice(food)[np.random.randrange(len(choice))] += 1
+	def add_agent(self, agent):
+		self.agents.append(agent)
+		
+	def add_agents(self, number_of_agents = 10, size = 3.0, speed = np.random.normal(0.2,0.1)):
+		for i in range(number_of_agents):
+			x = random.randint(size, self.width - size)
+			y = random.randint(size, self.height - size)
+			agent = ag.Agent(x, y, self, size = size, speed = speed)
+			self.agents.append(agent)
 
-		return food
+	def remove_agent(self):
+		self.agents.pop() 
+
+	# def livingpopulation(self):
+	# 	self.livingpopulation.append(len(self.population) - len(self.deadpopulation))
+	# 	return self.livingpopulation
+
+# does not have a time interval atm
+	def display(self, time):
+		clock = pygame.time.Clock()
+		running = True
+		while running:
+			pygame.init()
+			for event in pygame.event.get():
+				print (event)
+				if event.type == pygame.QUIT:
+					running = False
+
+			for agent in self.agents:
+				agent.eat()
+				if agent.food_level > agent.reproduce_level: 
+					agent.reproduce()
+				agent.move()
+				agent.bounce(self.width, self.height)
+				agent.food_level -= 0.01 * agent.speed
+				# should food_level be used up proportionally with speed or set at a constant?
+				#agent.food_level -= 0.1
+				if agent.food_level < 0:
+					agent.die()
+
+
+				
+			self.screen.fill(self.colour)
+			for food in self.food: food.display(self.screen)
+
+			for agent in self.agents: 
+				agent.display(self.screen)
+			pygame.display.flip()
+			time_ms = pygame.time.get_ticks()
+			if time_ms == time:
+				running = False
+			print (time_ms)
+			self.time_elapsed.append(time_ms/1000)
+			self.population.append(len(self.agents))
+			# pl.show()
+			#main.Data.append((time_ms, len(self.agents)))
+
+
+		clock.tick()
+		clock.get_time()
+
+	def plot(self):
+		pl.plot(self.time_elapsed, self.population)
+		pl.show()
