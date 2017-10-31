@@ -9,10 +9,11 @@ pygame.display.set_caption('evolution')
 background_colour = (255,255,255)
 #all changes must be made before flip()
 screen.fill(background_colour)
+pygame.display.flip()
 
 number_of_particles = 10
 my_particles = []
-# my_particles = enviro.Environment.particles_list()
+# my_particles = enviro.Environment.agents
 
 
 for n in range(number_of_particles):

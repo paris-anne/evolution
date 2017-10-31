@@ -9,6 +9,7 @@ class Window:
 		self.background_colour = background_colour
 		self.width = width
 		self.height = height
+		self.clock = pygame.time.Clock()
 		
 
 	def create(self, caption):
