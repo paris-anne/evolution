@@ -6,15 +6,15 @@ import random
 class Agent(p.Particle):
 	count = 0
 
-	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), speed = 1.0, reproduce_level = 10,  food_level = 5):
+	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), speed = 0.8, reproduce_level = 15.0,  food_level = 5.0):
 		super().__init__(x, y, size, colour, speed)
 		self.key = self.count # need way of incrementing key
 		self.food_level = food_level
 		self.reproduce_level = reproduce_level
 		self.size = size
 		self.enviro = environment
-		self.x = random.randint(self.size, self.enviro.width - self.size)
-		self.y = random.randint(self.size, self.enviro.height - self.size)
+		self.x = x
+		self.y = y
 		self.count +=1
 
 	def reproduce(self):
@@ -23,11 +23,14 @@ class Agent(p.Particle):
 		self.enviro.add_agent(child)
 
 	def eat(self):
-		foodpos_x = self.enviro.food.x
-		foodpos_y = self.enviro.food.y
+		for food in self.enviro.food:
+			foodpos_x = food.x
+			foodpos_y = food.y
 		#change food shape to square
-		if np.sqrt((self.x - foodpos_x)**2 + (self.y - foodpos_y)**2) < self.enviro.food.size:
-			self.food_level += 1
+			if np.sqrt((self.x - foodpos_x)**2 + (self.y - foodpos_y)**2) < food.size:
+				self.food_level += 1
 
 	def die(self):
-		self.colour = (0, 255, 0)
+		self.colour = (255, 0, 0)
+		self.speed = 0
+		self.enviro.dead.append(self)
