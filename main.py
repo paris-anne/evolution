@@ -13,8 +13,6 @@ enviro = env.Environment(envirox, enviroy)
 enviro.add_agents(20)
 enviro.addfood(36)
 
-
-
 # enviro.addfood(50.0, 50.0, 5)
 # enviro.addfood(200.0, 200.0, 5)
 # enviro.addfood(100.0, 50, 5)

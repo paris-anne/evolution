@@ -93,7 +93,7 @@ class Environment(object):
 				agent.display(self.screen)
 			pygame.display.flip()
 			time_ms = pygame.time.get_ticks()
-			if time_ms == time:
+			if time_ms > time:
 				running = False
 			#print (time_ms)
 			self.time_elapsed.append(time_ms/1000)
