@@ -27,8 +27,9 @@ class Agent(p.Particle):
 			foodpos_x = food.x
 			foodpos_y = food.y
 		#change food shape to square
-			if np.sqrt((self.x - foodpos_x)**2 + (self.y - foodpos_y)**2) < food.size:
-				self.food_level += 1
+			if self.food_level < 5:
+				if np.sqrt((self.x - foodpos_x)**2 + (self.y - foodpos_y)**2) < food.size:
+					self.food_level += 1
 
 	def die(self):
 		self.colour = (255, 0, 0)

@@ -43,7 +43,7 @@ class Environment(object):
 	def add_agent(self, agent):
 		self.agents.append(agent)
 		
-	def add_agents(self, number_of_agents = 10, size = 3.0, speed = 2.0):
+	def add_agents(self, number_of_agents = 10, size = 3.0, speed = np.random.normal(2,1)):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
@@ -66,6 +66,8 @@ class Environment(object):
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					running = False
+				if event.type == pygame.KEYDOWN:
+					running == False
 
 			for agent in self.agents:
 				if agent.speed != 0:
@@ -76,7 +78,7 @@ class Environment(object):
 						agent.reproduce()
 					agent.move()
 					agent.bounce(self.width, self.height)
-					agent.food_level -= 0.3
+					agent.food_level -= 0.01
 					if agent.food_level < 0.0:
 						agent.die()
 
@@ -89,7 +91,7 @@ class Environment(object):
 			time_ms = pygame.time.get_ticks()
 			if time_ms == time:
 				running = False
-			print (time_ms)
+			#print (time_ms)
 			self.time_elapsed.append(time_ms/1000)
 			self.population.append(len(self.agents)-len(self.dead))
 			# pl.show()
