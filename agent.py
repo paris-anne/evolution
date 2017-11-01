@@ -8,7 +8,7 @@ class Agent(p.Particle):
 
 	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.5,  food_level = 1.0):
 
-		super().__init__(x, y, size, colour, speed)
+		super().__init__(x, y, size, colour)
 		self.key = self.count # need way of incrementing key
 		self.food_level = food_level
 		self.reproduce_level = reproduce_level

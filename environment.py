@@ -52,7 +52,7 @@ class Environment(object):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
-			agent = ag.Agent(x, y, self, size = size, speed = speed)
+			agent = ag.Agent(x, y, self, size = size)
 			self.agents.append(agent)
 
 	def remove_agent(self, key):
@@ -72,6 +72,8 @@ class Environment(object):
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					running = False
+				if event.type == pygame.KEYDOWN:
+					running == False
 
 			for agent in self.agents:
 				if agent.speed != 0:
@@ -93,7 +95,7 @@ class Environment(object):
 			time_ms = pygame.time.get_ticks()
 			if time_ms == time:
 				running = False
-			print (time_ms)
+			#print (time_ms)
 			self.time_elapsed.append(time_ms/1000)
 			self.population.append(len(self.agents)-len(self.dead))
 			self.deadcount.append(len(self.dead)/(time_ms/1000))
