@@ -4,13 +4,13 @@ import random
 
 class Particle:
 
-	def __init__(self, x, y, size, colour = (0, 0, 255), speed = 1.0, thickness = 0):
+	def __init__(self, x, y, size = 5, colour = (0, 0, 255), thickness = 0):
 		self.x = x
 		self.y = y
 		self.size = size
 		self.colour = colour
 		self.thickness = thickness
-		self.speed = speed
+		self.speed = 0.8
 		self.angle = random.uniform(0, math.pi*2)
 
 	def bounce(self, width, height):

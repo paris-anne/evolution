@@ -12,17 +12,16 @@ class Environment(object):
 	def __init__(self, width = 100, height = 100, colour = (255,255,255)):
 		self.width  = width
 		self.height = height		
-		self.agents = []
-		self.dead = []
 		self.colour = colour
 		self.screen = pygame.display.set_mode((int(self.width), int(self.height)))
 		self.food = []
+
+		self.agents = []
 		self.population = []
-		self.alive = []
 		self.deadcount = []
-		self.time_elapsed =[]
-		self.population = []
 		self.dead = []
+		self.reproduction = []
+		self.time_elapsed =[]
 
 	def width(self):
 		return self.width
@@ -41,13 +40,15 @@ class Environment(object):
 	def food(self):
 		return self.food
 
-	def addfood(self, x, y, size):
-		self.food.append(p.Particle(x, y, size, speed = 0, colour = (139, 119, 101)))
+	def addfood(self, amount):
+		for i in np.arange(0, self.width, self.width/np.sqrt(amount)):
+			for j in np.arange(0, self.height, self.height/np.sqrt(amount)):
+				self.food.append(p.Particle(i, j, speed = 0, colour = (139, 119, 101)))
 
 	def add_agent(self, agent):
 		self.agents.append(agent)
 
-	def add_agents(self, number_of_agents = 10, size = 3.0, speed = 1.0):
+	def add_agents(self, number_of_agents = 10, size = 3.0, speed = 0.8):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
@@ -63,6 +64,7 @@ class Environment(object):
 
 # does not have a time interval atm
 	def display(self, time):
+		reproduction_count = 0
 		clock = pygame.time.Clock()
 		running = True
 		while running:
@@ -76,6 +78,7 @@ class Environment(object):
 					agent.eat()
 					if agent.food_level > agent.reproduce_level: 
 						agent.reproduce()
+						reproduction_count += 1
 					agent.move()
 					agent.bounce(self.width, self.height)
 					agent.food_level -= 0.1
@@ -84,32 +87,35 @@ class Environment(object):
 				
 			self.screen.fill(self.colour)
 			for food in self.food: food.display(self.screen)
-
 			for agent in self.agents: 
 				agent.display(self.screen)
 			pygame.display.flip()
-			population_toll = len(self.agents) - len(self.dead)
-			self.population.append(population_toll) 
-		clock.get_time()
-
-	def get_dead(self):
-		return len(self.dead)
-
-	def get_population_time(self):
-		time_ms = pygame.time.get_ticks()
-		if time_ms == time:
-			running = False
-		print (time_ms)
-		self.time_elapsed.append(time_ms/1000)
-		self.deadcount.append(len(self.dead))
+			time_ms = pygame.time.get_ticks()
+			if time_ms == time:
+				running = False
+			print (time_ms)
+			self.time_elapsed.append(time_ms/1000)
+			self.population.append(len(self.agents)-len(self.dead))
+			self.deadcount.append(len(self.dead)/(time_ms/1000))
+			self.reproduction.append(reproduction_count/(time_ms/1000))
+			# pl.show()
+			#main.Data.append((time_ms, len(self.agents)))
 
 		clock.tick()
 		clock.get_time()
 
-	def population_plot(self):
+	def plot(self):
+		ax1 = pl.subplot(311)
 		pl.plot(self.time_elapsed, self.population)
+		ax1.title.set_text("population") # add caption
+		pl.setp(ax1.get_xticklabels(), fontsize=6)
+		ax2 = pl.subplot(312, sharex=ax1) 
+		ax2.title.set_text("death rate")
+		pl.plot(self.time_elapsed, self.deadcount)		
+		pl.setp(ax2.get_xticklabels(), visible=False)
+		ax3 = pl.subplot(313, sharex=ax1)
+		ax3.title.set_text("reproduction rate")
+		pl.plot(self.time_elapsed, self.reproduction)
+		pl.setp(ax3.get_xticklabels(), visible=False)
 		pl.show()
 
-	def dead_plot(self):
-		pl.plot(self.time_elapsed, self.deadcount)
-		pl.show()

@@ -10,15 +10,10 @@ envirox = 100.0
 enviroy = 100.0
 foodnumber = 36
 enviro = env.Environment(envirox, enviroy)
-enviro.add_agents(49)
+enviro.add_agents(20)
+enviro.addfood(36)
 
-# for i in np.arange(1,foodnumber,1):
-# 		enviro.addfood(envirox *i/foodnumber, enviroy*i/foodnumber, 5)
 
-for i in np.arange(0,envirox, envirox/np.sqrt(foodnumber)):
-	for j in np.arange(0, enviroy, enviroy/np.sqrt(foodnumber)):
-		print (i,j)
-		enviro.addfood(i, j, 5)
 
 # enviro.addfood(50.0, 50.0, 5)
 # enviro.addfood(200.0, 200.0, 5)
@@ -27,8 +22,7 @@ for i in np.arange(0,envirox, envirox/np.sqrt(foodnumber)):
 # enviro.addfood(125.0, 125.0, 5)
 
 enviro.display(100000)
-enviro.population_plot()
-enviro.dead_plot()
+enviro.plot()
 data = []
 
 def get_pygame_events():
