@@ -44,6 +44,9 @@ class Environment(object):
 	def addfood(self, x, y, size):
 		self.food.append(p.Particle(x, y, size, speed = 0, colour = (139, 119, 101)))
 
+	def add_agent(self, agent):
+		self.agents.append(agent)
+
 	def add_agents(self, number_of_agents = 10, size = 3.0, speed = 1.0):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
@@ -85,7 +88,7 @@ class Environment(object):
 			for agent in self.agents: 
 				agent.display(self.screen)
 			pygame.display.flip()
-			population_toll = len(self.agents) - self.get_dead()
+			population_toll = len(self.agents) - len(self.dead)
 			self.population.append(population_toll) 
 		clock.get_time()
 
@@ -98,7 +101,6 @@ class Environment(object):
 			running = False
 		print (time_ms)
 		self.time_elapsed.append(time_ms/1000)
-		self.population.append(len(self.agents)-len(self.dead))
 		self.deadcount.append(len(self.dead))
 
 		clock.tick()
