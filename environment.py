@@ -18,6 +18,8 @@ class Environment(object):
 		self.food = []
 		self.population = []
 		self.alive = []
+		self.dead = []
+		self.deadcount = []
 
 	def particles_list(self):
 		return self.particles
@@ -54,8 +56,6 @@ class Environment(object):
 	def addfood(self, x, y, size):
 		self.food.append(p.Particle(x, y, size, speed = 0, colour = (139, 119, 101)))
 
-	def add_agent(self, agent):
-		self.agents.append(agent)
 	def add_agents(self, number_of_agents = 10, size = 3.0, speed = 1.0):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
@@ -82,7 +82,7 @@ class Environment(object):
 						agent.reproduce()
 					agent.move()
 					agent.bounce(self.width, self.height)
-					agent.food_level -= 0.01
+					agent.food_level -= 0.1
 					if agent.food_level < 0.0:
 						agent.die()
 				
@@ -100,4 +100,23 @@ class Environment(object):
 		return len(self.dead)
 
 	def get_population_time(self):
-		return self.population
+		time_ms = pygame.time.get_ticks()
+		if time_ms == time:
+			running = False
+		print (time_ms)
+		self.time_elapsed.append(time_ms/1000)
+		self.population.append(len(self.agents)-len(self.dead))
+		self.deadcount.append(len(self.dead))
+		# pl.show()
+		#main.Data.append((time_ms, len(self.agents)))
+
+		clock.tick()
+		clock.get_time()
+
+	def population_plot(self):
+		pl.plot(self.time_elapsed, self.population)
+		pl.show()
+
+	def dead_plot(self):
+		pl.plot(self.time_elapsed, self.deadcount)
+		pl.show()

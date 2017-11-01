@@ -6,7 +6,7 @@ import random
 class Agent(p.Particle):
 	count = 0
 
-	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), speed = 1, reproduce_level = 15.0,  food_level = 5.0):
+	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), speed = 0.8, reproduce_level = 3.0,  food_level = 1.0):
 		super().__init__(x, y, size, colour, speed)
 		self.key = self.count # need way of incrementing key
 		self.food_level = food_level
