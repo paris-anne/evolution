@@ -4,6 +4,7 @@ import pygame
 import random
 import particle as p
 import agent as ag
+import matplotlib.pyplot as pl
 import math
 
 class Environment(object):
@@ -18,11 +19,10 @@ class Environment(object):
 		self.food = []
 		self.population = []
 		self.alive = []
-		self.dead = []
 		self.deadcount = []
-
-	def particles_list(self):
-		return self.particles
+		self.time_elapsed =[]
+		self.population = []
+		self.dead = []
 
 	def width(self):
 		return self.width
@@ -37,18 +37,6 @@ class Environment(object):
 	def set_height(self):
 		self.height = height
 		return
-
-	def pos(self):
-		return self.pos
-
-	def maxposw(self):
-		return np.abs(self.width())
-
-	def maxposh(self):
-		return np.abs(self.height())
-
-	def plotdimensions(self):
-		return np.array(self.width(), self.height())
 
 	def food(self):
 		return self.food
@@ -66,11 +54,16 @@ class Environment(object):
 	def remove_agent(self, key):
 		self.agents.pop(key) 
 
+	# def livingpopulation(self):
+	# 	self.livingpopulation.append(len(self.population) - len(self.deadpopulation))
+	# 	return self.livingpopulation
+
 # does not have a time interval atm
-	def display(self):
+	def display(self, time):
 		clock = pygame.time.Clock()
 		running = True
 		while running:
+			pygame.init()
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					running = False
@@ -107,8 +100,6 @@ class Environment(object):
 		self.time_elapsed.append(time_ms/1000)
 		self.population.append(len(self.agents)-len(self.dead))
 		self.deadcount.append(len(self.dead))
-		# pl.show()
-		#main.Data.append((time_ms, len(self.agents)))
 
 		clock.tick()
 		clock.get_time()

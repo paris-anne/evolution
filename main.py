@@ -1,4 +1,5 @@
 import agent as ag
+import numpy as np
 import environment as env
 import matplotlib.pyplot as pl
 import datetime
