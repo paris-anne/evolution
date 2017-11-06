@@ -43,3 +43,4 @@ while running:
 
 	screen.fill(background_colour)
 
+def fps

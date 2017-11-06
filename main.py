@@ -5,29 +5,24 @@ import matplotlib.pyplot as pl
 import datetime
 import numpy as np
 import random
+import particle as p
 
-envirox = 100.0
-enviroy = 100.0
-foodnumber = 36
+envirox = 100
+enviroy = 100
+foodnumber = 10
 enviro = env.Environment(envirox, enviroy)
-enviro.add_agents(20)
-enviro.addfood(36)
+enviro.add_agents(1)
+enviro.addfood()
 
 
-
-# enviro.addfood(50.0, 50.0, 5)
-# enviro.addfood(200.0, 200.0, 5)
-# enviro.addfood(100.0, 50, 5)
-# enviro.addfood(50.0, 50.0, 5)
-# enviro.addfood(125.0, 125.0, 5)
-
-enviro.display(100000)
+enviro.display(500000)
 enviro.plot()
-data = []
+# data = []
 
 def get_pygame_events():
 	pygame_events  = pygame.event.get()
 	return pygame_events
 
-# adjust levels to have good simulation
-# add time factor 
+
+
+
