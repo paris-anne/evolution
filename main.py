@@ -12,13 +12,6 @@ foodnumber = 36
 enviro = env.Environment(envirox, enviroy)
 enviro.add_agents(20)
 enviro.addfood(36)
-
-# enviro.addfood(50.0, 50.0, 5)
-# enviro.addfood(200.0, 200.0, 5)
-# enviro.addfood(100.0, 50, 5)
-# enviro.addfood(50.0, 50.0, 5)
-# enviro.addfood(125.0, 125.0, 5)
-
 enviro.display(100000)
 enviro.plot()
 data = []
@@ -26,6 +19,20 @@ data = []
 def get_pygame_events():
 	pygame_events  = pygame.event.get()
 	return pygame_events
+def food_relation():
+	foodnumber = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121]
+	x = []
+	y = []
+	for i in foodnumber:
+		enviro = env.Environment(envirox, enviroy)
+		enviro.add_agents(100)
+		enviro.addfood(i)
+		x.append((i*(np.pi * enviro.food[0].size*enviro.food[0].size))/(enviroy*envirox))
+		population = enviro.display(5000)
+		y.append(population[-1])
 
-# adjust levels to have good simulation
-# add time factor 
+	pl.plot(x, y)
+	pl.show()
+
+
+

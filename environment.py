@@ -100,11 +100,13 @@ class Environment(object):
 			self.population.append(len(self.agents)-len(self.dead))
 			self.deadcount.append(len(self.dead)/(time_ms/1000))
 			self.reproduction.append(reproduction_count/(time_ms/1000))
+
 			# pl.show()
 			#main.Data.append((time_ms, len(self.agents)))
 
 		clock.tick()
 		clock.get_time()
+		return self.population
 
 	def plot(self):
 		ax1 = pl.subplot(311)
@@ -120,4 +122,5 @@ class Environment(object):
 		pl.plot(self.time_elapsed, self.reproduction)
 		pl.setp(ax3.get_xticklabels(), visible=False)
 		pl.show()
+
 
