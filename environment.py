@@ -64,7 +64,6 @@ class Environment(object):
 		reproduction_count = 0
 		clock = pygame.time.Clock()
 		running = True
-		print(len(self.agents)-len(self.dead))
 		while running:
 			pygame.init()
 			for event in pygame.event.get():

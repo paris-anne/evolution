@@ -16,7 +16,7 @@ enviro.addfood(36)
 data = enviro.display(100000)
 print(data.to_string())
 pl.plot(data['Time Elapsed'], data['Resistance'])
-pl.show()
+plots.plot(data)
 
 def get_pygame_events():
 	pygame_events  = pygame.event.get()
