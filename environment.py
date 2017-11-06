@@ -10,13 +10,12 @@ import pandas as pd
 
 class Environment(object):
 	"""Create environment for agents to interact in """
-	def __init__(self, width = 100, height = 100, colour = (255,255,255)):
+	def __init__(self, width, height, colour = (255,255,255)):
 		self.width  = width
 		self.height = height		
 		self.colour = colour
 		self.screen = pygame.display.set_mode((int(self.width), int(self.height)))
 		self.food = []
-
 		self.agents = []
 		self.population = []
 		self.deadcount = []
@@ -28,24 +27,50 @@ class Environment(object):
 	def width(self):
 		return self.width
 
-	def set_width(self):
+	def set_width(self, width):
 		self.width = width
 		return
 
 	def height(self):
 		return self.height
 
-	def set_height(self):
+	def set_height(self, height):
 		self.height = height
 		return
 
 	def food(self):
 		return self.food
 
-	def addfood(self, amount):
-		for i in np.arange(0, self.width, self.width/np.sqrt(amount)):
-			for j in np.arange(0, self.height, self.height/np.sqrt(amount)):
-				self.food.append(p.Particle(i, j, speed = 0, colour = (139, 119, 101)))
+	def addfood(self):
+		amount = 0
+		food_coverage = 0.2
+		area = self.width * self.height
+
+		if area < 100:
+			amount = 4
+			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
+		elif area < 225:
+			amount = 9
+			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
+		elif area < 400:
+			amount = 16
+			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
+		elif area < 625:
+			amount = 25
+			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
+		elif area < 900:
+			amount = 36
+			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
+		elif area < 1600:
+			amount = 49
+			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
+		else:
+			amount = 100
+			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
+
+		for i in np.arange(self.width/np.sqrt(amount), self.width, self.width/np.sqrt(amount)):
+			for j in np.arange(self.height/np.sqrt(amount), self.height, self.height/np.sqrt(amount)):
+				self.food.append(p.Particle(i, j, size = food_radius, speed = 0, colour = (139, 119, 101)))
 
 	def add_agent(self, agent):
 		self.agents.append(agent)
@@ -79,7 +104,7 @@ class Environment(object):
 						reproduction_count += 1
 					agent.move()
 					agent.bounce(self.width, self.height)
-					agent.food_level -= 0.1
+					agent.food_level -= 0.01
 					resistance += agent.resistance
 					if agent.food_level < 0.0:
 						agent.die()
@@ -104,20 +129,3 @@ class Environment(object):
 			clock.get_time()
 		data = pd.DataFrame.from_items([('Time Elapsed', self.time_elapsed), ('Population', self.population), ('Deadcount', self.deadcount), ('Reproduction', self.reproduction), ('Resistance', self.resistance)])
 		return data
-
-	def plot(self):
-		ax1 = pl.subplot(311)
-		pl.plot(self.time_elapsed, self.population)
-		ax1.title.set_text("population") # add caption
-		pl.setp(ax1.get_xticklabels(), fontsize=6)
-		ax2 = pl.subplot(312, sharex=ax1) 
-		ax2.title.set_text("death rate")
-		pl.plot(self.time_elapsed, self.deadcount)		
-		pl.setp(ax2.get_xticklabels(), visible=False)
-		ax3 = pl.subplot(313, sharex=ax1)
-		ax3.title.set_text("reproduction rate")
-		pl.plot(self.time_elapsed, self.reproduction)
-		pl.setp(ax3.get_xticklabels(), visible=False)
-		pl.show()
-
-

@@ -6,35 +6,24 @@ import datetime
 import numpy as np
 import random
 import plots
+import particle as p
 
-envirox = 100.0
-enviroy = 100.0
+envirox = 200.0
+enviroy = 200.0
 foodnumber = 36
 enviro = env.Environment(envirox, enviroy)
+enviro.addfood()
 enviro.add_agents(20)
-enviro.addfood(36)
+#enviro.addfood(foodnumber)
 data = enviro.display(100000)
-print(data.to_string())
+#print(data.to_string())
 pl.plot(data['Time Elapsed'], data['Resistance'])
 plots.plot(data)
+
+
+#enviro.display(500000)
+# data = []
 
 def get_pygame_events():
 	pygame_events  = pygame.event.get()
 	return pygame_events
-def food_relation():
-	foodnumber = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121]
-	x = []
-	y = []
-	for i in foodnumber:
-		enviro = env.Environment(envirox, enviroy)
-		enviro.add_agents(100)
-		enviro.addfood(i)
-		x.append((i*(np.pi * enviro.food[0].size*enviro.food[0].size))/(enviroy*envirox))
-		population = enviro.display(5000)
-		y.append(population[-1])
-
-	pl.plot(x, y)
-	pl.show()
-
-
-

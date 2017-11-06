@@ -4,7 +4,7 @@ import random
 
 class Particle:
 
-	def __init__(self, x, y, size = 5, colour = (0, 0, 255), speed = 0.8, thickness = 0):
+	def __init__(self, x, y, size = 5, colour = (0, 0, 255), speed = 2.0, thickness = 0):
 		self.x = x
 		self.y = y
 		self.size = size
@@ -34,3 +34,4 @@ class Particle:
 
 	def display(self, screen):
 		pygame.draw.circle(screen, self.colour, (int(self.x), int(self.y)), int(self.size), self.thickness)
+		pygame.draw.circle(screen, (0,255,0), (int(500), int(500)), int(10), self.thickness)
