@@ -5,6 +5,7 @@ import matplotlib.pyplot as pl
 import datetime
 import numpy as np
 import random
+import plots
 
 envirox = 100.0
 enviroy = 100.0
@@ -13,7 +14,7 @@ enviro = env.Environment(envirox, enviroy)
 enviro.add_agents(20)
 enviro.addfood(36)
 enviro.display(100000)
-enviro.plot()
+#enviro.plot()
 data = []
 
 def get_pygame_events():

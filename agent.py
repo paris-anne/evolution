@@ -6,7 +6,7 @@ import random
 class Agent(p.Particle):
 	count = 0
 
-	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.5,  food_level = 1.0):
+	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.5,  food_level = 1.0, resistance = 0):
 
 		super().__init__(x, y, size, colour)
 		self.key = self.count # need way of incrementing key
@@ -17,6 +17,7 @@ class Agent(p.Particle):
 		self.x = x
 		self.y = y
 		self.count +=1
+		self.resistance = np.random.choice([0, 1], 1, [0.9, 0.1])
 
 	def reproduce(self):
 		self.food_level = 1.0
