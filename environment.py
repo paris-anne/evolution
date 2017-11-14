@@ -17,16 +17,20 @@ class Environment(object):
 		self.colour = colour
 		self.screen = pygame.display.set_mode((int(self.width), int(self.height)))
 		self.food = []
-		self.agents = []
-		self.population = []
+		self.agents = {}
+		self.alive = []
 		self.deadcount = []
 		self.dead = []
-		self.reproduction = []
+		self.reproduction_rate = []
 		self.time_elapsed =[]
+		self.av_resistance = []
+		self.population = 0
 		self.resistance = []
 		self.antibiotics = []
 		self.deadantibiotics =[]
-
+		self.anti_freq = 0
+		self.area = self.width * self.height
+		self.anti_conc = 0
 	def width(self):
 		return self.width
 
@@ -43,40 +47,40 @@ class Environment(object):
 
 	def food(self):
 		return self.food
-
+	
 	def addfood(self, food_coverage):
 		amount = 0
 		food_coverage = 0.2
-		area = self.width * self.height
 		takeClosest = lambda num,collection:min(collection,key=lambda x:abs(x-num))
 		squares = [1,4,9,16,25,36,49,64,81,100]
-		amount = takeClosest(np.sqrt(area),squares)
-		food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
+		amount = takeClosest(np.sqrt(self.area),squares)
+		food_radius = np.sqrt((food_coverage*self.area)/(amount * math.pi))
 
 		for i in np.arange(self.width/np.sqrt(amount), self.width, self.width/np.sqrt(amount)):
 			for j in np.arange(self.height/np.sqrt(amount), self.height, self.height/np.sqrt(amount)):
 				self.food.append(p.Particle(i, j, size = food_radius, speed = 0, colour = (139, 119, 101)))
 
 	def add_agent(self, agent):
-		self.agents.append(agent)
+		self.agents[agent.key] = agent
 
 	def add_agents(self, number_of_agents = 10, size = 3.0):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
 			agent = ag.Agent(x, y, self, size = size)
-			self.agents.append(agent)
+			self.agents[agent.key] = agent
 
 	def remove_agent(self, key):
-		self.agents.pop(key) 
+		del self.agents[key] 
 
-	def add_antibiotics(self, concentration):
+	def add_antibiotics(self, concentration, frequency):
 		amount = 0
-		area = self.width * self.height
+		self.anti_freq = frequency
+		self.anti_conc = concentration
 		takeClosest = lambda num,collection:min(collection,key=lambda x:abs(x-num))
 		squares = [1,4,9,16,25,36,49,64,81,100]
-		amount = takeClosest(np.sqrt(area),squares)
-		anti_radius = np.sqrt((concentration*area)/(amount * math.pi))
+		amount = takeClosest(np.sqrt(self.area),squares)
+		anti_radius = np.sqrt((concentration*self.area)/(amount * math.pi))
 
 		for i in np.arange(self.width/np.sqrt(amount), self.width, self.width/np.sqrt(amount)):
 			for j in np.arange(self.height/np.sqrt(amount), self.height, self.height/np.sqrt(amount)):
@@ -87,13 +91,16 @@ class Environment(object):
 
 	def display(self, time):
 		reproduction_count = 0
-		universal_clock = pygame.time.Clock()
+		clock = pygame.time.Clock()
 		running = True
-		tbirths =[0]
+		tbirths =[400]
 		tdeaths = [0]
 		t_betweenbirths = 5000
 		t_lifetime = 1000
-
+		game_surf = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA, 32)
+		pos = game_surf.get_rect()
+		game_surf = game_surf.convert_alpha()
+		for food in self.food: food.display(game_surf)
 		while running:
 			pygame.init()
 			self.screen.fill(self.colour)
@@ -101,63 +108,78 @@ class Environment(object):
 				if event.type == pygame.QUIT:
 					running = False
 			resistance = 0
-
-			for agent in self.agents:
-				if agent.speed != 0:
-					agent.eat()
-					if agent.food_level > agent.reproduce_level: 
-						agent.reproduce()
-						reproduction_count += 1
-					agent.move()
-					agent.bounce(self.width, self.height)
-					agent.food_level -= 0.01
-					resistance += agent.resistance
-					if agent.food_level < 0.0:
-						agent.die()
-
-			for food in self.food:
-				food.display(self.screen)
-
-			for agent in self.agents: 
-				agent.display(self.screen)
-
 			for antibiotic in self.antibiotics:
-				antibiotic.display(self.screen)
+			 	antibiotic.display(game_surf)
 
-			pygame.display.flip()
 			time_ms = pygame.time.get_ticks()
+			print(time_ms)
 			if time_ms > time:
 				running = False
-			if (len(self.agents)-len(self.dead)) != 0:
+
+			# tbirths.append(tbirths[-1] + t_betweenbirths)
+			# tdeaths.append(tbirths[-1] + t_lifetime)
+
+			if time_ms-tbirths[-1] > t_lifetime:
+				print("a")
+				self.antibiotics = []
+
+			if time_ms-tbirths[-1] > self.anti_freq:
+				self.add_antibiotics(self.anti_conc, self.anti_freq)
+				# self.add_antibiotics(0.01)
+
+
+			# for i in tdeaths:
+			# 	if i - 100 <time_ms< i + 100:
+			# 		self.antibiotics = []
+			# 	else:
+			# 		running = False
+			
+			self.screen.fill(self.colour)
+			dead_key = []
+			reproduce_key = []
+			for i in self.agents: 
+				print(i)
+				self.agents[i].display(self.screen)
+				if self.agents[i].speed != 0:
+					self.agents[i].move()
+					self.agents[i].bounce(self.width, self.height)
+					self.agents[i].food_level -= 0.01
+					self.agents[i].eat()
+					if self.agents[i].food_level > self.agents[i].reproduce_level: 
+						reproduce_key.append(i)
+						reproduction_count += 1
+					if self.agents[i].food_level < 0.0:
+						dead_key.append(i)
+					resistance += self.agents[i].resistance
+			print(reproduce_key)
+			print(dead_key)
+			if reproduce_key:
+				for j in reproduce_key:
+					self.agents[j].reproduce()
+			if dead_key:
+				for k in dead_key:
+					self.dead.append(self.agents[k])
+					del self.agents[k]
+			reproduce_key = []
+			dead_key = []
+			self.screen.blit(game_surf, pos)
+			pygame.display.flip()
+			pop = len(self.agents)-len(self.dead)
+			print(pop)
+			if pop != 0:
 				self.time_elapsed.append(time_ms/1000)
 				self.deadcount.append(len(self.dead)/(time_ms/1000))
-				self.reproduction.append(reproduction_count/(time_ms/1000))
-				pop = len(self.agents)-len(self.dead)
-				self.population.append(pop)
 				self.resistance.append(resistance/pop)
-
+				self.reproduction_rate.append(reproduction_count/(time_ms/1000))
+				self.alive.append(pop)
+				self.av_resistance.append(resistance/pop)
 			else:
 				running = False
 
 			
-			tbirths.append(tbirths[-1] + t_betweenbirths)
-			tdeaths.append(tbirths[-1] + t_lifetime)
-
-			for i in range(len(tbirths)):
-				if tbirths[i] - 100 < time_ms < tbirths[i] + 100:
-					print("a")
-					tbirths.append(78000)
-					tdeaths.append(tbirths[i] + t_lifetime)
-					self.add_antibiotics(0.01)
-
-
-			for i in range(len(tdeaths)):
-				if tdeaths[i] - 100 <time_ms<tdeaths[i] + 100:
-					self.antibiotics = []
-
-			universal_clock.tick()
-			universal_clock.get_time()
-		data = pd.DataFrame.from_items([('Time Elapsed', self.time_elapsed), ('Population', self.population), ('Deadcount', self.deadcount), ('Reproduction', self.reproduction), ('Resistance', self.resistance)])
+			clock.tick()
+			clock.get_time()
+		data = pd.DataFrame.from_items([('Time Elapsed', self.time_elapsed), ('Population', self.alive), ('Deadcount', self.deadcount), ('Reproduction', self.reproduction_rate), ('Resistance', self.av_resistance)])
 		return data
 
 	def plot(self):
