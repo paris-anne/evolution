@@ -4,19 +4,18 @@ import particle as p
 import random
 
 class Agent(p.Particle):
-	count = 0
+	key = -1
 	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.5,  food_level = 1.0, resistance = 0):
-
 		super().__init__(x, y, size, colour)
-		self.key = self.count # need way of incrementing key
+		# need way of incrementing key
 		self.food_level = food_level
 		self.reproduce_level = reproduce_level
 		self.size = size
 		self.enviro = environment
 		self.x = x
 		self.y = y
-		self.count +=1
 		self.resistance = np.random.choice([0, 1], 1, [0.9, 0.1])
+		Agent.key += 1
 
 	def reproduce(self):
 		self.food_level = 1
@@ -31,6 +30,7 @@ class Agent(p.Particle):
 				self.food_level += 1.0
 
 	def die(self):
-		self.colour = (255, 255, 255, 0.0) #need to be transparent
-		self.speed = 0
-		self.enviro.dead.append(self)
+		self.enviro.remove_agent(self.key)
+		# self.colour = (255, 255, 255, 0.0) #need to be transparent
+		# self.speed = 0
+		# self.enviro.dead.append(self)

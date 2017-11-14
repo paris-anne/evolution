@@ -34,4 +34,3 @@ class Particle:
 
 	def display(self, screen):
 		pygame.draw.circle(screen, self.colour, (int(self.x), int(self.y)), int(self.size), self.thickness)
-		pygame.draw.circle(screen, (0,255,0), (int(500), int(500)), int(10), self.thickness)
