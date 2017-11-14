@@ -24,33 +24,19 @@ class Environment(object):
 		self.time_elapsed =[]
 		self.av_resistance = []
 		self.population = 0
-
+		self.resistance = []
+		self.antibiotics = []
+		self.deadantibiotics =[]
+		self.area=self.width*self.height
+	
 	def addfood(self):
 		amount = 0
 		food_coverage = 0.2
 		area = self.width * self.height
-
-		if area < 100:
-			amount = 4
-			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
-		elif area < 225:
-			amount = 9
-			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
-		elif area < 400:
-			amount = 16
-			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
-		elif area < 625:
-			amount = 25
-			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
-		elif area < 900:
-			amount = 36
-			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
-		elif area < 1600:
-			amount = 49
-			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
-		else:
-			amount = 100
-			food_radius = np.sqrt((food_coverage*area)/(amount * math.pi))
+		takeClosest = lambda num,collection:min(collection,key=lambda x:abs(x-num))
+		squares = [1,4,9,16,25,36,49,64,81,100]
+		amount = takeClosest(np.sqrt(self.area),squares)
+		food_radius = np.sqrt((food_coverage*self.area)/(amount * math.pi))
 
 		for i in np.arange(self.width/np.sqrt(amount), self.width, self.width/np.sqrt(amount)):
 			for j in np.arange(self.height/np.sqrt(amount), self.height, self.height/np.sqrt(amount)):
@@ -68,6 +54,20 @@ class Environment(object):
 
 	def remove_agent(self, key):
 		del self.agents[key] 
+
+	def add_antibiotics(self, concentration):
+		amount = 0
+		takeClosest = lambda num,collection:min(collection,key=lambda x:abs(x-num))
+		squares = [1,4,9,16,25,36,49,64,81,100]
+		amount = takeClosest(np.sqrt(self.area),squares)
+		anti_radius = np.sqrt((concentration*self.area)/(amount * math.pi))
+
+		for i in np.arange(self.width/np.sqrt(amount), self.width, self.width/np.sqrt(amount)):
+			for j in np.arange(self.height/np.sqrt(amount), self.height, self.height/np.sqrt(amount)):
+				self.antibiotics.append(p.Particle(i, j, size = anti_radius, speed = 10, colour = (255, 100, 101)))
+
+	def remove_antibiotics(self):
+		self.antibiotics = []
 
 	def display(self, time):
 		reproduction_count = 0
