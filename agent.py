@@ -5,22 +5,30 @@ import random
 
 class Agent(p.Particle):
 	key = -1
-	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.5,  food_level = 1.0, resistance = 0):
+	random = np.random.choice([0, 1], 1, p = [0.9, 0.1])
+	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.5,  food_level = 1.0, resistance = random, reproduction = 2):
 		super().__init__(x, y, size, colour)
 		# need way of incrementing key
 		self.food_level = food_level
-		self.reproduce_level = reproduce_level
+		self.fitness_cost = 0.3
 		self.size = size
 		self.enviro = environment
 		self.x = x
 		self.y = y
-		self.resistance = np.random.choice([0, 1], 1, [0.9, 0.1])
+		self.resistance = resistance
+		self.reproduce_level = reproduce_level + (self.resistance * self.fitness_cost)
+		self.reproduction = reproduction
 		Agent.key += 1
 
 	def reproduce(self):
-		self.food_level = 1
-		child = Agent(self.x, self.y, self.enviro)
-		self.enviro.add_agent(child)
+		self.food_level = self.food_level/self.reproduction
+		for i in range(self.reproduction):
+			reproduction = [2, 4]
+			child_resistance = np.random.choice([self.resistance[0], (1-self.resistance[0])], 1, p = [0.9, 0.1])
+			reproduction.remove(self.reproduction)
+			child_reproduction = np.random.choice([self.reproduction, reproduction[0]] , 1, p = [0.9, 0.1])
+			child = Agent(self.x, self.y, self.enviro, resistance = child_resistance, reproduction = child_reproduction[0])
+			self.enviro.add_agent(child)
 
 	def eat(self):
 		for food in self.enviro.food:
@@ -31,6 +39,3 @@ class Agent(p.Particle):
 
 	def die(self):
 		self.enviro.remove_agent(self.key)
-		# self.colour = (255, 255, 255, 0.0) #need to be transparent
-		# self.speed = 0
-		# self.enviro.dead.append(self)

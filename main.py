@@ -15,7 +15,8 @@ enviro = env.Environment(envirox, enviroy)
 enviro.addfood(0.2) #parameter is food_coverage as a proportion
 enviro.add_antibiotics(0.01, 1000) #concentration is a proportion of area for now, can change into mg/L later
 enviro.add_agents(20)
-data = enviro.display(100000)
+data = enviro.display(10000000)
+data.to_string()
 plots.plot(data)
 
 def food_relation():
@@ -32,3 +33,4 @@ def food_relation():
 
 	pl.plot(x, y)
 	pl.show()
+	

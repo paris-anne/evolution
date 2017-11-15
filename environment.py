@@ -31,6 +31,8 @@ class Environment(object):
 		self.anti_freq = 0
 		self.area = self.width * self.height
 		self.anti_conc = 0
+		self.av_reproduction = []
+
 	def width(self):
 		return self.width
 
@@ -91,7 +93,7 @@ class Environment(object):
 
 	def display(self, time):
 		reproduction_count = 0
-		clock = pygame.time.Clock()
+		time_ms = 0
 		running = True
 		tbirths =[400]
 		tdeaths = [0]
@@ -111,13 +113,9 @@ class Environment(object):
 			for antibiotic in self.antibiotics:
 			 	antibiotic.display(game_surf)
 
-			time_ms = pygame.time.get_ticks()
 			print(time_ms)
 			if time_ms > time:
 				running = False
-
-			# tbirths.append(tbirths[-1] + t_betweenbirths)
-			# tdeaths.append(tbirths[-1] + t_lifetime)
 
 			if time_ms-tbirths[-1] > t_lifetime:
 				print("a")
@@ -125,25 +123,18 @@ class Environment(object):
 
 			if time_ms-tbirths[-1] > self.anti_freq:
 				self.add_antibiotics(self.anti_conc, self.anti_freq)
-				# self.add_antibiotics(0.01)
-
-
-			# for i in tdeaths:
-			# 	if i - 100 <time_ms< i + 100:
-			# 		self.antibiotics = []
-			# 	else:
-			# 		running = False
 			
 			self.screen.fill(self.colour)
 			dead_key = []
 			reproduce_key = []
+			reproduction = 0
 			for i in self.agents: 
-				print(i)
+				print(self.agents[i].resistance)
 				self.agents[i].display(self.screen)
 				if self.agents[i].speed != 0:
 					self.agents[i].move()
 					self.agents[i].bounce(self.width, self.height)
-					self.agents[i].food_level -= 0.01
+					self.agents[i].food_level -= 0.02
 					self.agents[i].eat()
 					if self.agents[i].food_level > self.agents[i].reproduce_level: 
 						reproduce_key.append(i)
@@ -151,6 +142,7 @@ class Environment(object):
 					if self.agents[i].food_level < 0.0:
 						dead_key.append(i)
 					resistance += self.agents[i].resistance
+					reproduction += self.agents[i].reproduction
 			print(reproduce_key)
 			print(dead_key)
 			if reproduce_key:
@@ -164,35 +156,18 @@ class Environment(object):
 			dead_key = []
 			self.screen.blit(game_surf, pos)
 			pygame.display.flip()
-			pop = len(self.agents)-len(self.dead)
+			pop = len(self.agents)-len(self.dead) #becomes negative because only keeping alives agents in dict
 			print(pop)
+			time_ms+=300
 			if pop != 0:
-				self.time_elapsed.append(time_ms/1000)
-				self.deadcount.append(len(self.dead)/(time_ms/1000))
-				self.resistance.append(resistance/pop)
-				self.reproduction_rate.append(reproduction_count/(time_ms/1000))
+				self.time_elapsed.append(time_ms)
+				self.deadcount.append(len(self.dead)/(time_ms))
+				self.resistance.append(resistance)
+				self.reproduction_rate.append(reproduction_count/(time_ms))
 				self.alive.append(pop)
 				self.av_resistance.append(resistance/pop)
+				self.av_reproduction.append(reproduction/pop)
 			else:
 				running = False
-
-			
-			clock.tick()
-			clock.get_time()
-		data = pd.DataFrame.from_items([('Time Elapsed', self.time_elapsed), ('Population', self.alive), ('Deadcount', self.deadcount), ('Reproduction', self.reproduction_rate), ('Resistance', self.av_resistance)])
+		data = pd.DataFrame.from_items([('Time Elapsed', self.time_elapsed), ('Population', self.alive), ('Deadcount', self.deadcount), ('Reproduction', self.reproduction_rate), ('Resistance', self.av_resistance), ('Reproduction Count', self.av_reproduction)])
 		return data
-
-	def plot(self):
-		ax1 = pl.subplot(311)
-		pl.plot(self.time_elapsed, self.population)
-		ax1.title.set_text("population") # add caption
-		pl.setp(ax1.get_xticklabels(), fontsize=6)
-		ax2 = pl.subplot(312, sharex=ax1) 
-		ax2.title.set_text("death rate")
-		pl.plot(self.time_elapsed, self.deadcount)		
-		pl.setp(ax2.get_xticklabels(), visible=False)
-		ax3 = pl.subplot(313, sharex=ax1)
-		ax3.title.set_text("reproduction rate")
-		pl.plot(self.time_elapsed, self.reproduction)
-		pl.setp(ax3.get_xticklabels(), visible=False)
-		pl.show()
