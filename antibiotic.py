@@ -19,6 +19,7 @@ class Antibiotic(p.Particle):
 		self.death_age = deathage
 #		self.age = age
 
+
 	def birth(self):
 		self.enviro.antiobiotics.append(p)
 	def death(self):

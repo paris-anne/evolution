@@ -27,11 +27,12 @@ class Environment(object):
 		self.population = 0
 		self.resistance = []
 		self.antibiotics = []
-		self.deadantibiotics =[]
 		self.anti_freq = 0
 		self.area = self.width * self.height
 		self.anti_conc = 0
 		self.av_reproduction = []
+		self.dead_key = []
+		self.reproduce_key = []
 
 	def width(self):
 		return self.width
@@ -52,7 +53,6 @@ class Environment(object):
 	
 	def addfood(self, food_coverage):
 		amount = 0
-		food_coverage = 0.2
 		takeClosest = lambda num,collection:min(collection,key=lambda x:abs(x-num))
 		squares = [1,4,9,16,25,36,49,64,81,100]
 		amount = takeClosest(np.sqrt(self.area),squares)
@@ -84,9 +84,10 @@ class Environment(object):
 		amount = takeClosest(np.sqrt(self.area),squares)
 		anti_radius = np.sqrt((concentration*self.area)/(amount * math.pi))
 
-		for i in np.arange(self.width/np.sqrt(amount), self.width, self.width/np.sqrt(amount)):
-			for j in np.arange(self.height/np.sqrt(amount), self.height, self.height/np.sqrt(amount)):
+		for i in np.arange(self.width/np.sqrt(amount) + (self.width/np.sqrt(amount))/2 , self.width -(self.width/np.sqrt(amount))/2, self.width/np.sqrt(amount)):
+			for j in np.arange(self.height/np.sqrt(amount) + (self.height/np.sqrt(amount))/2, self.height - (self.height/np.sqrt(amount))/2, self.height/np.sqrt(amount)):
 				self.antibiotics.append(p.Particle(i, j, size = anti_radius, speed = 10, colour = (255, 100, 101)))
+
 
 	def remove_antibiotics(self):
 		self.antibiotics = []
@@ -95,10 +96,10 @@ class Environment(object):
 		reproduction_count = 0
 		time_ms = 0
 		running = True
-		tbirths =[400]
+		tbirths =[0]
 		tdeaths = [0]
 		t_betweenbirths = 5000
-		t_lifetime = 1000
+		t_lifetime = 200
 		game_surf = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA, 32)
 		pos = game_surf.get_rect()
 		game_surf = game_surf.convert_alpha()
@@ -110,26 +111,35 @@ class Environment(object):
 				if event.type == pygame.QUIT:
 					running = False
 			resistance = 0
-			for antibiotic in self.antibiotics:
-			 	antibiotic.display(game_surf)
+			#for antibiotic in self.antibiotics:
+			 #	antibiotic.display(game_surf)
 
 			print(time_ms)
 			if time_ms > time:
 				running = False
 
-			if time_ms-tbirths[-1] > t_lifetime:
-				print("a")
-				self.antibiotics = []
-
 			if time_ms-tbirths[-1] > self.anti_freq:
 				self.add_antibiotics(self.anti_conc, self.anti_freq)
+				tbirths.append(time_ms)
+				#print ("a")
+
+			if time_ms-tbirths[-1] > t_lifetime:
+				#print("DEATH")
+				self.antibiotics = []
 			
 			self.screen.fill(self.colour)
-			dead_key = []
-			reproduce_key = []
 			reproduction = 0
 			for i in self.agents: 
 				print(self.agents[i].resistance)
+				tbirths.append(time_ms)
+				print ("a")
+			self.screen.fill(self.colour)
+			
+			for i in self.antibiotics:
+				i.display(self.screen)
+
+			for i in self.agents: 
+				#print(i)
 				self.agents[i].display(self.screen)
 				if self.agents[i].speed != 0:
 					self.agents[i].move()
@@ -137,23 +147,29 @@ class Environment(object):
 					self.agents[i].food_level -= 0.02
 					self.agents[i].eat()
 					if self.agents[i].food_level > self.agents[i].reproduce_level: 
-						reproduce_key.append(i)
+						self.reproduce_key.append(i)
 						reproduction_count += 1
+					if self.agents[i].resistance ==0:
+					 	self.agents[i].neutralise(i)
 					if self.agents[i].food_level < 0.0:
-						dead_key.append(i)
+						self.dead_key.append(i)
 					resistance += self.agents[i].resistance
 					reproduction += self.agents[i].reproduction
-			print(reproduce_key)
-			print(dead_key)
-			if reproduce_key:
-				for j in reproduce_key:
+			print(self.reproduce_key)
+			print(self.dead_key)
+
+			#print(reproduce_key)
+			#res(dead_key)
+			#print(resistance)
+			if self.reproduce_key:
+				for j in self.reproduce_key:
 					self.agents[j].reproduce()
-			if dead_key:
-				for k in dead_key:
+			if self.dead_key:
+				for k in self.dead_key:
 					self.dead.append(self.agents[k])
 					del self.agents[k]
-			reproduce_key = []
-			dead_key = []
+			self.reproduce_key = []
+			self.dead_key = []
 			self.screen.blit(game_surf, pos)
 			pygame.display.flip()
 			pop = len(self.agents)-len(self.dead) #becomes negative because only keeping alives agents in dict
