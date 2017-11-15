@@ -12,23 +12,10 @@ envirox = 500
 enviroy = 500
 foodnumber = 10
 enviro = env.Environment(envirox, enviroy)
-enviro.addfood(0.2) #parameter is food_coverage as a proportion
-enviro.add_antibiotics(0.01, 1000) #concentration is a proportion of area for now, can change into mg/L later
+enviro.addfood(0.1) #parameter is food_coverage as a proportion
+enviro.add_antibiotics(0.2, 1000) #concentration is a proportion of area for now, can change into mg/L later
+#enviro.add_antibiotic(250,250,50)
 enviro.add_agents(20)
 data = enviro.display(100000)
 plots.plot(data)
 
-def food_relation():
-	foodnumber = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121]
-	x = []
-	y = []
-	for i in foodnumber:
-		enviro = env.Environment(envirox, enviroy)
-		enviro.add_agents(100)
-		enviro.addfood(i)
-		x.append((i*(np.pi * enviro.food[0].size*enviro.food[0].size))/(enviroy*envirox))
-		population = enviro.display(5000)
-		y.append(population[-1])
-
-	pl.plot(x, y)
-	pl.show()
