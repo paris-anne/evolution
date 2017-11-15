@@ -3,7 +3,7 @@ import pandas as pd
 
 def plot(dataframe):
 		ax1 = pl.subplot(511)
-		pl.plot(dataframe['Time Elapsed'], dataframe['Population'])
+		pl.plot(dataframe.loc(0), dataframe['Population'])
 		ax1.title.set_text("Population") # add caption
 		pl.setp(ax1.get_xticklabels(), fontsize=6)
 		ax2 = pl.subplot(512, sharex=ax1) 
@@ -23,3 +23,14 @@ def plot(dataframe):
 		ax5.title.set_text("Reproduction Count")
 		pl.show()
 		pl.savefig('plots.png')
+
+					# 	self.time_elapsed.append(time_ms)
+			# 	self.deadcount.append(len(self.dead)/(time_ms))
+			# 	self.resistance.append(resistance)
+			# 	self.reproduction_rate.append(reproduction_count/(time_ms))
+			# 	self.alive.append(pop)
+			# 	self.av_resistance.append(resistance/pop)
+			# 	self.av_reproduction.append(reproduction/pop)
+			# else:
+				# running = False
+		#data = pd.DataFrame.from_items([('Time Elapsed', self.time_elapsed), ('Population', self.alive), ('Deadcount', self.deadcount), ('Reproduction', self.reproduction_rate), ('Resistance', self.av_resistance), ('Reproduction Count', self.av_reproduction)])

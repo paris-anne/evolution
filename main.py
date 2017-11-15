@@ -13,9 +13,10 @@ enviroy = 500
 foodnumber = 10
 enviro = env.Environment(envirox, enviroy)
 enviro.addfood(0.1) #parameter is food_coverage as a proportion
-enviro.add_antibiotics(0.1, 100000) #concentration is a proportion of area for now, can change into mg/L later
+enviro.add_antibiotics(0.006, 10000) #concentration is a proportion of area for now, can change into mg/L later
 #enviro.add_antibiotic(250,250,50)
 enviro.add_agents(30)
 data = enviro.display(10000000)
-data.to_string()
-plots.plot(data)
+print(data)
+#plots.plot(data)
+data.to_csv("dataframe.csv")
