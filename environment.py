@@ -125,15 +125,14 @@ class Environment(object):
 			if time_ms > time:
 				running = False
 
-			if self.antibiotics:
-				if living_time > self.anti_freq:
-					self.add_antibiotics(self.anti_conc, self.anti_freq)
-					tnextbirth = tbirths[-1] + self.anti_freq
-					tbirths.append(tnextbirth)
+			if living_time > self.anti_freq:
+				self.add_antibiotics(self.anti_conc, self.anti_freq)
+				tnextbirth = tbirths[-1] + self.anti_freq
+				tbirths.append(tnextbirth)
 
-				if time_ms-tbirths[-1] > t_lifetime:
-					print("DEATH")
-					self.antibiotics = []
+			if time_ms-tbirths[-1] > t_lifetime:
+				print("DEATH")
+				self.antibiotics = []
 
 			self.screen.fill(self.colour)
 
