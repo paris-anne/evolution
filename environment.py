@@ -98,8 +98,8 @@ class Environment(object):
 		running = True
 		tbirths =[0]
 		tdeaths = [0]
-		t_betweenbirths = 5000
-		t_lifetime = 1000
+		t_betweenbirths = 9000
+		t_lifetime = 3000
 		game_surf = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA, 32)
 		pos = game_surf.get_rect()
 		game_surf = game_surf.convert_alpha()
@@ -121,22 +121,24 @@ class Environment(object):
 			#  	antibiotic.display(game_surf)
 
 			print(time_ms)
+			living_time = time_ms-tbirths[-1]
 			if time_ms > time:
 				running = False
 
-			self.screen.fill(self.colour)
 			if self.antibiotics:
-				if time_ms-tbirths[-1] > self.anti_freq:
+				if living_time > self.anti_freq:
 					self.add_antibiotics(self.anti_conc, self.anti_freq)
-					tbirths.append(time_ms)
-					print ("a")
+					tnextbirth = tbirths[-1] + self.anti_freq
+					tbirths.append(tnextbirth)
 
 				if time_ms-tbirths[-1] > t_lifetime:
 					print("DEATH")
 					self.antibiotics = []
-			
-				for i in self.antibiotics:
-					i.display(self.screen)
+
+			self.screen.fill(self.colour)
+
+			for i in self.antibiotics:
+				i.display(self.screen)
 
 			reproduction = 0
 			for i in self.agents: 
@@ -174,7 +176,7 @@ class Environment(object):
 			# pop = len(self.agents)-len(self.dead) #becomes negative because only keeping alives agents in dict
 			# print(pop)
 			col = pd.DataFrame([(time_ms, self.agents)])
-			time_ms+=300
+			time_ms+=100
 			print(len(self.agents))
 			# if pop != 0:
 			# 	self.time_elapsed.append(time_ms)
