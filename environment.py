@@ -75,10 +75,12 @@ class Environment(object):
 	def remove_agent(self, key):
 		del self.agents[key] 
 
-	def add_antibiotics(self, concentration, frequency ):
+	def add_antibiotics(self, concentration, frequency, halflife ):
 		amount = 0
 		self.anti_freq = frequency
 		self.anti_conc = concentration
+		self.anti_halflife = halflife
+
 		takeClosest = lambda num,collection:min(collection,key=lambda x:abs(x-num))
 		squares = [1,4,9,16,25,36,49,64,81,100]
 		amount = takeClosest(np.sqrt(self.area),squares)
@@ -86,7 +88,7 @@ class Environment(object):
 
 		for i in np.arange(self.width/np.sqrt(amount) + (self.width/np.sqrt(amount))/2 , self.width -(self.width/np.sqrt(amount))/2, self.width/np.sqrt(amount)):
 			for j in np.arange(self.height/np.sqrt(amount) + (self.height/np.sqrt(amount))/2, self.height - (self.height/np.sqrt(amount))/2, self.height/np.sqrt(amount)):
-				self.antibiotics.append(p.Particle(i, j, size = anti_radius, speed = 10, colour = (255, 100, 101)))
+				self.antibiotics.append(ant.Antibiotic(i, j, size = anti_radius))
 
 
 	def remove_antibiotics(self):
@@ -99,7 +101,6 @@ class Environment(object):
 		tbirths =[0]
 		tdeaths = [0]
 		t_betweenbirths = 9000
-		t_lifetime = 3000
 		game_surf = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA, 32)
 		pos = game_surf.get_rect()
 		game_surf = game_surf.convert_alpha()
@@ -111,31 +112,12 @@ class Environment(object):
 				if event.type == pygame.QUIT:
 					running = False
 			resistance = 0
-			#for antibiotic in self.antibiotics:
-			 #	antibiotic.display(game_surf)
 
-			living_time = time_ms-tbirths[-1]
-			#print(living_time, "living time")
-			print(tbirths, "tbirths")
+			#print(tbirths, "tbirths")
 			#print(time_ms - tbirths[-1])
 			if time_ms > time:
 				running = False
-			print(self.anti_freq)
 
-			if living_time >self.anti_freq:
-				self.add_antibiotics(self.anti_conc, self.anti_freq)
-				tnextbirth = tbirths[-1] + self.anti_freq
-				tbirths.append(tnextbirth)
-				print ("BIRTH")	
-
-			if time_ms-tbirths[-1] > t_lifetime:
-				print("DEATH")
-				self.antibiotics = []
-
-			# if time_ms-tbirths[-1] >self.anti_freq:
-			# 	self.add_antibiotics(self.anti_conc, self.anti_freq)
-			# 	tbirths.append(self.anti_freq)
-			# 	print ("a")		
 
 			self.screen.fill(self.colour)
 			reproduction = 0
@@ -151,17 +133,29 @@ class Environment(object):
 				if self.agents[i].speed != 0:
 					self.agents[i].move()
 					self.agents[i].bounce(self.width, self.height)
-					self.agents[i].food_level -= 0.01
+					self.agents[i].food_level -= 0.02 #move
 					self.agents[i].eat()
 					if self.agents[i].food_level > self.agents[i].reproduce_level: 
 						self.reproduce_key.append(i)
 						reproduction_count += 1
 					if self.agents[i].resistance ==0:
-					 	self.agents[i].neutralise(i)
+						self.antibiotics[0].effectiveness = (np.e)**(-(time_ms-tbirths[-1])/self.anti_halflife)
+						if self.antibiotics[0].effectiveness > np.random.uniform():
+					 		self.agents[i].neutralise(i)
 					if self.agents[i].food_level < 0.0:
 						self.dead_key.append(i)
 					resistance += self.agents[i].resistance
 					reproduction += self.agents[i].reproduction
+			
+			if time_ms-tbirths[-1] >self.anti_freq:
+				self.add_antibiotics(self.anti_conc, self.anti_freq, self.anti_halflife)
+				tnextbirth = tbirths[-1] + self.anti_freq
+				tbirths.append(tnextbirth)
+				print ("--------------------------------------")	
+				self.antibiotics[0].effectiveness = 1
+				for i in self.antibiotics:
+					i.colour = (0,255,0)
+
 			#print(self.reproduce_key)
 			#print(self.dead_key)
 
@@ -190,7 +184,12 @@ class Environment(object):
 				self.alive.append(pop)
 				self.av_resistance.append(resistance/pop)
 				self.av_reproduction.append(reproduction/pop)
-			else:
-				running = False
+			#else:
+				#running = False
+
+			for i in self.antibiotics:
+				i.colour = np.add(i.colour, (1,-1,1))
+				print(i.colour)
+			print(self.antibiotics[0].effectiveness)
 		data = pd.DataFrame.from_items([('Time Elapsed', self.time_elapsed), ('Population', self.alive), ('Deadcount', self.deadcount), ('Reproduction', self.reproduction_rate), ('Resistance', self.av_resistance), ('Reproduction Count', self.av_reproduction)])
 		return data

@@ -4,7 +4,7 @@ import random
 
 class Particle:
 
-	def __init__(self, x, y, size = 5, colour = (0, 0, 255), speed = 2.0, thickness = 0):
+	def __init__(self, x, y, size = 5, colour = (0, 0, 0), speed = 2.0, thickness = 0):
 		self.x = x
 		self.y = y
 		self.size = size
