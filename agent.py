@@ -5,9 +5,7 @@ import random
 
 class Agent(p.Particle):
 	key = -1
-	choice_resistance = np.random.choice([0, 1], p = [0.9, 0.1])
-	choice_reproduce_level = np.random.choice([4.0,4.5,5.0,5.5,6.0], p = [0.2,0.2,0.2,0.2,0.2] )
-	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 0), reproduce_level = choice_reproduce_level ,  food_level = 1.0, resistance = choice_resistance, reproduction = 2):
+	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 0), reproduce_level = 4.0 ,  food_level = 1.0, resistance = 0, reproduction = 2, dormancy_gene = 1, dormancy_time = 7000):
 		super().__init__(x, y, size, colour)
 		# need way of incrementing key
 		self.food_level = food_level
@@ -19,6 +17,9 @@ class Agent(p.Particle):
 		self.resistance = resistance
 		self.reproduce_level = reproduce_level + (self.resistance * self.fitness_cost)
 		self.reproduction = reproduction
+		self.dormancy_gene = dormancy_gene
+		self.dormancy_time = dormancy_time
+		#self.dormancy_freq
 		Agent.key += 1
 
 	def reproduce(self):
@@ -29,7 +30,8 @@ class Agent(p.Particle):
 			child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [0.9, 0.1])
 			reproduction.remove(self.reproduction)
 			child_reproduction = np.random.choice([self.reproduction, reproduction[0]], p = [0.9, 0.1])
-			child = Agent(self.x, self.y, self.enviro, resistance = child_resistance, reproduction = child_reproduction)
+			#child_dormancy = np.random.normal(self.dormancy_time, 100)
+			child = Agent(self.x, self.y, self.enviro, resistance = child_resistance, reproduction = child_reproduction)#, dormancy_time = child_dormancy)
 
 			self.enviro.add_agent(child)
 
@@ -47,10 +49,29 @@ class Agent(p.Particle):
 			antibiotics_y = antibiotic.y
 			anti_effect = antibiotic.effectiveness
 			anti_halflife = antibiotic.halflife
-			if 0.9 * antibiotic.size < np.sqrt((self.x - antibiotics_x)**2 + (self.y - antibiotics_y)**2) < 1 * 1.1 *antibiotic.size:
+			if  np.sqrt((self.x - antibiotics_x)**2 + (self.y - antibiotics_y)**2) < antibiotic.size:
 				if i not in self.enviro.dead_key:
 					self.enviro.dead_key.append(i)
 					print("NEUTRALISE", i)
+
+
+	def dormancy(self, i, dormancy_time):
+		if self.enviro.time_ms - self.enviro.tbirths[-1] <= dormancy_time:
+			self.enviro.agents[i].speed = 0
+			self.enviro.agents[i].colour = (255,0,0)
+			#self.agents[i].dormancy(0.9) #probability, time
+					
+
+		else:
+			#print ("A")
+			self.enviro.agents[i].speed = 2	
+			self.enviro.agents[i].colour = (0,0,0)
+
+	#def dormancy2(self, i dormancy_time, dormancy_freq):
+
+
+
+
 
 
 	def die(self):

@@ -13,8 +13,8 @@ envirox = 500
 enviroy = 500
 foodnumber = 10
 enviro = env.Environment(envirox, enviroy)
-enviro.addfood(0.2) #parameter is food_coverage as a proportion
-enviro.add_antibiotics(0.5, 13000, 1000) #concentration, time between dose, halflife of dose
+enviro.addfood(0.1) #parameter is food_coverage as a proportion
+enviro.add_antibiotics(0.2, 13000, 7000) #concentration, time between dose, halflife of dose
 enviro.add_agents(100)
 data = enviro.display(10000000)
 data.to_string()

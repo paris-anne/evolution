@@ -30,3 +30,7 @@ class Antibiotic(p.Particle):
 		self.colour = np.add(self.colour, (5,0,5))
 
 		return self.effectiveness
+
+	
+			
+
