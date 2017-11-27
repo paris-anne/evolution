@@ -40,7 +40,7 @@ class Environment(object):
 		self.tbirths = [0]
 		self.time_ms = 0
 		self.av_dormancy_time = []
-
+		self.immune_system = 2000
 
 	def width(self):
 		return self.width
@@ -142,26 +142,33 @@ class Environment(object):
 			reproduction = 0
 			self.screen.fill(self.colour)
 			
-			for i in self.antibiotics:
-				i.display(self.screen)
-
-			if self.time_ms-self.tbirths[-1] >self.anti_freq:
-				self.add_antibiotics(self.anti_conc, self.anti_freq, self.anti_halflife)
-				tnextbirth = self.tbirths[-1] + self.anti_freq
-				self.tbirths.append(tnextbirth)
-				self.antibiotics[0].effectiveness = 1
+			if self.antibiotics:
 				for i in self.antibiotics:
-					i.colour = (0,255,0)
+					i.display(self.screen)
+
+				if self.time_ms-self.tbirths[-1] >self.anti_freq:
+					self.add_antibiotics(self.anti_conc, self.anti_freq, self.anti_halflife)
+					tnextbirth = self.tbirths[-1] + self.anti_freq
+					self.tbirths.append(tnextbirth)
+					self.antibiotics[0].effectiveness = 1
+					for i in self.antibiotics:
+						i.colour = (0,255,0)
+
+			if (float(self.time_ms) % self.immune_system) == 0:
+				for i in range(4):
+					if self.agents:
+						del self.agents[random.choice(list(self.agents.keys()))]
 
 			for i in self.agents: 
 				#print(i)
 				self.agents[i].display(self.screen)
 				#print(self.agents[i].dormancy_time)
-				self.agents[i].dormancy(i, self.agents[i].dormancy_time)
+				if self.antibiotics:
+					self.agents[i].dormancy(i, self.agents[i].dormancy_time)
 				if self.agents[i].speed != 0:
 					self.agents[i].move()
 					self.agents[i].bounce(self.width, self.height)
-					self.agents[i].food_level -= 0.02 #move
+					self.agents[i].food_level -= 0.015 #move
 					self.agents[i].eat()
 					if self.agents[i].food_level > self.agents[i].reproduce_level: 
 						self.reproduce_key.append(i)

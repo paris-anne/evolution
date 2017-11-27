@@ -10,15 +10,15 @@ import plots
 import food as f
 import pandas as pd
 
-envirox = 250
-enviroy = 250
+envirox = 300
+enviroy = 300
 foodnumber = 10
 enviro = env.Environment(envirox, enviroy)
 enviro.addfood(0.1) #parameter is food_coverage as a proportion
 # # enviro.add_antibiotics(0.006, 10000)
 # #enviro.add_antibiotic(250,250,50)
 enviro.add_agents(100) #100?
-enviro.add_antibiotics(0.1, 25000, 1000) #concentration, time between dose, halflife of dose
+#enviro.add_antibiotics(0.1, 25000, 1000) #concentration, time between dose, halflife of dose
 # #enviro.add_antibiotics(0.2, 13000, 1000) #concentration, time between dose, halflife of dose
 data = enviro.display(250000)
 plots.histogram(data)
