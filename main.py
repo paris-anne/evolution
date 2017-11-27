@@ -9,15 +9,16 @@ import particle as p
 import plots
 import food as f
 import pandas as pd
-
+# pre antibiotics & normal amount of bacteria - 50 agents, immune system 3000, 10%, 1200000 time
+# working antibiotics: antibiotics(0.1, 43200, 14400); agents = 250
 envirox = 300
 enviroy = 300
 foodnumber = 10
 enviro = env.Environment(envirox, enviroy)
 enviro.addfood(0.1) #parameter is food_coverage as a proportion
 
-enviro.add_agents(50) #100?
-#enviro.add_antibiotics(0.1, 43200, 14400) #concentration, time between dose(s) , halflife of dose
+enviro.add_agents(250) #100?
+enviro.add_antibiotics(0.1, 43200, 14400) #concentration, time between dose(s) , halflife of dose
 # #enviro.add_antibiotics(0.2, 13000, 1000) #concentration, time between dose, halflife of dose
 data = enviro.display(1200000) #24 hours = 86400
 #plots.histogram(data)

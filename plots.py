@@ -4,7 +4,6 @@ from scipy.optimize import curve_fit
 import numpy as np
 from scipy.integrate import odeint
 
-
 def plot(dataframe):
 		ax1 = pl.subplot(511)
 		pl.plot(dataframe.loc(0), dataframe['Population'])
