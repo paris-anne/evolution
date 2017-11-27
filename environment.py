@@ -40,7 +40,7 @@ class Environment(object):
 		self.tbirths = [0]
 		self.time_ms = 0
 		self.av_dormancy_time = []
-		self.immune_system = 2000
+		self.immune_system = 3000
 
 	def width(self):
 		return self.width
@@ -153,9 +153,9 @@ class Environment(object):
 					self.antibiotics[0].effectiveness = 1
 					for i in self.antibiotics:
 						i.colour = (0,255,0)
-
-			if (float(self.time_ms) % self.immune_system) == 0:
-				for i in range(4):
+			
+			if (self.time_ms%self.immune_system) == 0:
+				for i in range(int(0.1*len(self.agents))):
 					if self.agents:
 						del self.agents[random.choice(list(self.agents.keys()))]
 
@@ -218,4 +218,5 @@ class Environment(object):
 			#print(len(self.agents))
 	
 		data = pd.concat(dataframes, axis=1)
+		print(data)
 		return data

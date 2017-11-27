@@ -6,7 +6,7 @@ import random
 class Agent(p.Particle):
 	key = -1
 	random = np.random.choice([0, 1], p = [0.9, 0.1])
-	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), reproduce_level = 3.5,  food_level = float(2.0), resistance = 2, reproduction = np.random.choice([2.0, 3.0, 4.0, 5.0, 6.0], p = [0.99, 0.0025, 0.0025, 0.0025, 0.0025]), dormancy_gene = 1, dormancy_time = 700):
+	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.0,  food_level = float(2.0), resistance = 2, reproduction = np.random.choice([2.0, 3.0, 4.0, 5.0, 6.0], p = [0.99, 0.0025, 0.0025, 0.0025, 0.0025]), dormancy_gene = 1, dormancy_time = 700):
 		super().__init__(x, y, size, colour)
 		self.food_level = food_level
 		self.fitness_cost = 0.3

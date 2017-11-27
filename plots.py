@@ -55,24 +55,28 @@ def LV_plots(dataframe):
 	df.iloc[:,0] = pd.to_numeric(df.iloc[:,0], errors='coerce')
 	t = df.iloc[:,0].values
 	pop = df.iloc[:,1].values
-	state0 = [20]
-	state = odeint(LotkaVolterra, state0, t)
+	# state0 = [20]
+	# state = odeint(LotkaVolterra, state0, t)
 	# popt, pcov = curve_fit(func, list(dataframe), population.ix[0].tolist(), p0=(1, 1e-6, 1))
 	# print(popt)
-	food=[0.1] * len(df.ix[:,0].values)
+	# food=[0.1] * len(df.ix[:,0].values)
 	ax1 = pl.subplot(211)
 	ax1.title.set_text("Bacteria Population")
 	print(df.ix[:,0].values)
 	pl.plot(t, pop)
-	pl.plot(t, state)
+	#pl.plot(t, state)
 	#pl.plot(list(dataframe), func(np.array(list(dataframe)), -1.71109885e-06, 4.26620601e-08, 2.00000017e+01))
-	pl.setp(ax1.get_xticklabels(), visible=False)
-	ax2 = pl.subplot(212, sharex=ax1)
-	ax2.title.set_text("Food Concentration")
-	pl.plot(df.ix[:,0].values, food)
-	pl.setp(ax2.get_xticklabels(), fontsize=6)
+	# pl.setp(ax1.get_xticklabels(), visible=False)
+	# ax2 = pl.subplot(212, sharex=ax1)
+	# ax2.title.set_text("Food Concentration")
+	# pl.plot(df.ix[:,0].values, food)
+	# pl.setp(ax2.get_xticklabels(), fontsize=6)
 	pl.savefig("LV_equations.png")
 	pl.show()
+
+def plot_population(data):
+	dataframe = dataframe.ix[:,1:-1]
+	df = pd.DataFrame(t.dropna())
 
 def offspring_analysis(data):
 	offspring = data.iloc[:, -1].apply(lambda x: x.reproduction if (np.all(pd.notnull(x))) else x)
@@ -83,14 +87,14 @@ def offspring_analysis(data):
 def antibiotic_conc_v_population(data):
 	population=pd.DataFrame(data.count())
 	print(population)
-	antibiotics=data.iloc[0,:].apply(lambda x: x.enviro.antibiotics[0].effectiveness)
+	#antibiotics=data.iloc[0,:].apply(lambda x: x.enviro.antibiotics[0].effectiveness)
 	ax1 = pl.subplot(211)
 	ax1.title.set_text("Bacteria Population")
 	pl.plot(list(data), population.ix[:,0])
 	pl.setp(ax1.get_xticklabels(), visible=False)
 	ax2 = pl.subplot(212, sharex=ax1)
 	ax2.title.set_text("Antibiotics Concentration")
-	pl.plot(list(data), antibiotics)
+	#pl.plot(list(data), antibiotics)
 	pl.setp(ax2.get_xticklabels(), fontsize=6)
 	pl.savefig("antibiotics_bacteria.png")
 	pl.show()	
@@ -106,3 +110,18 @@ def histogram(data):
 	cb.set_label('counts in bin')
 	pl.savefig("histogram.png")
 	pl.show()
+
+def population(data):
+	population=pd.DataFrame(data.count())
+	print(population)
+	#antibiotics=data.iloc[0,:].apply(lambda x: x.enviro.antibiotics[0].effectiveness)
+	ax1 = pl.subplot(211)
+	ax1.title.set_text("Bacteria Population")
+	pl.plot(list(data), population.ix[:,0])
+	pl.setp(ax1.get_xticklabels(), visible=False)
+	ax2 = pl.subplot(212, sharex=ax1)
+	ax2.title.set_text("Antibiotics Concentration")
+	#pl.plot(list(data), antibiotics)
+	pl.setp(ax2.get_xticklabels(), fontsize=6)
+	pl.savefig("bacteria_population.png")
+	pl.show()	
