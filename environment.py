@@ -42,26 +42,6 @@ class Environment(object):
 		self.av_dormancy_time = []
 		self.immune_system = 3000
 
-	def width(self):
-		return self.width
-
-	def set_width(self):
-		self.width = width
-		return
-
-	def height(self):
-		return self.height
-
-	def set_height(self):
-		self.height = height
-		return
-
-	def food(self):
-		return self.food
-	
-	def remove_food(self, key):
-		del self.food[key]
-
 
 	def addfood(self, food_coverage):
 		amount = 0
@@ -78,7 +58,7 @@ class Environment(object):
 
 	def add_agent(self, agent):
 		self.agents[agent.key] = agent
-#resistance = np.random.choice([0, 1], p = [0.1, 0.9]), 
+		
 	def add_agents(self, number_of_agents = 10, size = 3.0):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
@@ -98,7 +78,7 @@ class Environment(object):
 		self.anti_conc = concentration
 		takeClosest = lambda num,collection:min(collection,key=lambda x:abs(x-num))
 		squares = [1,4,9,16,25,36,49,64,81,100]
-		amount = takeClosest(np.sqrt(self.area),squares) * 2
+		amount = takeClosest(np.sqrt(self.area),squares)
 		anti_radius = np.sqrt((concentration*self.area)/(amount * math.pi))
 		coordinates = []
 
@@ -151,11 +131,7 @@ class Environment(object):
 
 			for i in self.antibiotics:
 				i.display(self.screen)
-				
-
 				i.effectiveness = (np.e)**(-(self.time_ms-self.tbirths[-1])/self.anti_halflife)
-				#print(i.effectiveness)
-
 				if i.effectiveness < 0.001:
 					self.antibiotics.remove(i)
 					#print("deleted")
@@ -172,7 +148,7 @@ class Environment(object):
 				for i in range(int(0.1*len(self.agents))):
 					if self.agents:
 						del self.agents[random.choice(list(self.agents.keys()))]
-						print("immune_system", i)
+
 
 			for i in self.agents: 
 				#print(i)

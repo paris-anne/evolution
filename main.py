@@ -14,19 +14,19 @@ import pandas as pd
 envirox = 900
 enviroy = 600
 enviro = env.Environment(envirox, enviroy)
-enviro.addfood(0.00) #parameter is food_coverage as a proportion
+enviro.addfood(0.1) #parameter is food_coverage as a proportion
 
 enviro.add_agents(100) #100?
-enviro.add_antibiotics(0.01, 43200/4, 14400/4) #concentration, time between dose(s) , halflife of dose
+enviro.add_antibiotics(0.1, 43200/4, 14400/4) #concentration, time between dose(s) , halflife of dose
 # #enviro.add_antibiotics(0.2, 13000, 1000) #concentration, time between dose, halflife of dose
-data = enviro.display(1200000) #24 hours = 86400
+#data = enviro.display(1200000) #24 hours = 86400
 #plots.histogram(data)
-# #plots.LV_plots(data)
-# # df=enviro.plot()
+#plots.LV_plots(data)
+#df=enviro.plot()
 # plots.plot(df)
 # print(data)
 #plots.population(data)
 #plots.antibiotic_conc_v_population(data)
 
-#df = pd.read_csv('bacteria_wo_antibiotics.csv', low_memory=False)
-#plots.LV_plots(df)
+df = pd.read_csv('bacteria_wo_antibiotics.csv', low_memory=False)
+plots.LV_plots(df)
