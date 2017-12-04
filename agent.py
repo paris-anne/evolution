@@ -62,14 +62,35 @@ class Agent(p.Particle):
 					print("NEUTRALISE", i)
 
 	def dormancy(self, i, dormancy_time):
-		if self.enviro.time_ms - self.enviro.tbirths[-1] <= dormancy_time:
-			self.enviro.agents[i].speed = 0
-			self.enviro.agents[i].colour = (255,0,0)
-			#self.agents[i].dormancy(0.9) #probability, time
-		else:
+		min_dist = self.enviro.agents[i].min_distance_antibiotic()
+		speed_of_info = 0.01
+		retarded_time = min_dist/speed_of_info
+		if min_dist < 20:
+			retarded_time = 0
+
+			if self.enviro.time_ms+retarded_time - self.enviro.tbirths[-1] <= dormancy_time:
+				self.enviro.agents[i].speed = 0
+				self.enviro.agents[i].colour = (255,0,0)
+				#self.agents[i].dormancy(0.9) #probability, time
+				#print("dormant")
+			else:
 			#print ("A")
-			self.enviro.agents[i].speed = 2	
-			self.enviro.agents[i].colour = (0,0,0)
+				self.enviro.agents[i].speed = 2	
+				self.enviro.agents[i].colour = (0,0,0)
+				#print("not dormant")
+
+	def min_distance_antibiotic(self):
+		distances = []
+		for antibiotic in self.enviro.antibiotics:
+			antibiotics_x = antibiotic.x
+			antibiotics_y = antibiotic.y
+			#print(antibiotics_x, antibiotics_y)
+			distances.append(np.sqrt((self.x - antibiotics_x)**2 + (self.y - antibiotics_y)**2))
+		distances.sort()
+		#print(len(distances))
+		#print(min(distances))
+		return min(distances)
 
 	def die(self):
 		self.enviro.remove_agent(self.key)
+

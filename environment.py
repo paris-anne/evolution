@@ -42,26 +42,6 @@ class Environment(object):
 		self.av_dormancy_time = []
 		self.immune_system = 3000
 
-	def width(self):
-		return self.width
-
-	def set_width(self):
-		self.width = width
-		return
-
-	def height(self):
-		return self.height
-
-	def set_height(self):
-		self.height = height
-		return
-
-	def food(self):
-		return self.food
-	
-	def remove_food(self, key):
-		del self.food[key]
-
 
 	def addfood(self, food_coverage):
 		amount = 0
@@ -78,7 +58,7 @@ class Environment(object):
 
 	def add_agent(self, agent):
 		self.agents[agent.key] = agent
-#resistance = np.random.choice([0, 1], p = [0.1, 0.9]), 
+		
 	def add_agents(self, number_of_agents = 10, size = 3.0):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
@@ -89,7 +69,9 @@ class Environment(object):
 	def remove_agent(self, key):
 		del self.agents[key] 
 
+
 	def add_antibiotics(self, concentration, frequency, halflife):
+		#print("antibiotics added")
 		amount = 0
 		self.anti_halflife=halflife
 		self.anti_freq = frequency
@@ -98,10 +80,13 @@ class Environment(object):
 		squares = [1,4,9,16,25,36,49,64,81,100]
 		amount = takeClosest(np.sqrt(self.area),squares)
 		anti_radius = np.sqrt((concentration*self.area)/(amount * math.pi))
+		coordinates = []
 
 		for i in np.arange(self.width/np.sqrt(amount) + (self.width/np.sqrt(amount))/2 , self.width -(self.width/np.sqrt(amount))/2, self.width/np.sqrt(amount)):
 			for j in np.arange(self.height/np.sqrt(amount) + (self.height/np.sqrt(amount))/2, self.height - (self.height/np.sqrt(amount))/2, self.height/np.sqrt(amount)):
 				self.antibiotics.append(ant.Antibiotic(i, j, size = anti_radius))
+				self.antibiotics[0].coordinates.append((i,j))
+
 
 	def remove_antibiotics(self):
 		self.antibiotics = []
@@ -118,6 +103,7 @@ class Environment(object):
 		dataframes = []
 
 		while running:
+			#print(len(self.antibiotics))
 			data = pd.DataFrame()
 			data[self.time_ms] = pd.Series(list(self.agents.values()))
 			dataframes.append(data)
@@ -142,39 +128,42 @@ class Environment(object):
 			reproduction = 0
 			self.screen.fill(self.colour)
 			
-			if self.antibiotics:
-				for i in self.antibiotics:
-					i.display(self.screen)
 
-				if self.time_ms-self.tbirths[-1] >self.anti_freq:
+			for i in self.antibiotics:
+				i.display(self.screen)
+				i.effectiveness = (np.e)**(-(self.time_ms-self.tbirths[-1])/self.anti_halflife)
+				if i.effectiveness < 0.001:
+					self.antibiotics.remove(i)
+					#print("deleted")
+			
+			if self.time_ms-self.tbirths[-1] >self.anti_freq:
 					self.add_antibiotics(self.anti_conc, self.anti_freq, self.anti_halflife)
 					tnextbirth = self.tbirths[-1] + self.anti_freq
 					self.tbirths.append(tnextbirth)
 					self.antibiotics[0].effectiveness = 1
 					for i in self.antibiotics:
 						i.colour = (0,255,0)
-			
+
 			if (self.time_ms%self.immune_system) == 0:
 				for i in range(int(0.1*len(self.agents))):
 					if self.agents:
 						del self.agents[random.choice(list(self.agents.keys()))]
 
+
 			for i in self.agents: 
 				#print(i)
 				self.agents[i].display(self.screen)
 				#print(self.agents[i].dormancy_time)
-				if self.antibiotics:
-					self.agents[i].dormancy(i, self.agents[i].dormancy_time)
+				self.agents[i].dormancy(i, self.agents[i].dormancy_time)
 				if self.agents[i].speed != 0:
 					self.agents[i].move()
 					self.agents[i].bounce(self.width, self.height)
-					self.agents[i].food_level -= 0.015 #move
+					self.agents[i].food_level -= 0.0 #move
 					self.agents[i].eat()
 					if self.agents[i].food_level > self.agents[i].reproduce_level: 
 						self.reproduce_key.append(i)
 						reproduction_count += 1
 					if self.agents[i].resistance ==0:
-						self.antibiotics[0].effectiveness = (np.e)**(-(self.time_ms-self.tbirths[-1])/self.anti_halflife)
 						if self.antibiotics[0].effectiveness > np.random.uniform():
 							self.agents[i].neutralise(i)
 					#print(self.antibiotics[0].effectiveness)
@@ -202,8 +191,8 @@ class Environment(object):
 			pop = len(self.agents)-len(self.dead) #becomes negative because only keeping alives agents in dict
 			self.time_ms+=100
 			#print(len(self.agents))
-			#for i in self.antibiotics:
-			 	# i.colour = np.add(i.colour, (1,-1,1))
+			for i in self.antibiotics:
+			 	i.colour = np.add(i.colour, (1,-1,1))
 			 	# print(i.colour)
 			if pop != 0:
 			 	self.time_elapsed.append(self.time_ms)
@@ -218,5 +207,5 @@ class Environment(object):
 			#print(len(self.agents))
 	
 		data = pd.concat(dataframes, axis=1)
-		print(data)
+		#print(data)
 		return data
