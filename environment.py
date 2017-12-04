@@ -83,7 +83,7 @@ class Environment(object):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
-			agent = ag.Agent(x, y, self, size = size, reproduction = 2.0, dormancy_gene = np.random.choice([0, 1], p = [0.7, 0.3]), dormancy_time = np.random.choice([4000,5000,6000,7000,8000], p = [0.2,0.2,0.2,0.2,0.2]))
+			agent = ag.Agent(dormancy_time=np.random.normal(700.0, 100.0), x=x, y=y, environment=self, size = size, reproduction = 2.0, dormancy_gene = np.random.choice([0, 1], p = [0.7, 0.3]))
 			self.agents[agent.key] = agent
 
 	def remove_agent(self, key):
