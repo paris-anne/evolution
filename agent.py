@@ -4,15 +4,13 @@ import particle as p
 import random
 from collections import namedtuple
 
-Agent = namedtuple('Agent', ['food_level', 'fitness_cost', 'size', 'environment', 'x', 'y', 'resistance', 'reproduce_level', 'reproduction', 'dormancy_gene', 'dormancy_time'])
-
 class Agent(p.Particle):
 	key = -1
 	random = np.random.choice([0, 1], p = [0.9, 0.1])
-	def __init__(self, dormancy_time, x = 0, y = 0, environment = None, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.0,  food_level = float(2.0), resistance = 2, reproduction = np.random.choice([2.0, 3.0, 4.0, 5.0, 6.0], p = [0.99, 0.0025, 0.0025, 0.0025, 0.0025]), dormancy_gene = 1):
+	def __init__(self, dormancy_time, reproduction, x = 0, y = 0, environment = None, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.0,  food_level = float(2.0), resistance = 2, dormancy_gene = 1):
 		super().__init__(x, y, size, colour)
 		self.food_level = food_level
-		self.fitness_cost = 0.3
+		self.fitness_cost = 1.0
 		self.size = size
 		self.enviro = environment
 		self.x = x
@@ -26,7 +24,7 @@ class Agent(p.Particle):
 		Agent.key += 1
 
 	def __reduce__(self):
-		return (self.__class__, (self.reproduction, self.dormancy_time))
+		return (self.__class__, (self.dormancy_time, self.reproduction))
 
 	def reproduce(self):
 		new_foodlevel = self.food_level/float(self.reproduction)
@@ -38,7 +36,7 @@ class Agent(p.Particle):
 			reproduction.append(self.reproduction)
 			child_reproduction = np.random.choice(reproduction, p = [0.025, 0.025, 0.025, 0.025, 0.9])
 			child_dormancy = np.random.normal(self.dormancy_time, 100)
-			child = Agent(self.x, self.y, self.enviro, food_level = new_foodlevel, resistance = child_resistance, reproduction = child_reproduction, dormancy_time = child_dormancy)
+			child = Agent(dormancy_time = child_dormancy, x = self.x, y=self.y, environment=self.enviro, food_level = new_foodlevel, resistance = child_resistance, reproduction = child_reproduction)
 			self.enviro.agents[self.key] = child
 		self.reproduce_level = self.reproduce_level + (self.resistance * self.fitness_cost)
 

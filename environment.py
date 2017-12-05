@@ -63,7 +63,8 @@ class Environment(object):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
-			agent = ag.Agent(dormancy_time=np.random.normal(700.0, 100.0), x=x, y=y, environment=self, size = size, reproduction = 2.0, dormancy_gene = np.random.choice([0, 1], p = [0.7, 0.3]))
+			reproduction = np.random.choice([2.0, 3.0, 4.0, 5.0, 6.0], p = [0.99, 0.0025, 0.0025, 0.0025, 0.0025])
+			agent = ag.Agent(dormancy_time=np.random.normal(700.0, 100.0), reproduction = reproduction, x=x, y=y, environment=self, size = size)
 			self.agents[agent.key] = agent
 
 	def remove_agent(self, key):
@@ -158,7 +159,7 @@ class Environment(object):
 				if self.agents[i].speed != 0:
 					self.agents[i].move()
 					self.agents[i].bounce(self.width, self.height)
-					self.agents[i].food_level -= 0.0 #move
+					self.agents[i].food_level -= 0.03 #move
 					self.agents[i].eat()
 					if self.agents[i].food_level > self.agents[i].reproduce_level: 
 						self.reproduce_key.append(i)
@@ -191,8 +192,8 @@ class Environment(object):
 			pop = len(self.agents)-len(self.dead) #becomes negative because only keeping alives agents in dict
 			self.time_ms+=100
 			#print(len(self.agents))
-			for i in self.antibiotics:
-			 	i.colour = np.add(i.colour, (1,-1,1))
+			# for i in self.antibiotics:
+			#  	i.colour = np.add(i.colour, (1,-1,1))
 			 	# print(i.colour)
 			if pop != 0:
 			 	self.time_elapsed.append(self.time_ms)
