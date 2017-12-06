@@ -85,15 +85,16 @@ def offspring_analysis(data):
 
 def antibiotic_conc_v_population(data):
 	population=pd.DataFrame(data.count())
-	print(population)
-	#antibiotics=data.iloc[0,:].apply(lambda x: x.enviro.antibiotics[0].effectiveness)
+	#print(da)
+	antibiotics=data.iloc[0,:].apply(lambda x: x.enviro.antibiotics_effectiveness)
+	#print(antibiotics)
 	ax1 = pl.subplot(211)
 	ax1.title.set_text("Bacteria Population")
 	pl.plot(list(data), population.ix[:,0])
 	pl.setp(ax1.get_xticklabels(), visible=False)
 	ax2 = pl.subplot(212, sharex=ax1)
 	ax2.title.set_text("Antibiotics Concentration")
-	#pl.plot(list(data), antibiotics)
+	pl.plot(list(data), antibiotics)
 	pl.setp(ax2.get_xticklabels(), fontsize=6)
 	pl.savefig("antibiotics_bacteria.png")
 	pl.show()	
@@ -104,23 +105,37 @@ def histogram(data):
 	offspring = pd.DataFrame(data.iloc[:,-1].dropna().apply(lambda x: x.reproduction))
 	dormancy = pd.DataFrame(data.iloc[:,-1].dropna().apply(lambda x: x.dormancy_time))
 	print(offspring.iloc[:,0].values)
-	pl.hist2d(offspring.iloc[:,0].values, dormancy.iloc[:,0].values, bins=50, cmap='Blues')
+	pl.hist2d(offspring.iloc[:,0].values, dormancy.iloc[:,0].values, bins=100, cmap='Blues')
 	cb = pl.colorbar()
 	cb.set_label('counts in bin')
 	pl.savefig("histogram.png")
 	pl.show()
 
+def resistance(data):
+	#resistance = pd.DataFrame.sum(data.iloc[:,-1].dropna().apply(lambda x: x.resistance))
+	#print(resistance, "resistance")
+	print(data.iloc['resistance':,-1].dropna())
+
 def population(data):
 	population=pd.DataFrame(data.count())
 	print(population)
-	#antibiotics=data.iloc[0,:].apply(lambda x: x.enviro.antibiotics[0].effectiveness)
+	antibiotics=data.iloc[0,:].apply(lambda x: x.enviro.antibiotics[0].effectiveness)
 	ax1 = pl.subplot(211)
 	ax1.title.set_text("Bacteria Population")
 	pl.plot(list(data), population.ix[:,0])
 	pl.setp(ax1.get_xticklabels(), visible=False)
 	ax2 = pl.subplot(212, sharex=ax1)
 	ax2.title.set_text("Antibiotics Concentration")
-	#pl.plot(list(data), antibiotics)
+	pl.plot(list(data), antibiotics)
 	pl.setp(ax2.get_xticklabels(), fontsize=6)
 	pl.savefig("bacteria_population.png")
-	pl.show()	
+	pl.show()
+
+def customfigure(number, x, y):
+	fig = pl.figure(number)
+	pl.plot(x,y)
+	pl.show()
+
+
+
+#def changing_conc
