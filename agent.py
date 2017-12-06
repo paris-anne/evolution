@@ -8,8 +8,8 @@ import antibiotic as ant
 class Agent(p.Particle):
 	key = -1
 	random = np.random.choice([0, 1], p = [0.9, 0.1])
-	def __init__(self, x, y, environment, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.0,  food_level = float(2.0),
-	 resistance = 1, reproduction = 2, dormancy_gene = 1, dormancy_time = 700, dormancy_period = 1400):
+	def __init__(self, reproduction, dormancy_time, dormancy_period, x=0, y=0, environment=None, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.0,  food_level = float(2.0),
+	 resistance = 0, dormancy_gene = 1):
 		super().__init__(x, y, size, colour)
 		self.food_level = food_level
 		self.fitness_cost = 0.3
@@ -29,6 +29,9 @@ class Agent(p.Particle):
 		#self.dormancy_freq
 		Agent.key += 1
 
+	def __reduce__(self):
+		return (self.__class__, (self.reproduction, self.dormancy_time, self.dormancy_period))
+
 	def reproduce(self):
 		new_foodlevel = self.food_level/float(self.reproduction)
 		self.food_level = new_foodlevel
@@ -40,22 +43,18 @@ class Agent(p.Particle):
 			reproduction.append(self.reproduction)
 			child_reproduction = np.random.choice(reproduction, p = [0.0025, 0.0025, 0.0025, 0.0025, 0.99])
 
-
 			dormancy_time = [2000,4000,6000,8000,10000]
 			dormancy_time.remove(self.dormancy_time)
 			dormancy_time.append(self.dormancy_time)
 			child_dormancy_time = np.random.choice(dormancy_time, p = [0.025,0.025,0.025,0.025,0.9])
 
-			dormancy_period = [2000,4000,6000,8000,10000, 12000,14000,16000,18000,20000,
-							 22000,24000,26000,28000,30000,32000,34000, 36000, 38000,40000, 42000]
+			dormancy_period = [1000,2000, 3000,4000,5000] #this should be distribution but with constant probability?
 			dormancy_period.remove(self.dormancy_period)
 			dormancy_period.append(self.dormancy_period)
-			child_dormancy_period = np.random.choice(dormancy_period, p = [0.005,0.005,0.005,0.005,0.005,0.005,0.005,0.005,0.005,0.005,
-																	   0.005,0.005,0.005,0.005,0.005,0.005,0.005,0.005,0.005,0.005,
-																	   0.9])
+			child_dormancy_period = np.random.choice(dormancy_period, p = [0.025,0.025,0.025,0.025,0.9])
 
 
-			child = Agent(self.x, self.y, self.enviro, food_level = new_foodlevel, resistance = child_resistance, 
+			child = Agent(x=self.x, y=self.y, environment=self.enviro, food_level = new_foodlevel, resistance = child_resistance, 
 				reproduction = child_reproduction, dormancy_time = child_dormancy_time, dormancy_period = child_dormancy_period)
 			self.enviro.agents[self.key] = child
 		self.reproduce_level = self.reproduce_level + (self.resistance * self.fitness_cost)

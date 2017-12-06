@@ -89,12 +89,12 @@ class Environment(object):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
-			agent = ag.Agent(x, y, self, size = size, reproduction = 2.0, 
+			reproduction = np.random.choice([2.0, 3.0, 4.0, 5.0, 6.0], p = [0.99, 0.0025, 0.0025, 0.0025, 0.0025])			
+			agent = ag.Agent(x=x, y=y, reproduction = reproduction, environment=self, size = size, 
 				resistance  = np.random.choice([0, 1], p = [0.3, 0.7]), 
 				dormancy_gene = np.random.choice([0, 1], p = [0.7, 0.3]), 
 				dormancy_time = np.random.choice([2000,4000,6000,8000,10000]),
-				dormancy_period = np.random.choice([2000,4000,6000,8000,10000, 12000,14000,16000,18000,20000,
-							 22000,24000,26000,28000,30000,32000,34000, 36000, 38000,40000, 42000])) #unifrom distribution
+				dormancy_period = np.random.choice([1000,2000, 3000,4000,5000])) #unifrom distribution
 			self.agents[agent.key] = agent
 
 	def remove_agent(self, key):
@@ -147,15 +147,23 @@ class Environment(object):
 		#time_elapsed = [i for i in range(0, time, 300)]
 		#data = pd.DataFrame(columns=pd.Series(time_elapsed))
 		dataframes = []
+		dataframes2 = []
 
 		while running:
 			#print(self.time_ms)
 			data = pd.DataFrame()
-			data[self.time_ms] = pd.Series(list(self.agents.values()))
-			#data['resistance'] = pd.Series(list(self.av_resistance))
+			data2 = pd.DataFrame()
+			agents = list(self.agents.values())
+			for i in agents:
+				if i.resistance == 0:
+					agents.remove(i)
+
+			data[self.time_ms] = pd.Series(agents)
+			data2[self.time_ms]=list(self.agents.values())			#data['resistance'] = pd.Series(list(self.av_resistance))
 
 			#print(data)
 			dataframes.append(data)
+			dataframes2.append(data2)
 
 			if display == True:
 				pygame.init()
@@ -266,7 +274,8 @@ class Environment(object):
 			
 			if self.reproduce_key:
 				for j in self.reproduce_key:
-					self.agents[j].reproduce()
+					if j in self.agents.keys():
+						self.agents[j].reproduce()
 			if self.dead_key:
 				for k in self.dead_key:
 					del self.agents[k]
@@ -319,8 +328,10 @@ class Environment(object):
 			#	print(self.antibiotics_count, "doses")
 			#print(len(self.agents))
 		#print(self.resistance)
-		data = pd.concat(dataframes, axis=1)
-		pop=pd.DataFrame({"population" :data.count()})
+		resistant = pd.concat(dataframes, axis=1)
+		total=pd.concat(dataframes2, axis=1)
+
+		pop=pd.DataFrame({"population" :total.count()})
 		#print(data)
 		#print(pop)
 		pl.figure(1)
@@ -348,4 +359,4 @@ class Environment(object):
 		pl.grid(True)
 		pl.show()
 
-		return data
+		return [resistant, total]
