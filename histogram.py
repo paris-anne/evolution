@@ -1,3 +1,4 @@
+
 import pandas as pd
 import numpy as np
 import plotly as py
@@ -9,7 +10,7 @@ import plotly.graph_objs as go
 
 dataframes = []
 
-dataframe = pd.read_pickle("population.pkl").iloc[:,:-1]
+dataframe = pd.read_pickle("total.pkl").iloc[:,:-1]
 #dataframe2 = pd.read_pickle("population.pkl").iloc[:,450:500]
 #dataframe = pd.concat([dataframe1, dataframe2])
 time = list(dataframe.columns)
@@ -193,7 +194,7 @@ frames = [{'data': [{
     # 'mode':'markers',
 "colorscale":'YIGnBu',
     # "zmax":50,
-"nbinsx":50,
+"nbinsx":5,
 "nbinsy":50,
     # "zauto":False,
 }], 'name': t, 'traces':[0]} for t in time]

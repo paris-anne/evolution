@@ -7,7 +7,7 @@ from collections import namedtuple
 class Agent(p.Particle):
 	key = -1
 	random = np.random.choice([0, 1], p = [0.9, 0.1])
-	def __init__(self, dormancy_time, reproduction, x = 0, y = 0, environment = None, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.0,  food_level = float(2.0), resistance = 2, dormancy_gene = 1):
+	def __init__(self, dormancy_time, reproduction, x = 0, y = 0, environment = None, size = 3.0, colour = (0, 0, 255), reproduce_level = 4.0,  food_level = float(2.0), resistance = 0, dormancy_gene = 1):
 		super().__init__(x, y, size, colour)
 		self.food_level = food_level
 		self.fitness_cost = 1.0
@@ -60,22 +60,23 @@ class Agent(p.Particle):
 					print("NEUTRALISE", i)
 
 	def dormancy(self, i, dormancy_time):
-		min_dist = self.enviro.agents[i].min_distance_antibiotic()
-		speed_of_info = 0.01
-		retarded_time = min_dist/speed_of_info
-		if min_dist < 20:
-			retarded_time = 0
+		if self.enviro.antibiotics:
+			min_dist = self.enviro.agents[i].min_distance_antibiotic()
+			speed_of_info = 0.01
+			retarded_time = min_dist/speed_of_info
+			if min_dist < 20:
+				retarded_time = 0
 
-			if self.enviro.time_ms+retarded_time - self.enviro.tbirths[-1] <= dormancy_time:
-				self.enviro.agents[i].speed = 0
-				self.enviro.agents[i].colour = (255,0,0)
-				#self.agents[i].dormancy(0.9) #probability, time
-				#print("dormant")
-			else:
-			#print ("A")
-				self.enviro.agents[i].speed = 2	
-				self.enviro.agents[i].colour = (0,0,0)
-				#print("not dormant")
+				if self.enviro.time_ms+retarded_time - self.enviro.tbirths[-1] <= dormancy_time:
+					self.enviro.agents[i].speed = 0
+					self.enviro.agents[i].colour = (255,0,0)
+					#self.agents[i].dormancy(0.9) #probability, time
+					#print("dormant")
+				else:
+				#print ("A")
+					self.enviro.agents[i].speed = 2	
+					self.enviro.agents[i].colour = (0,0,0)
+					#print("not dormant")
 
 	def min_distance_antibiotic(self):
 		distances = []

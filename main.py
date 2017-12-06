@@ -17,11 +17,11 @@ enviro = env.Environment(envirox, enviroy)
 enviro.addfood(0.15) #parameter is food_coverage as a proportion
 
 enviro.add_agents(250) #100?
-enviro.add_antibiotics(0.15, 88000, 44000) #concentration, time between dose(s) , halflife of dose
+enviro.add_antibiotics(0.1, 4300, 1400) #concentration, time between dose(s) , halflife of dose
 # #enviro.add_antibiotics(0.2, 13000, 1000) #concentration, time between dose, halflife of dose
-data = enviro.display(100000) #24 hours = 86400
-print(len(data.columns))
-data.to_pickle("population.pkl")
+data = enviro.display(45000) #24 hours = 86400
+data[0].to_pickle("resistant.pkl")
+data[1].to_pickle("total.pkl")
 
 plots.histogram(data)
 #plots.LV_plots(data)

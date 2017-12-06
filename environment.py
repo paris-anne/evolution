@@ -50,8 +50,8 @@ class Environment(object):
 		amount = takeClosest(np.sqrt(self.area),squares)
 		food_radius = np.sqrt((food_coverage*self.area)/(amount * math.pi))
 
-		for i in np.arange(self.width/np.sqrt(amount), self.width, self.width/np.sqrt(amount)):
-			for j in np.arange(self.height/np.sqrt(amount), self.height, self.height/np.sqrt(amount)):
+		for i in np.arange(self.width/np.sqrt(amount)/2, self.width + self.width/np.sqrt(amount)/2, self.width/np.sqrt(amount)):
+			for j in np.arange(self.height/np.sqrt(amount)/2, self.height + self.width/np.sqrt(amount)/2, self.height/np.sqrt(amount)):
 				food = f.Food(i, j, self, size = food_radius)
 				self.food.append(food)
 				# self.food[food.key] = food
@@ -83,11 +83,9 @@ class Environment(object):
 		anti_radius = np.sqrt((concentration*self.area)/(amount * math.pi))
 		coordinates = []
 
-		for i in np.arange(self.width/np.sqrt(amount) + (self.width/np.sqrt(amount))/2 , self.width -(self.width/np.sqrt(amount))/2, self.width/np.sqrt(amount)):
-			for j in np.arange(self.height/np.sqrt(amount) + (self.height/np.sqrt(amount))/2, self.height - (self.height/np.sqrt(amount))/2, self.height/np.sqrt(amount)):
+		for i in np.arange(0 , self.width +(self.width/np.sqrt(amount))/2, self.width/np.sqrt(amount)):
+			for j in np.arange(0, self.height + (self.height/np.sqrt(amount))/2, self.height/np.sqrt(amount)):
 				self.antibiotics.append(ant.Antibiotic(i, j, size = anti_radius))
-				self.antibiotics[0].coordinates.append((i,j))
-
 
 	def remove_antibiotics(self):
 		self.antibiotics = []
@@ -102,12 +100,21 @@ class Environment(object):
 		#time_elapsed = [i for i in range(0, time, 300)]
 		#data = pd.DataFrame(columns=pd.Series(time_elapsed))
 		dataframes = []
+		dataframes2 = []
 
 		while running:
 			#print(len(self.antibiotics))
 			data = pd.DataFrame()
-			data[self.time_ms] = pd.Series(list(self.agents.values()))
+			data2 = pd.DataFrame()
+			agents = list(self.agents.values())
+			for i in agents:
+				if i.resistance == 0:
+					agents.remove(i)
+
+			data[self.time_ms] = pd.Series(agents)
+			data2[self.time_ms]=list(self.agents.values())
 			dataframes.append(data)
+			dataframes2.append(data2)
 			pygame.init()
 			self.screen.fill(self.colour)
 			for event in pygame.event.get():
@@ -138,6 +145,7 @@ class Environment(object):
 					#print("deleted")
 			
 			if self.time_ms-self.tbirths[-1] >self.anti_freq:
+				if self.antibiotics:
 					self.add_antibiotics(self.anti_conc, self.anti_freq, self.anti_halflife)
 					tnextbirth = self.tbirths[-1] + self.anti_freq
 					self.tbirths.append(tnextbirth)
@@ -159,12 +167,12 @@ class Environment(object):
 				if self.agents[i].speed != 0:
 					self.agents[i].move()
 					self.agents[i].bounce(self.width, self.height)
-					self.agents[i].food_level -= 0.03 #move
+					self.agents[i].food_level -= 0.01 #move
 					self.agents[i].eat()
 					if self.agents[i].food_level > self.agents[i].reproduce_level: 
 						self.reproduce_key.append(i)
 						reproduction_count += 1
-					if self.agents[i].resistance ==0:
+					if self.agents[i].resistance == 0:
 						if self.antibiotics[0].effectiveness > np.random.uniform():
 							self.agents[i].neutralise(i)
 					#print(self.antibiotics[0].effectiveness)
@@ -180,7 +188,8 @@ class Environment(object):
 					self.agents[j].reproduce()
 			if self.dead_key:
 				for k in self.dead_key:
-					del self.agents[k]
+					if k in self.agents.keys():
+						del self.agents[k]
 			# if self.remove_food:
 			# 	for l in self.remove_food:
 			# 		self.remove_food(l)
@@ -188,7 +197,7 @@ class Environment(object):
 			self.dead_key = []
 			# self.remove_food = []
 			self.screen.blit(game_surf, pos)
-			pygame.display.flip()
+			#pygame.display.flip()
 			pop = len(self.agents)-len(self.dead) #becomes negative because only keeping alives agents in dict
 			self.time_ms+=100
 			#print(len(self.agents))
@@ -208,5 +217,6 @@ class Environment(object):
 			#print(len(self.agents))
 	
 		data = pd.concat(dataframes, axis=1)
+		data2=pd.concat(dataframes2, axis=1)
 		#print(data)
-		return data
+		return [data, data2]
