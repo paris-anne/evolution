@@ -114,8 +114,7 @@ def histo_dormancy(dataframe):
     layout=dict(width=750, height=750,
             # font=dict(family='Balto', 
             #           size=12),
-
-            xaxis= dict(range= [1.5,6.5], 
+            xaxis= dict(range= [1000,5000], 
                         ticklen=4,  
                         autorange= False, 
                         zeroline=False, 
@@ -155,54 +154,6 @@ def histo_dormancy(dataframe):
     py.offline.plot(fig)
     return fig
 
-dormancy_offspring = histo_offspring(dataframe)
-#dormancy = histo_dormancy(dataframe) #change dimensions
-
-# layout=dict(width=750, height=750,
-#             # font=dict(family='Balto', 
-#             #           size=12),
-
-#             xaxis= dict(range= [1.5,6.5], 
-#                         ticklen=4,  
-#                         autorange= False, 
-#                         zeroline=False, 
-#                         showline=True, 
-#                         mirror=True,
-#                         showgrid=True),
-#             yaxis=dict(range= [1000, 10000], 
-#                        ticklen=4,  
-#                        autorange= False, 
-#                        showline=True, 
-#                        mirror=True,
-#                        zeroline=False, 
-#                        showgrid=True),
-#             plot_bgcolor = 'rgb(223, 232, 243)',
-#             title= 'Evolution', 
-#             hovermode='closest',
-#             sliders=get_sliders(n_frames=len(time)),
-#             updatemenus=get_updatemenus()
-#             )
-
-# frames = [{'data': [{
-# 'type':"histogram2d",
-# 'y':list(dataframe[t].dropna().apply(lambda x: x.dormancy_time).values),
-# 'x':list(dataframe[t].dropna().apply(lambda x: x.reproduction).values),
-#     # 'mode':'markers',
-# "colorscale":'YIGnBu',
-#     # "zmax":50,
-# "nbinsx":5,
-# "nbinsy":50,
-#     # "zauto":False,
-# }], 'name': t, 'traces':[0]} for t in time]
-
-
-# dataset=frames[0]['data']
-# print(dataset)
-
-# fig = dict(data=dataset, layout=layout, frames=frames)
-
-
-# py.offline.plot(fig)
-
-
+#dormancy_offspring = histo_offspring(dataframe)
+dormancy = histo_dormancy(dataframe) #change dimensions
 

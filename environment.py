@@ -93,8 +93,8 @@ class Environment(object):
 			agent = ag.Agent(x=x, y=y, reproduction = reproduction, environment=self, size = size, 
 				resistance  = np.random.choice([0, 1], p = [0.3, 0.7]), 
 				dormancy_gene = np.random.choice([0, 1], p = [0.7, 0.3]), 
-				dormancy_time = np.random.choice([2000,4000,6000,8000,10000]),
-				dormancy_period = np.random.choice([1000,2000, 3000,4000,5000])) #unifrom distribution
+				dormancy_time = np.random.uniform(2000,10000),
+				dormancy_period = np.random.uniform(1000,5000)) #unifrom distribution
 			self.agents[agent.key] = agent
 
 	def remove_agent(self, key):
@@ -266,9 +266,11 @@ class Environment(object):
 			#print(resistance)
 				if self.antibiotics:
 					if self.agents[i].resistance == 0:
-						if self.antibiotics[0].effectiveness > np.random.uniform():
+						kill = np.random.choice([True,False], p=[self.antibiotics[0].effectiveness, (1-self.antibiotics[0].effectiveness)])
+						if kill==True:
 							self.agents[i].neutralise(i)
 							deathsbyanti += 1
+					print(self.agents[i].dormancy_time)
 					self.agents[i].dormancy(i, self.agents[i].dormancy_time)
 
 			
