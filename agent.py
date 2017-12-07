@@ -38,7 +38,7 @@ class Agent(p.Particle):
 		for i in range(int(self.reproduction)):
 			child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [1, 0])
 
-			reproduction = [2.0, 3.0, 4.0, 5.0, 6.0]
+			reproduction = [2.0, 4.0, 6.0, 8.0, 10.0]
 			reproduction.remove(self.reproduction)
 			reproduction.append(self.reproduction)
 			child_reproduction = np.random.choice(reproduction, p = [0.025, 0.025, 0.025, 0.025, 0.9])
@@ -59,7 +59,7 @@ class Agent(p.Particle):
 		for food in self.enviro.food:
 			foodpos_x = food.x
 			foodpos_y = food.y
-			if 0.95 * food.size < np.sqrt((self.x - foodpos_x)**2 + (self.y - foodpos_y)**2) < 1 * 1.05 *food.size:
+			if 0.95 * food.size < np.sqrt((self.x - foodpos_x)**2 + (self.y - foodpos_y)**2) < 1 * 1.0 *food.size:
 				self.food_level += 1.0
 				#self.enviro.food[i].eaten(self)
 
@@ -72,7 +72,7 @@ class Agent(p.Particle):
 			if  np.sqrt((self.x - antibiotics_x)**2 + (self.y - antibiotics_y)**2) < antibiotic.size:
 				if i not in self.enviro.dead_key:
 					self.enviro.dead_key.append(i)
-					#print("NEUTRALISE", i)
+					print("NEUTRALISE", i)
 
 	def dormancy(self, i, dormancy_time):
 		#print(dormancy_time, "dormancy_time")
@@ -85,7 +85,7 @@ class Agent(p.Particle):
 
 
 		if self.enviro.tbirths[-1] + retarded_time + dormancy_time >= self.enviro.time_ms >= self.enviro.tbirths[-1] + retarded_time:
-			self.enviro.agents[i].speed = 0.001
+			self.enviro.agents[i].speed = 0.00
 			self.enviro.agents[i].colour = (255,0,0)
 
 		else:

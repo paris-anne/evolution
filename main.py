@@ -11,8 +11,8 @@ import food as f
 import pandas as pd
 # pre antibiotics & normal amount of bacteria - 50 agents, immune system 3000, 10%, 1200000 time
 # working antibiotics: antibiotics(0.1, 43200, 14400); agents = 250
-envirox = 300
-enviroy = 300
+envirox = 500
+enviroy = 500
 enviro = env.Environment(envirox, enviroy)
 enviro.addfood(0.15) #parameter is food_coverage as a proportion
 
@@ -52,6 +52,10 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	data = enviro.display(200000, display = True)
 	data[0].to_pickle("resistant.pkl")
 	data[1].to_pickle("total.pkl")
+	print(list(data[2]['time'].values))
+	print(list(data[2]['dormancy'].values))
+	pl.plot(list(data[2]['time'].values), list(data[2]['dormancy'].values))
+	pl.show()
 	#plots.population(data)
 
 def changing_conc():
@@ -106,7 +110,7 @@ def changing_freq():
 
 
 
-run(first_dose = 0, anti_conc = 0.1, anti_freq = 4400, anti_halflife = 1400, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 250) #first dose, anti_conc,
+run(first_dose = 0, anti_conc = 0.1, anti_freq = 4400, anti_halflife = 14000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 250) #first dose, anti_conc,
 #changing_starttime()
 
 #antibiotics(0.1, 43200, 14400); agents = 250

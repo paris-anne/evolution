@@ -69,23 +69,26 @@ def histo_offspring(dataframe):
             # font=dict(family='Balto', 
             #           size=12),
 
-            xaxis= dict(range= [1.5,6.5], 
-                        ticklen=4,  
-                        autorange= False, 
-                        zeroline=False, 
-                        showline=True, 
-                        mirror=True,
-                        showgrid=True),
+            xaxis= dict(range= [1.5,10.5], 
+                        title="Number of Offspring"),
+                        # ticklen=4,  
+                        # autorange= False, 
+                        # zeroline=False, 
+                        # showline=True, 
+                        # mirror=True,
+                        # showgrid=True),
             yaxis=dict(range= [1000, 10000], 
-                       ticklen=4,  
-                       autorange= False, 
-                       showline=True, 
-                       mirror=True,
-                       zeroline=False, 
-                       showgrid=True),
-            plot_bgcolor = 'rgb(223, 232, 243)',
+                        title= "Dormancy Time"),
+                       # ticklen=4,  
+                       # autorange= False, 
+                       # showline=True, 
+                       # mirror=True,
+                       # zeroline=False, 
+                       # showgrid=True),
+            # plot_bgcolor = 'rgb(223, 232, 243)',
             title= 'Evolution', 
             hovermode='closest',
+            gridcolour='#FFFFFF',
             sliders=get_sliders(n_frames=len(time)),
             updatemenus=get_updatemenus()
             )
@@ -93,13 +96,17 @@ def histo_offspring(dataframe):
     'type':"histogram2d",
     'y':list(dataframe[t].dropna().apply(lambda x: x.dormancy_time).values),
     'x':list(dataframe[t].dropna().apply(lambda x: x.reproduction).values),
+    'autobinx':False,
+    # 'xbins'=dict(start=-3, end=3, size=0.1),
+    'autobiny':False,
+    # 'ybins'=dict(start=-2.5, end=4, size=0.1),
     "colorscale":'YIGnBu',
-        # "zmax":50,
-    "nbinsx":5,
-    "nbinsy":50,
+    #     # "zmax":50,
+    "nbinsx":50,
+    "nbinsy":5,
         # "zauto":False,
-    }], 'name': t, 'traces':[0]} for t in time]
-
+    }], 'name': t} for t in time]
+#, 'traces':[0]
 
     dataset=frames[0]['data']
     print(dataset)
@@ -132,16 +139,21 @@ def histo_dormancy(dataframe):
             title= 'Evolution', 
             hovermode='closest',
             sliders=get_sliders(n_frames=len(time)),
-            updatemenus=get_updatemenus()
+            updatemenus=get_updatemenus(),
             )
     frames = [{'data': [{
     'type':"histogram2d",
     'y':list(dataframe[t].dropna().apply(lambda x: x.dormancy_time).values),
     'x':list(dataframe[t].dropna().apply(lambda x: x.dormancy_period).values),
+    'autobinx':False,
+    'xbins':dict(start=1000, end=5000, size=200),
+    'autobiny':False,
+    'ybins':dict(start=1000, end=10000, size=50),
+        
     "colorscale":'YIGnBu',
-        # "zmax":50,
-    "nbinsx":5,
-    "nbinsy":50,
+    #     # "zmax":50,
+    # "nbinsx":1,
+    # "nbinsy":50,
         # "zauto":False,
     }], 'name': t, 'traces':[0]} for t in time]
 
