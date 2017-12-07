@@ -168,4 +168,3 @@ def histo_dormancy(dataframe):
 
 #dormancy_offspring = histo_offspring(dataframe)
 dormancy = histo_dormancy(dataframe) #change dimensions
-

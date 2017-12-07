@@ -36,9 +36,9 @@ class Agent(p.Particle):
 		new_foodlevel = self.food_level/float(self.reproduction)
 		self.food_level = new_foodlevel
 		for i in range(int(self.reproduction)):
-			child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [1, 0])
+			child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [0.95, 0.05])
 
-			reproduction = [2.0, 3.0, 4.0, 5.0, 6.0]
+			reproduction = [2.0, 4.0, 6.0, 8.0, 10.0]
 			reproduction.remove(self.reproduction)
 			reproduction.append(self.reproduction)
 			child_reproduction = np.random.choice(reproduction, p = [0.025, 0.025, 0.025, 0.025, 0.9])

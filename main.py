@@ -53,6 +53,10 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	data = enviro.display(200000, display = True)
 	data[0].to_pickle("resistant.pkl")
 	data[1].to_pickle("total.pkl")
+	print(list(data[2]['time'].values))
+	print(list(data[2]['dormancy'].values))
+	pl.plot(list(data[2]['time'].values), list(data[2]['dormancy'].values))
+	pl.show()
 	#plots.population(data)
 
 def changing_conc():

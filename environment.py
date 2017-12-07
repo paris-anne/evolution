@@ -51,6 +51,7 @@ class Environment(object):
 		self.skipped_doses = []
 		self.double_doses = []
 		self.numberofdoses = 100
+		self.dormancy_count = []
 
 	def addfood(self, food_coverage):
 		amount = 0
@@ -93,7 +94,7 @@ class Environment(object):
 			reproduction = np.random.choice([2.0, 3.0, 4.0, 5.0, 6.0], p = [0.99, 0.0025, 0.0025, 0.0025, 0.0025])			
 			agent = ag.Agent(x=x, y=y, reproduction = reproduction, environment=self, size = size, 
 				resistance  = np.random.choice([0, 1], p = [0.95, 0.05]), 
-				dormancy_gene = np.random.choice([0, 1], p = [0.7, 0.3]), 
+				dormancy_gene = np.random.choice([0, 1], p = [0.9, 0.1]), 
 				dormancy_time = np.random.uniform(0,5000),
 				dormancy_period = np.random.uniform(10000,40000))
 			self.agents[agent.key] = agent
@@ -197,7 +198,7 @@ class Environment(object):
 			deathsbyanti = 0
 			deathsbyfood = 0	
 			
-
+			dormancy_count = 0
 			for i in self.antibiotics:
 				i.effectiveness = (np.e)**(-(self.time_ms-self.tbirths[-1])/self.anti_halflife)
 				if i.effectiveness < (np.e)**(-(self.anti_freq)/self.anti_halflife)  :
@@ -250,9 +251,11 @@ class Environment(object):
 
 
 
-				#self.agents[i].dormancy2(i, self.agents[i].dormancy_period ,self.agents[i].dormancy_time) # time between dormancies, time of dormancy
+				self.agents[i].dormancy2(i, self.agents[i].dormancy_period ,self.agents[i].dormancy_time) # time between dormancies, time of dormancy
 				#print(self.time_ms%self.agents[i].dormancy_period, "remainder", self.agents[i].dormancy_time, "dorm time")
-				if self.agents[i].speed != 0:
+				if self.agents[i].speed == 0:
+					dormancy_count+=1
+				else:
 					self.agents[i].move()
 					self.agents[i].bounce(self.width, self.height)
 					self.agents[i].food_level -= 0.01 #move
@@ -321,6 +324,7 @@ class Environment(object):
 				self.deathsbyimmune.append(deathsbyimmune)
 				self.deathsbyanti.append(deathsbyanti)
 				self.deathsbyfood.append(deathsbyfood)
+				self.dormancy_count.append(dormancy_count)
 			if pop ==0:
 				self.time_elapsed.append(self.time_ms)
 				self.deadcount.append(len(self.dead)/(self.time_ms))
@@ -332,6 +336,7 @@ class Environment(object):
 				self.food_pop.append(food_amount)
 				self.deathsbyimmune.append(deathsbyimmune)
 				self.deathsbyanti.append(deathsbyanti)
+				self.dormancy_count.append(dormancy_count)
 				self.deathsbyfood.append(deathsbyfood)
 
 
@@ -342,6 +347,9 @@ class Environment(object):
 			#	print(self.antibiotics_count, "doses")
 			#print(len(self.agents))
 		#print(self.resistance)
+		dormancy_df = pd.DataFrame()
+		dormancy_df['time'] = pd.Series(self.time_elapsed)
+		dormancy_df['dormancy'] = pd.Series(self.dormancy_count)
 		resistant = pd.concat(dataframes, axis=1)
 		total=pd.concat(dataframes2, axis=1)
 
@@ -373,4 +381,4 @@ class Environment(object):
 		pl.grid(True)
 		pl.show()
 
-		return [resistant, total]
+		return [resistant, total, dormancy_df]
