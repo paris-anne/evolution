@@ -91,12 +91,12 @@ class Environment(object):
 		for i in range(number_of_agents):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
+			dormancy_time = np.random.uniform(0,5000)
 			reproduction = np.random.choice([2.0, 3.0, 4.0, 5.0, 6.0], p = [0.99, 0.0025, 0.0025, 0.0025, 0.0025])			
-			agent = ag.Agent(x=x, y=y, reproduction = reproduction, environment=self, size = size, 
+			agent = ag.Agent(reproduction = reproduction, dormancy_time = np.random.uniform(0,5000), dormancy_period = np.random.uniform(10000,40000), x=x, y=y, environment=self, size = size, 
 				resistance  = np.random.choice([0, 1], p = [0.95, 0.05]), 
-				dormancy_gene = np.random.choice([0, 1], p = [0.9, 0.1]), 
-				dormancy_time = np.random.uniform(0,5000),
-				dormancy_period = np.random.uniform(10000,40000))
+				dormancy_gene = np.random.choice([0, 1], p = [0.9, 0.1])
+				)
 			self.agents[agent.key] = agent
 
 	def remove_agent(self, key):
@@ -243,11 +243,11 @@ class Environment(object):
 				#change colour dep on resistance
 
 				#print(self.agents[i].dormancy_time)
-				if self.agents[i].resistance == 1:
-					self.agents[i].colour = (0,0,255)
-				elif self.agents[i].resistance == 0:
-					self.agents[i].colour = (0,0,0)
-				#print(self.agents[i].food_level, "food_level")
+				# if self.agents[i].resistance == 1:
+				# 	self.agents[i].colour = (0,0,255)
+				# elif self.agents[i].resistance == 0:
+				# 	self.agents[i].colour = (0,0,0)
+				# #print(self.agents[i].food_level, "food_level")
 
 
 

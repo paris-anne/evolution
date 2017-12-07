@@ -32,7 +32,7 @@ enviro.addfood(0.25) #parameter is food_coverage as a proportion
 #ntibioticse=data.iloc[0,:]
 #print(data)
 #print (df, "sdds==================================")
-#plots.histogram(data)
+#plotdormancy_period = np.random.uniform(10000,40000)s.histogram(data)
 #plots.LV_plots(data)
 #df=enviro.plot()
 #plots.plot(data)
@@ -111,7 +111,7 @@ def changing_freq():
 
 
 
-run(first_dose = 0, anti_conc = 0.1, anti_freq = 4000, anti_halflife = 1400, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 250) #first dose, anti_conc,
+run(first_dose = 0, anti_conc = 0.1, anti_freq = 10000, anti_halflife = 1400, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 250) #first dose, anti_conc,
 #changing_starttime()
 
 #antibiotics(0.1, 43200, 14400); agents = 250

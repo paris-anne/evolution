@@ -42,10 +42,10 @@ class Agent(p.Particle):
 			reproduction.remove(self.reproduction)
 			reproduction.append(self.reproduction)
 			child_reproduction = np.random.choice(reproduction, p = [0.025, 0.025, 0.025, 0.025, 0.9])
-			dormancy_time_mutation = np.random.uniform(2000,10000)
+			dormancy_time_mutation = np.random.uniform(0,5000)
 			child_dormancy_time = np.random.choice([self.dormancy_time, dormancy_time_mutation], p = [0.9, 0.1])
 
-			dormancy_period_mutation = np.random.uniform(1000,5000) #this should be distribution but with constant probability?
+			dormancy_period_mutation = np.random.uniform(1000,10000) #this should be distribution but with constant probability?
 			# dormancy_period.remove(self.dormancy_period)
 			# dormancy_period.append(self.dormancy_period)
 			child_dormancy_period = np.random.choice([self.dormancy_period, dormancy_period_mutation], p = [0.9, 0.1])
@@ -93,6 +93,8 @@ class Agent(p.Particle):
 
 
 	def dormancy2(self, i, dormancy_period, dormancy_time):
+		dormancy_period = dormancy_period - (dormancy_period%100)
+		dormancy_time = dormancy_time - (dormancy_time%100)
 		if (self.enviro.time_ms%dormancy_period) == 0:
 				self.enviro.agents[i].speed = 0
 				self.enviro.agents[i].colour = (255,0,0)
