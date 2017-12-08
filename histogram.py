@@ -77,7 +77,7 @@ def histo_offspring(dataframe):
                         # showline=True, 
                         # mirror=True,
                         # showgrid=True),
-            yaxis=dict(range= [1000, 10000], 
+            yaxis=dict(range= [10000, 40000], 
                         title= "Dormancy Time"),
                        # ticklen=4,  
                        # autorange= False, 
@@ -86,7 +86,7 @@ def histo_offspring(dataframe):
                        # zeroline=False, 
                        # showgrid=True),
             # plot_bgcolor = 'rgb(223, 232, 243)',
-            title= 'Evolution', 
+            title= 'Evolution of Dormancy ', 
             hovermode='closest',
             gridcolour='#FFFFFF',
             sliders=get_sliders(n_frames=len(time)),
@@ -94,12 +94,12 @@ def histo_offspring(dataframe):
             )
     frames = [{'data': [{
     'type':"histogram2d",
-    'y':list(dataframe[t].dropna().apply(lambda x: x.dormancy_time).values),
+    'y':list(dataframe[t].dropna().apply(lambda x: x.dormancy_period).values),
     'x':list(dataframe[t].dropna().apply(lambda x: x.reproduction).values),
     'autobinx':False,
-    # 'xbins'=dict(start=-3, end=3, size=0.1),
+    'xbins':dict(start=1.5, end=10.5, size=2.0),
     'autobiny':False,
-    # 'ybins'=dict(start=-2.5, end=4, size=0.1),
+    'ybins':dict(start=10000, end=40000, size=300),
     "colorscale":'YIGnBu',
     #     # "zmax":50,
     "nbinsx":50,
@@ -121,14 +121,16 @@ def histo_dormancy(dataframe):
     layout=dict(width=750, height=750,
             # font=dict(family='Balto', 
             #           size=12),
-            xaxis= dict(range= [1000,5000], 
+            xaxis= dict(range= [10000,40000], 
+                        title = "Dormancy Frequency",
                         ticklen=4,  
                         autorange= False, 
                         zeroline=False, 
                         showline=True, 
                         mirror=True,
                         showgrid=True),
-            yaxis=dict(range= [1000, 10000], 
+            yaxis=dict(range= [0, 5000], 
+                        title = "Dormancy Length of Time",
                        ticklen=4,  
                        autorange= False, 
                        showline=True, 
@@ -146,9 +148,9 @@ def histo_dormancy(dataframe):
     'y':list(dataframe[t].dropna().apply(lambda x: x.dormancy_time).values),
     'x':list(dataframe[t].dropna().apply(lambda x: x.dormancy_period).values),
     'autobinx':False,
-    'xbins':dict(start=1000, end=5000, size=200),
+    'xbins':dict(start=10000, end=40000, size=300),
     'autobiny':False,
-    'ybins':dict(start=1000, end=10000, size=50),
+    'ybins':dict(start=0, end=5000, size=50),
         
     "colorscale":'YIGnBu',
     #     # "zmax":50,
@@ -166,5 +168,5 @@ def histo_dormancy(dataframe):
     py.offline.plot(fig)
     return fig
 
-#dormancy_offspring = histo_offspring(dataframe)
-dormancy = histo_dormancy(dataframe) #change dimensions
+dormancy_offspring = histo_offspring(dataframe)
+#dormancy = histo_dormancy(dataframe) #change dimensions

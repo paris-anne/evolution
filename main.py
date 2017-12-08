@@ -50,7 +50,7 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.set_double_doses(double_doses)
 	enviro.set_numberofdoses(numberofdoses)
 	enviro.add_agents(numberofagents)
-	data = enviro.display(200000, display = True)
+	data = enviro.display(500000, display = True)
 	data[0].to_pickle("resistant.pkl")
 	data[1].to_pickle("total.pkl")
 	print(list(data[2]['time'].values))
@@ -111,7 +111,7 @@ def changing_freq():
 
 
 
-run(first_dose = 0, anti_conc = 0.1, anti_freq = 10000, anti_halflife = 1400, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 250) #first dose, anti_conc,
+run(first_dose = 0, anti_conc = 0.05, anti_freq = 10000, anti_halflife = 800, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 600) #first dose, anti_conc,
 #changing_starttime()
 
 #antibiotics(0.1, 43200, 14400); agents = 250
