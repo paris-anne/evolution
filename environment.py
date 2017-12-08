@@ -43,7 +43,7 @@ class Environment(object):
 		self.tbirths = [0]
 		self.time_ms = 0
 		self.av_dormancy_time = []
-		self.immune_system = 1000
+		self.immune_system = 2000
 		self.antibiotics_count = 0
 		self.deathsbyfood = []
 		self.deathsbyanti = []
@@ -89,13 +89,14 @@ class Environment(object):
 
 	def add_agents(self, number_of_agents = 10, size = 3.0):
 		for i in range(number_of_agents):
+			offspring_dict = {2:5, 4:7, 6:9, 8:11, 10:17, 2.5:5.5, 4.5:7.5, 6.5:9.5, 8.5:11.5, 10.5:17.5}
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
 			dormancy_time = np.random.uniform(0,5000)
-			reproduction = np.random.choice([2.0, 4.0, 8.0, 16.0],  p = [0.9, np.float(0.1/3), np.float(0.1/3), np.float(0.1/3)])			
+			reproduction = np.random.choice([2.0, 4.0, 6.0, 8.0, 10.0],  p = [0.9, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4])			
 			agent = ag.Agent(reproduction = reproduction, dormancy_time = np.random.uniform(0,5000), dormancy_period = np.random.uniform(10000,40000), x=x, y=y, environment=self, size = size, 
 				resistance  = np.random.choice([0, 1], p = [0.95, 0.05]), 
-				dormancy_gene = np.random.choice([0, 1], p = [0.9, 0.1])
+				dormancy_gene = np.random.choice([0, 1], p = [0.9, 0.1]), reproduce_level=offspring_dict[reproduction]
 				)
 			self.agents[agent.key] = agent
 
@@ -253,7 +254,7 @@ class Environment(object):
 
 				self.agents[i].dormancy2(i, self.agents[i].dormancy_period ,self.agents[i].dormancy_time) # time between dormancies, time of dormancy
 				resistance += self.agents[i].resistance
-				print(self.agents[i].reproduce_level)
+				print(self.agents[i].reproduce_level, "reproduce")
 
 				#print(self.time_ms%self.agents[i].dormancy_period, "remainder", self.agents[i].dormancy_time, "dorm time")
 				if self.agents[i].speed == 0:
@@ -261,7 +262,7 @@ class Environment(object):
 				else:
 					self.agents[i].move()
 					self.agents[i].bounce(self.width, self.height)
-					self.agents[i].food_level -= 0.02 #move
+					self.agents[i].food_level -= 0.01 #move
 					self.agents[i].eat()
 					if self.agents[i].food_level > self.agents[i].reproduce_level: 
 						self.reproduce_key.append(i)
