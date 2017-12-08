@@ -12,8 +12,8 @@ import food as f
 
 class Environment(object):
 	"""Create environment for agents to interact in """
-	np.random.seed(2)
-	random.seed(2)
+	# np.random.seed(2)
+	# random.seed(2)
 	def __init__(self, width = 100, height = 100, colour = (255,255,255)):
 		self.food_amount = 0
 		self.width  = width
@@ -92,9 +92,9 @@ class Environment(object):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
 			dormancy_time = np.random.uniform(0,5000)
-			reproduction = np.random.choice([2.0, 3.0, 4.0, 5.0, 6.0], p = [0.99, 0.0025, 0.0025, 0.0025, 0.0025])			
+			reproduction = np.random.choice([2.0, 4.0, 6.0, 8.0, 10.0], p = [0.99, 0.0025, 0.0025, 0.0025, 0.0025])			
 			agent = ag.Agent(reproduction = reproduction, dormancy_time = np.random.uniform(0,5000), dormancy_period = np.random.uniform(10000,40000), x=x, y=y, environment=self, size = size, 
-				resistance  = np.random.choice([0, 1], p = [0.95, 0.05]), 
+				resistance  = np.random.choice([0, 1], p = [0.999, 0.001]), 
 				dormancy_gene = np.random.choice([0, 1], p = [0.9, 0.1])
 				)
 			self.agents[agent.key] = agent
@@ -252,6 +252,8 @@ class Environment(object):
 
 
 				self.agents[i].dormancy2(i, self.agents[i].dormancy_period ,self.agents[i].dormancy_time) # time between dormancies, time of dormancy
+				resistance += self.agents[i].resistance
+
 				#print(self.time_ms%self.agents[i].dormancy_period, "remainder", self.agents[i].dormancy_time, "dorm time")
 				if self.agents[i].speed == 0:
 					dormancy_count+=1
@@ -269,7 +271,6 @@ class Environment(object):
 						self.dead_key.append(i)
 						#print(i, "move")
 						deathsbyfood += 1
-					resistance += self.agents[i].resistance
 
 					# #print(self.agents[i].reproduction)
 					# reproduction += self.agents[i].reproduction#

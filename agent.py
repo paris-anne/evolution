@@ -8,7 +8,7 @@ import antibiotic as ant
 class Agent(p.Particle):
 	key = -1
 	random = np.random.choice([0, 1], p = [0.9, 0.1])
-	def __init__(self, reproduction, dormancy_time, dormancy_period, x=0, y=0, environment=None, size = 3.0, colour = (0, 0,0), reproduce_level = 4.0,  food_level = float(2.0),
+	def __init__(self, reproduction, dormancy_time, dormancy_period, x=0, y=0, environment=None, size = 3.0, colour = (0, 0,0), reproduce_level = 5.0,  food_level = float(2.0),
 	 resistance = 0, dormancy_gene = 1):
 		super().__init__(x, y, size, colour)
 		self.food_level = food_level
@@ -34,9 +34,10 @@ class Agent(p.Particle):
 
 	def reproduce(self):
 		new_foodlevel = self.food_level/float(self.reproduction)
+		new_reproduce_level = self.reproduce_level/np.sqrt(self.reproduction)
 		self.food_level = new_foodlevel
 		for i in range(int(self.reproduction)):
-			child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [0.95, 0.05])
+			child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [0.99, 0.01])
 
 			reproduction = [2.0, 4.0, 6.0, 8.0, 10.0]
 			reproduction.remove(self.reproduction)
@@ -45,7 +46,7 @@ class Agent(p.Particle):
 			dormancy_time_mutation = np.random.uniform(0,5000)
 			child_dormancy_time = np.random.choice([self.dormancy_time, dormancy_time_mutation], p = [0.9, 0.1])
 
-			dormancy_period_mutation = np.random.uniform(1000,10000) #this should be distribution but with constant probability?
+			dormancy_period_mutation = np.random.uniform(10000,40000) #this should be distribution but with constant probability?
 			# dormancy_period.remove(self.dormancy_period)
 			# dormancy_period.append(self.dormancy_period)
 			child_dormancy_period = np.random.choice([self.dormancy_period, dormancy_period_mutation], p = [0.9, 0.1])
