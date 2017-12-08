@@ -69,7 +69,7 @@ def histo_offspring(dataframe):
             # font=dict(family='Balto', 
             #           size=12),
 
-            xaxis= dict(range= [1.5,10.5], 
+            xaxis= dict(range= [1.5,17.5], 
                         title="Number of Offspring"),
                         # ticklen=4,  
                         # autorange= False, 
@@ -97,9 +97,9 @@ def histo_offspring(dataframe):
     'y':list(dataframe[t].dropna().apply(lambda x: x.dormancy_time).values),
     'x':list(dataframe[t].dropna().apply(lambda x: x.reproduction).values),
     'autobinx':False,
-    # 'xbins'=dict(start=-3, end=3, size=0.1),
+    'xbins':dict(start=1.5, end=17.5, size=2),
     'autobiny':False,
-    # 'ybins'=dict(start=-2.5, end=4, size=0.1),
+    'ybins':dict(start=0000, end=5000, size=300),
     "colorscale":'YIGnBu',
     #     # "zmax":50,
     "nbinsx":50,
@@ -146,9 +146,9 @@ def histo_dormancy(dataframe):
     'y':list(dataframe[t].dropna().apply(lambda x: x.dormancy_time).values),
     'x':list(dataframe[t].dropna().apply(lambda x: x.dormancy_period).values),
     'autobinx':False,
-    'xbins':dict(start=1000, end=5000, size=200),
+    'xbins':dict(start=1000, end=40000, size=300),
     'autobiny':False,
-    'ybins':dict(start=1000, end=10000, size=50),
+    'ybins':dict(start=0, end=5000, size=50),
         
     "colorscale":'YIGnBu',
     #     # "zmax":50,
@@ -166,5 +166,5 @@ def histo_dormancy(dataframe):
     py.offline.plot(fig)
     return fig
 
-#dormancy_offspring = histo_offspring(dataframe)
-dormancy = histo_dormancy(dataframe) #change dimensions
+dormancy_offspring = histo_offspring(dataframe)
+#dormancy = histo_dormancy(dataframe) #change dimensions

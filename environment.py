@@ -92,9 +92,9 @@ class Environment(object):
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
 			dormancy_time = np.random.uniform(0,5000)
-			reproduction = np.random.choice([2.0, 4.0, 6.0, 8.0, 10.0], p = [0.99, 0.0025, 0.0025, 0.0025, 0.0025])			
+			reproduction = np.random.choice([2.0, 4.0, 8.0, 16.0],  p = [0.9, np.float(0.1/3), np.float(0.1/3), np.float(0.1/3)])			
 			agent = ag.Agent(reproduction = reproduction, dormancy_time = np.random.uniform(0,5000), dormancy_period = np.random.uniform(10000,40000), x=x, y=y, environment=self, size = size, 
-				resistance  = np.random.choice([0, 1], p = [0.999, 0.001]), 
+				resistance  = np.random.choice([0, 1], p = [0.95, 0.05]), 
 				dormancy_gene = np.random.choice([0, 1], p = [0.9, 0.1])
 				)
 			self.agents[agent.key] = agent
@@ -253,6 +253,7 @@ class Environment(object):
 
 				self.agents[i].dormancy2(i, self.agents[i].dormancy_period ,self.agents[i].dormancy_time) # time between dormancies, time of dormancy
 				resistance += self.agents[i].resistance
+				print(self.agents[i].reproduce_level)
 
 				#print(self.time_ms%self.agents[i].dormancy_period, "remainder", self.agents[i].dormancy_time, "dorm time")
 				if self.agents[i].speed == 0:
@@ -260,7 +261,7 @@ class Environment(object):
 				else:
 					self.agents[i].move()
 					self.agents[i].bounce(self.width, self.height)
-					self.agents[i].food_level -= 0.01 #move
+					self.agents[i].food_level -= 0.02 #move
 					self.agents[i].eat()
 					if self.agents[i].food_level > self.agents[i].reproduce_level: 
 						self.reproduce_key.append(i)
@@ -303,6 +304,7 @@ class Environment(object):
 			self.reproduce_key = []
 			self.dead_key = []
 			# self.remove_food = []
+
 
 				
 
