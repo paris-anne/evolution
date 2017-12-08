@@ -39,11 +39,13 @@ class Agent(p.Particle):
 		new_reproduce_level = self.reproduce_level/np.sqrt(self.reproduction)
 		self.food_level = new_foodlevel
 		for i in range(int(self.reproduction)):
-			child_resistance = self.resistance #np.random.choice([self.resistance, (1-self.resistance)], p = [0.95, 0.05])
-			reproduction = [2.0, 4.0, 8.0]
+
+			child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [0.95, 0.05])
+
+			reproduction = [2.0, 4.0, 8.0, 16.0]
 			reproduction.remove(self.reproduction)
 			reproduction.append(self.reproduction)
-			child_reproduction = np.random.choice(reproduction, p = [0.05, 0.05, 0.9])
+			child_reproduction = np.random.choice(reproduction, p = [np.float(0.1/3), np.float(0.1/3), np.float(0.1/3), 0.9])
 			dormancy_time_mutation = np.random.uniform(0,5000)
 			child_dormancy_time = np.random.choice([self.dormancy_time, dormancy_time_mutation], p = [0.99, 0.01])
 
