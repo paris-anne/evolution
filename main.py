@@ -9,6 +9,7 @@ import particle as p
 import plots
 import food as f 
 import pandas as pd
+
 # pre antibiotics & normal amount of bacteria - 50 agents, immune system 3000, 10%, 1200000 time
 # working antibiotics: antibiotics(0.1, 43200, 14400); agents = 250
 envirox = 500
@@ -17,17 +18,10 @@ enviro = env.Environment(envirox, enviroy)
 enviro.addfood(0.25) #parameter is food_coverage as a proportion
 
 #enviro.add_agents(50) #100?
-
-
 #enviro.add_antibiotics(0.1, 43200/2, 14400/2) #concentration, time between dose(s) , halflife of dose
-# #enviro.add_antibiotics(0.2, 13000, 1000) #concentration, time between dose, halflife of dose
-
-
+#enviro.add_antibiotics(0.2, 13000, 1000) #concentration, time between dose, halflife of dose
 #data = enviro.display(200000, display = True) #24 hours = 86400
-
-
 #pop=pd.DataFrame({"population" :data.count()})
-
 #print(pop["population"].iloc[-1])
 #ntibioticse=data.iloc[0,:]
 #print(data)
@@ -36,7 +30,7 @@ enviro.addfood(0.25) #parameter is food_coverage as a proportion
 #plots.LV_plots(data)
 #df=enviro.plot()
 #plots.plot(data)
-# print(data)
+#print(data)
 #plots.population(data)
 #plots.resistance(data)
 #plots.antibiotic_conc_v_population(data)
@@ -50,7 +44,7 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.set_double_doses(double_doses)
 	enviro.set_numberofdoses(numberofdoses)
 	enviro.add_agents(numberofagents)
-	data = enviro.display(200000, display = True)
+	data = enviro.display(300000, display = True)
 	data[0].to_pickle("resistant.pkl")
 	data[1].to_pickle("total.pkl")
 	print(list(data[2]['time'].values))
@@ -70,7 +64,7 @@ def changing_conc():
 		enviro.set_anti_halflife(10000)	
 		enviro.set_skipped_doses([2,5])	
 		enviro.add_agents(50)
-		data = enviro.display(200000, display = True)
+		data = enviro.display(300000, display = True)
 		pop=pd.DataFrame({"population" :data.count()})
 		final_pop = int((pop["population"].iloc[-1]))
 
@@ -101,16 +95,7 @@ def changing_freq():
 	#pl.plot(conc, fin)
 	pl.show()
 
-
-
-
-
-
-
-
-
-
-run(first_dose = 0, anti_conc = 0.05, anti_freq = 10000, anti_halflife = 800, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 600) #first dose, anti_conc,
+run(first_dose = 0, anti_conc = 0.0, anti_freq = 10000, anti_halflife = 800, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500) #first dose, anti_conc,
 #changing_starttime()
 #antibiotics(0.1, 43200, 14400); agents = 250
 #df = pd.read_csv('bacteria_wo_antibiotics.csv', low_memory=False)

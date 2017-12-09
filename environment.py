@@ -43,7 +43,7 @@ class Environment(object):
 		self.tbirths = [0]
 		self.time_ms = 0
 		self.av_dormancy_time = []
-		self.immune_system = 2000
+		self.immune_system = 2500
 		self.antibiotics_count = 0
 		self.deathsbyfood = []
 		self.deathsbyanti = []
@@ -89,7 +89,7 @@ class Environment(object):
 
 	def add_agents(self, number_of_agents = 10, size = 3.0):
 		for i in range(number_of_agents):
-			offspring_dict = {2:5, 4:7, 6:9, 8:11, 10:17, 2.5:5.5, 4.5:7.5, 6.5:9.5, 8.5:11.5, 10.5:17.5}
+			offspring_dict = {2:4, 4:6, 6:8, 8:10, 10:15, 2.5:4.5, 4.5:6.5, 6.5:8.5, 8.5:10.5, 10.5:1.5}
 			x = random.randint(size, self.width - size)
 			y = random.randint(size, self.height - size)
 			dormancy_time = np.random.uniform(0,5000)
@@ -262,7 +262,7 @@ class Environment(object):
 				else:
 					self.agents[i].move()
 					self.agents[i].bounce(self.width, self.height)
-					self.agents[i].food_level -= 0.01 #move
+					self.agents[i].food_level -= 0.005 #move
 					self.agents[i].eat()
 					if self.agents[i].food_level > self.agents[i].reproduce_level: 
 						self.reproduce_key.append(i)

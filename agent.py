@@ -8,7 +8,7 @@ import antibiotic as ant
 class Agent(p.Particle):
 	key = -1
 	random = np.random.choice([0, 1], p = [0.9, 0.1])
-	def __init__(self, reproduction, dormancy_time, dormancy_period, x=0, y=0, environment=None, size = 3.0, colour = (0, 0,0), reproduce_level = 5.0,  food_level = float(2.0),
+	def __init__(self, reproduction, dormancy_time, dormancy_period, x=0, y=0, environment=None, size = 3.0, colour = (0, 0,0), reproduce_level = 4.0,  food_level = float(3.0),
 	 resistance = 0, dormancy_gene = 1):
 		super().__init__(x, y, size, colour)
 		self.food_level = food_level
@@ -34,7 +34,7 @@ class Agent(p.Particle):
 		return (self.__class__, (self.reproduction, self.dormancy_time, self.dormancy_period))
 
 	def reproduce(self):
-		offspring_dict = {2:5, 4:7, 6:9, 8:11, 10:17, 2.5:5.5, 4.5:7.5, 6.5:9.5, 8.5:11.5, 10.5:17.5}
+		offspring_dict = {2:4, 4:6, 6:8, 8:10, 10:15, 2.5:4.5, 4.5:6.5, 6.5:8.5, 8.5:10.5, 10.5:15.5}
 		new_foodlevel = self.food_level/float(self.reproduction)
 		#new_reproduce_level = self.reproduce_level*np.sqrt(self.reproduction)
 		self.reproduce_level = offspring_dict[self.reproduction]
@@ -67,7 +67,7 @@ class Agent(p.Particle):
 			foodpos_y = food.y
 			if 0.95 * food.size < np.sqrt((self.x - foodpos_x)**2 + (self.y - foodpos_y)**2) < food.size:
 				print("eat")
-				self.food_level += 1.0
+				self.food_level += 0.5
 				#self.enviro.food[i].eaten(self)
 
 	def neutralise(self,i):
