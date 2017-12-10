@@ -376,7 +376,8 @@ class Environment(object):
         dormancy_df['time'] = pd.Series(self.time_elapsed)
         dormancy_df['dormancy'] = pd.Series(self.dormancy_count)
  
-        pop=pd.DataFrame({"population" :total.count()})
+        pop=list(total.count())
+        resistant=list(resistant.count())
         #print(data)
         #print(pop)
         pl.figure(1)
@@ -403,16 +404,19 @@ class Environment(object):
         pl.ylabel("Population")
         pl.grid(True, which='both')
         pl.legend()
+
+        pl.figure(4)
+        pl.plot(self.time_elapsed, pop, label='Total Population')
+        pl.plot(self.time_elapsed, resistant, label = 'Resistant Population')
+        pl.title("Population vs time")
+        pl.xlabel("Time Elapsed")
+        pl.ylabel("Population")
+        pl.grid(True, which='both')
+        pl.legend()
  
         print(self.time_ms)
         #plots.dormancytime_hist(self.hist_dormancy_time, self.time_ms/self.hist_freq)
         # plots.dormancyfreq_hist(self.hist_dormancy_freq, self.time_ms/self.hist_freq)
         # plots.dormancyfreqplustime_hist(self.hist_dormancyfreqplustime , self.time_ms/self.hist_freq)
         plots.generations_hist(self.hist_dormancy_time, self.hist_dormancy_freq, self.time_ms/self.hist_freq)
-
- 
- 
- 
- 
- 
         return [resistant, total, dormancy_df]
