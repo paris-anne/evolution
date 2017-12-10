@@ -47,7 +47,7 @@ class Environment(object):
         self.time_ms = 0
         self.av_dormancy_time = []
         self.immune_system = 2500
-        self.antibiotics_count = 0
+        self.antibiotics_count = 1
         self.deathsbyfood = []
         self.deathsbyanti = []
         self.deathsbyimmune = []
@@ -157,7 +157,7 @@ class Environment(object):
  
     def display(self, time, display):
         self.time_ms = 0
-        self.antibiotics_count = 0
+        self.antibiotics_count = 1
         reproduction_count = 0
         running = True
         if display == True:
