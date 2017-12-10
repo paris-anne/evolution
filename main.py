@@ -95,7 +95,7 @@ def changing_freq():
     #pl.plot(conc, fin)
     pl.show()
  
-run(first_dose = 25000, anti_conc = 0.05, anti_freq = 10000, anti_halflife = 800, skipped_doses = [2] , double_doses = [], numberofdoses = 20, numberofagents = 600) #first dose, anti_conc,
+run(first_dose = 25000, anti_conc = 0.05, anti_freq = 10000, anti_halflife = 800, skipped_doses = [2] , double_doses = [3], numberofdoses = 20, numberofagents = 600) #first dose, anti_conc,
 #changing_starttime()
 #antibiotics(0.1, 43200, 14400); agents = 250
 #df = pd.read_csv('bacteria_wo_antibiotics.csv', low_memory=False)
