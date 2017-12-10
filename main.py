@@ -49,7 +49,7 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.set_numberofdoses(numberofdoses)
 	enviro.add_agents(numberofagents)
 	enviro.set_plotlabel(plotlabel)
-	data = enviro.display(150000, display = True)
+	data = enviro.display(350000, display = True)
 	# pl.plot(data[0].columns(),data[0].count())
 	# pl.show()
  #    #data[0].to_pickle("resistant.pkl")
@@ -108,7 +108,7 @@ def changing_freq():
     #pl.plot(conc, fin)
     #pl.show()
  
-run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500) #first dose, anti_conc,
+run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [5,6,7,8,9,10,11,12] , double_doses = [], numberofdoses = 19, numberofagents = 500) #first dose, anti_conc,
 
 # for i in range(1, 10):
 #  	run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = "Miss dose number: " + str(i)) #first dose, anti_conc,

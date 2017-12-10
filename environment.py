@@ -398,12 +398,11 @@ class Environment(object):
         pl.grid(True, which='both')
  
         pl.figure(3)
-        pl.plot(self.time_elapsed, pop, label = self.plotlabel)
+        pl.plot(self.time_elapsed, pop)
         pl.title("Population vs time")
         pl.xlabel("Time Elapsed")
         pl.ylabel("Population")
         pl.grid(True, which='both')
-        pl.legend()
 
         pl.figure(4)
         pl.plot(self.time_elapsed, pop, label='Total Population')
