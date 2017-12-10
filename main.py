@@ -35,7 +35,7 @@ enviro.addfood(0.25) #parameter is food_coverage as a proportion
 #plots.resistance(data)
 #plots.antibiotic_conc_v_population(data)
  
-def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_doses, numberofdoses, numberofagents): #first dose, anti_conc, yyf y 
+def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_doses, numberofdoses, numberofagents, plotlabel): #first dose, anti_conc, yyf y 
 	envirox = 500
 	enviroy = 500
 	enviro = env.Environment(envirox, enviroy)
@@ -48,7 +48,8 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.set_double_doses(double_doses)
 	enviro.set_numberofdoses(numberofdoses)
 	enviro.add_agents(numberofagents)
-	data = enviro.display(350000, display = True)
+	enviro.set_plotlabel(plotlabel)
+	data = enviro.display(500000, display = True)
     #data[0].to_pickle("resistant.pkl")
     #data[1].to_pickle("total.pkl")
 	print(list(data[2]['time'].values))
@@ -99,10 +100,18 @@ def changing_freq():
     #pl.plot(conc, fin)
     #pl.show()
  
-run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500) #first dose, anti_conc,
+# run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500) #first dose, anti_conc,
 
 for i in range(1, 10):
-	run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = i, numberofagents = 500) #first dose, anti_conc,
+	run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = "Miss dose number: " + str(i)) #first dose, anti_conc,
+
+# for i in range(1, 10):
+# 	run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = i, numberofagents = 500, plotlabel = "Stop after " + str(i) + " treatments") #first dose, anti_conc,
+
+
+pl.legend()
+
+pl.show()
 #changing_starttime()
 #antibiotics(0.1, 43200, 14400); agents = 250
 #df = pd.read_csv('bacteria_wo_antibiotics.csv', low_memory=False)

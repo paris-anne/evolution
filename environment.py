@@ -65,6 +65,7 @@ class Environment(object):
         self.dormancy_freq_list = []
         self.hist_dormancyfreqplustime = []
         self.dormancyfreqplustime_list = []
+        self.plotlabel = 0
  
  
     def addfood(self, food_coverage):
@@ -149,6 +150,9 @@ class Environment(object):
  
     def set_double_doses(self, doses):
         self.double_doses = doses
+
+    def set_plotlabel(self,label):
+        self.plotlabel = label
  
  
     def display(self, time, display):
@@ -395,9 +399,7 @@ class Environment(object):
         pl.title("Cause of Death")
         pl.xlabel("Time Elapsed")
         pl.ylabel("Frequency")
-        pl.legend()
         pl.grid(True, which='both')
-        pl.savefig("type_of_death{}.pdf".format(self.numberofdoses))
         #pl.show()
  
         pl.figure(2)
@@ -406,21 +408,23 @@ class Environment(object):
         pl.xlabel("Time Elapsed")
         pl.ylabel("Average resistance")
         pl.grid(True, which='both')
-        pl.savefig("av_resistance{}.pdf".format(self.numberofdoses))
  
         pl.figure(3)
-        pl.plot(self.time_elapsed, pop)
+        pl.plot(self.time_elapsed, pop, label = self.plotlabel)
         pl.title("Population vs time")
         pl.xlabel("Time Elapsed")
         pl.ylabel("Population")
         pl.grid(True, which='both')
-        pl.savefig("population{}.pdf".format(self.numberofdoses)) 
+        pl.legend()
+
+
  
         print(self.time_ms)
         #plots.dormancytime_hist(self.hist_dormancy_time, self.time_ms/self.hist_freq)
         # plots.dormancyfreq_hist(self.hist_dormancy_freq, self.time_ms/self.hist_freq)
         # plots.dormancyfreqplustime_hist(self.hist_dormancyfreqplustime , self.time_ms/self.hist_freq)
         plots.generations_hist(self.hist_dormancy_time, self.hist_dormancy_freq, self.time_ms/self.hist_freq)
+
  
  
  

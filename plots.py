@@ -232,6 +232,14 @@ def dormancyfreqplustime_hist(hist_data, frames):
     ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_data,))
     #ani.save('animation.gif', writer = "imagemagick_file")
     #pl.show()
+
+def plot(i):
+        pl.figure(3)
+        pl.plot(self.time_elapsed, pop)
+        pl.title("Population vs time")
+        pl.xlabel("Time Elapsed")
+        pl.ylabel("Population")
+        pl.grid(True, which='both')
  
  
  
