@@ -254,7 +254,7 @@ class Environment(object):
  
             #print(self.time_ms%6000)
             if (self.time_ms%self.immune_system) == 0:
-                for i in range(math.ceil(0.1*len(self.agents))):
+                for i in range(math.ceil(0.05*len(self.agents))):
                     if self.agents:
                         del self.agents[random.choice(list(self.agents.keys()))]
                         deathsbyimmune += 1

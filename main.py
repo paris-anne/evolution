@@ -103,7 +103,8 @@ def changing_freq():
 # run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500) #first dose, anti_conc,
 
 # for i in range(1, 10):
-# 	run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = "Miss dose number: " + str(i)) #first dose, anti_conc,
+#  	run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = "Miss dose number: " + str(i)) #first dose, anti_conc,
+# pl.show()
 
 for i in range(1, 10):
 	run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = i, numberofagents = 500, plotlabel = "Stop after " + str(i) + " treatments") #first dose, anti_conc,
