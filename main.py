@@ -12,8 +12,8 @@ import pandas as pd
  
 # pre antibiotics & normal amount of bacteria - 50 agents, immune system 3000, 10%, 1200000 time
 # working antibiotics: antibiotics(0.1, 43200, 14400); agents = 250
-envirox = 500
-enviroy = 500
+envirox = 200
+enviroy = 200
 enviro = env.Environment(envirox, enviroy)
 enviro.addfood(0.25) #parameter is food_coverage as a proportion
  
@@ -35,9 +35,9 @@ enviro.addfood(0.25) #parameter is food_coverage as a proportion
 #plots.resistance(data)
 #plots.antibiotic_conc_v_population(data)
  
-def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_doses, numberofdoses, numberofagents, plotlabel): #first dose, anti_conc, yyf y 
-	envirox = 500
-	enviroy = 500
+def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_doses, numberofdoses, numberofagents, plotlabel=None): #first dose, anti_conc, yyf y 
+	envirox = 600
+	enviroy = 600
 	enviro = env.Environment(envirox, enviroy)
 	enviro.addfood(0.25)
 	enviro.set_first_dose(first_dose)
@@ -49,7 +49,9 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.set_numberofdoses(numberofdoses)
 	enviro.add_agents(numberofagents)
 	enviro.set_plotlabel(plotlabel)
-	data = enviro.display(1000000, display = True)
+	data = enviro.display(150000, display = True)
+	pl.plot(data[0].columns,data[0].count())
+	pl.show()
     #data[0].to_pickle("resistant.pkl")
     #data[1].to_pickle("total.pkl")
 	print(list(data[2]['time'].values))
@@ -100,14 +102,15 @@ def changing_freq():
     #pl.plot(conc, fin)
     #pl.show()
  
-# run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500) #first dose, anti_conc,
+run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500) #first dose, anti_conc,
 
 # for i in range(1, 10):
 #  	run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = "Miss dose number: " + str(i)) #first dose, anti_conc,
 # pl.show()
 
-for i in range(1, 10):
-	run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = i, numberofagents = 500, plotlabel = "Stop after " + str(i) + " treatments") #first dose, anti_conc,
+# for i in range(1, 10):
+# 	print("dose {}".format(i))
+#  	run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = "Stop after " + str(i) + " treatments") #first dose, anti_conc,
 
 
 

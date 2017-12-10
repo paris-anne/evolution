@@ -8,7 +8,6 @@ import antibiotic as ant
  
 class Agent(p.Particle):
     key = -1
-    random = np.random.choice([0, 1], p = [0.9, 0.1])
     def __init__(self, reproduction, dormancy_time, dormancy_period, x=0, y=0, environment=None, size = 3.0, colour = (0, 0,0), reproduce_level = 4.0,  food_level = float(3.0),
      resistance = 0, dormancy_gene = 1, generation = 1):
         super().__init__(x, y, size, colour)
@@ -46,7 +45,7 @@ class Agent(p.Particle):
         for i in range(int(self.reproduction)):
             child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [0.9, 0.1])
             if child_resistance != self.resistance:
-                if self.reproduce_level%1 ==0:
+                if self.reproduce_level%1==0:
                     child_reproduce_level = self.reproduce_level + (child_resistance * self.fitness_cost)
             else:
                 child_reproduce_level=self.reproduce_level
