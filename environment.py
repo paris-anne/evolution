@@ -46,7 +46,7 @@ class Environment(object):
         self.tbirths = 0
         self.time_ms = 0
         self.av_dormancy_time = []
-        self.immune_system = 3000
+        self.immune_system = 2500
         self.antibiotics_count = 0
         self.deathsbyfood = []
         self.deathsbyanti = []
@@ -103,13 +103,13 @@ class Environment(object):
  
     def add_agents(self, number_of_agents = 10, size = 3.0):
         for i in range(number_of_agents):
-            offspring_dict = {2:4, 4:6, 6:8, 8:10, 10:15, 2.5:4.5, 4.5:6.5, 6.5:8.5, 8.5:10.5, 10.5:1.5}
+            offspring_dict = {2:4, 4:6, 6:8, 8:10, 10:15, 2.5:4.5, 4.5:6.5, 6.5:8.5, 8.5:10.5, 10.5:15.5}
             x = random.randint(size, self.width - size)
             y = random.randint(size, self.height - size)
-            dormancy_time = np.random.uniform(0,5000)
+            dormancy_time = np.random.uniform(1000,5000)
             reproduction = np.random.choice([2.0, 4.0, 6.0, 8.0, 10.0],  p = [0.9, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4])         
             agent = ag.Agent(reproduction = reproduction, dormancy_time = np.random.uniform(0,5000), dormancy_period = np.random.uniform(10000,40000), x=x, y=y, environment=self, size = size, 
-                resistance  = np.random.choice([0, 1], p = [1., 0.0]), 
+                resistance  = np.random.choice([0, 1], p = [.9, 0.1]), 
                 dormancy_gene = np.random.choice([0, 1], p = [0.9, 0.1]), reproduce_level=offspring_dict[reproduction]
                 )
             self.agents[agent.key] = agent
@@ -392,11 +392,12 @@ class Environment(object):
         pl.plot(self.time_elapsed, self.deathsbyimmune, 'r', label = "immune system")
         pl.plot(self.time_elapsed, self.deathsbyanti, 'g', label = "antibiotics")
         pl.plot(self.time_elapsed, self.deathsbyfood, 'b', label = "movement")
-        pl.title("Causes of death")
+        pl.title("Cause of Death")
         pl.xlabel("Time Elapsed")
-        pl.ylabel("frequency")
+        pl.ylabel("Frequency")
         pl.legend()
         pl.grid(True)
+        pl.show()
  
         pl.figure(2)
         pl.plot(self.time_elapsed, self.av_resistance)
@@ -404,6 +405,7 @@ class Environment(object):
         pl.xlabel("Time Elapsed")
         pl.ylabel("Average resistance")
         pl.grid(True)
+        pl.show()
  
         pl.figure(3)
         pl.plot(self.time_elapsed, pop)
