@@ -36,21 +36,25 @@ enviro.addfood(0.25) #parameter is food_coverage as a proportion
 #plots.antibiotic_conc_v_population(data)
  
 def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_doses, numberofdoses, numberofagents): #first dose, anti_conc, yyf y 
-    enviro.set_first_dose(first_dose)
-    enviro.set_anti_conc(anti_conc)
-    enviro.set_anti_freq(anti_freq)
-    enviro.set_anti_halflife(anti_halflife) 
-    enviro.set_skipped_doses(skipped_doses) 
-    enviro.set_double_doses(double_doses)
-    enviro.set_numberofdoses(numberofdoses)
-    enviro.add_agents(numberofagents)
-    data = enviro.display(350000, display = True)
+	envirox = 500
+	enviroy = 500
+	enviro = env.Environment(envirox, enviroy)
+	enviro.addfood(0.25)
+	enviro.set_first_dose(first_dose)
+	enviro.set_anti_conc(anti_conc)
+	enviro.set_anti_freq(anti_freq)
+	enviro.set_anti_halflife(anti_halflife) 
+	enviro.set_skipped_doses(skipped_doses) 
+	enviro.set_double_doses(double_doses)
+	enviro.set_numberofdoses(numberofdoses)
+	enviro.add_agents(numberofagents)
+	data = enviro.display(350000, display = True)
     #data[0].to_pickle("resistant.pkl")
     #data[1].to_pickle("total.pkl")
-    print(list(data[2]['time'].values))
-    print(list(data[2]['dormancy'].values))
-    pl.plot(list(data[2]['time'].values), list(data[2]['dormancy'].values))
-    pl.show()
+	print(list(data[2]['time'].values))
+	print(list(data[2]['dormancy'].values))
+	pl.plot(list(data[2]['time'].values), list(data[2]['dormancy'].values))
+    #pl.show()
     #plots.population(data)
  
 def changing_conc():
@@ -72,7 +76,7 @@ def changing_conc():
         fin.append(final_pop)
         print(fin)
     pl.plot(conc, fin)
-    pl.show()
+    #pl.show()
  
 def changing_freq():
     freq = []
@@ -85,7 +89,7 @@ def changing_freq():
         enviro.set_anti_halflife(10000) 
         enviro.set_skipped_doses([2,5]) 
         enviro.add_agents(50)
-        data = enviro.display(200000, display = True)
+        data = enviro.display(300000, display = True)
         pop=pd.DataFrame({"population" :data.count()})
         final_pop = int((pop["population"].iloc[-1]))
  
@@ -93,9 +97,12 @@ def changing_freq():
         fin.append(final_pop)
         print(fin)
     #pl.plot(conc, fin)
-    pl.show()
+    #pl.show()
  
 run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500) #first dose, anti_conc,
+
+for i in range(1, 10):
+	run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = i, numberofagents = 500) #first dose, anti_conc,
 #changing_starttime()
 #antibiotics(0.1, 43200, 14400); agents = 250
 #df = pd.read_csv('bacteria_wo_antibiotics.csv', low_memory=False)

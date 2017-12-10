@@ -99,7 +99,7 @@ def antibiotic_conc_v_population(data):
     pl.plot(list(data), antibiotics)
     pl.setp(ax2.get_xticklabels(), fontsize=6)
     pl.savefig("antibiotics_bacteria.png")
-    pl.show()   
+    #pl.show()   
  
 def histogram(data):
     df = pd.DataFrame(data.iloc[:,-1])
@@ -111,7 +111,7 @@ def histogram(data):
     cb = pl.colorbar()
     cb.set_label('counts in bin')
     pl.savefig("histogram.png")
-    pl.show()
+    #pl.show()
  
 def resistance(data):
     #resistance = pd.DataFrame.sum(data.iloc[:,-1].dropna().apply(lambda x: x.resistance))
@@ -131,7 +131,7 @@ def population(data):
     pl.plot(list(data), antibiotics)
     pl.setp(ax2.get_xticklabels(), fontsize=6)
     pl.savefig("bacteria_population.png")
-    pl.show()
+    #pl.show()
 def histogram(data):
     df = pd.DataFrame(data.iloc[:,-1])
     df = df.dropna()
@@ -142,7 +142,7 @@ def histogram(data):
     cb = pl.colorbar()
     cb.set_label('counts in bin')
     pl.savefig("histogram.png")
-    pl.show()
+    #pl.show()
  
 def generations_hist(data, data1, frames):
     def update_hist(num, data, data1):
@@ -165,7 +165,7 @@ def generations_hist(data, data1, frames):
  
     ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (data, data1))
     #ani.save('animation.gif', writer = "imagemagick")
-    pl.show()
+    #pl.show()
  
  
 def dormancytime_hist(hist_data, frames):
@@ -187,7 +187,7 @@ def dormancytime_hist(hist_data, frames):
     ani.save('blaisematuidi.gif', writer = "imagemagick", fps=60)
     print(animation.writers.list())
  
-    pl.show()
+    #pl.show()
  
 def dormancyfreq_hist(hist_data, frames):
     def update_hist(num, data):
@@ -206,7 +206,7 @@ def dormancyfreq_hist(hist_data, frames):
     fig = pl.figure(12)
     ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_data,))
     #ani.save('animation.gif', writer = "imagemagick")
-    pl.show()
+    #pl.show()
  
 def dormancyfreqplustime_hist(hist_data, frames):
     def update_hist(num, data):
@@ -231,7 +231,7 @@ def dormancyfreqplustime_hist(hist_data, frames):
     fig = pl.figure(13)
     ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_data,))
     #ani.save('animation.gif', writer = "imagemagick_file")
-    pl.show()
+    #pl.show()
  
  
  
