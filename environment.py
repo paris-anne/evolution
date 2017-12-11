@@ -66,6 +66,10 @@ class Environment(object):
         self.hist_dormancyfreqplustime = []
         self.dormancyfreqplustime_list = []
         self.plotlabel = 0
+        self.resistancepop = []
+        self.deathsbyimmunetotal = []
+        self.deathsbyantitotal = []
+        self.deathsbyfood = []
  
  
     def addfood(self, food_coverage):
@@ -167,13 +171,25 @@ class Environment(object):
             for food in self.food: food.display(game_surf)
         #time_elapsed = [i for i in range(0, time, 300)]
         #data = pd.DataFrame(columns=pd.Series(time_elapsed))
-        total = pd.DataFrame()
-        resistant = pd.DataFrame()
+        dataframes = []
+        dataframes2 = []
  
         while running:
             print(self.time_ms, len(self.agents))
-            total[self.time_ms] = pd.Series(self.agents.values())
+            data = pd.DataFrame()
+            data2 = pd.DataFrame()
+            agents = list(self.agents.values())
+            #print(agents.resistance)
+            for i in agents:
+                if i.resistance == 0:
+                    agents.remove(i)
+            #print(pd.Series(agents))
+            data[self.time_ms] = pd.Series(agents)
+            data2[self.time_ms]=list(self.agents.values())          #data['resistance'] = pd.Series(list(self.av_resistance))
             #data['resistance'] = pd.Series(list(self.av_resistance))
+            dataframes.append(data)
+            dataframes2.append(data2)
+
  
             #print(data)
  
@@ -304,7 +320,6 @@ class Environment(object):
                                     deathsbyanti += 1
                     #print(self.agents[i].dormancy_time)
  
-            resistant[self.time_ms]=pd.Series(resistant_agents)       
 
             if self.reproduce_key:
                 for j in self.reproduce_key:
@@ -345,12 +360,18 @@ class Environment(object):
                 self.reproduction_rate.append(reproduction_count/(self.time_ms))
                 self.alive.append(pop)
                 self.av_resistance.append(float(resistance)/pop)
+                self.resistancepop.append(float(resistance))
+
                 self.av_reproduction.append(reproduction/pop)
                 self.food_pop.append(food_amount)
                 self.deathsbyimmune.append(deathsbyimmune)
                 self.deathsbyanti.append(deathsbyanti)
                 self.deathsbyfood.append(deathsbyfood)
                 self.dormancy_count.append(dormancy_count)
+                self.deathsbyimmunetotal.append(deathsbyimmune)
+                self.deathsbyantitotal.append(deathsbyanti)
+                self.deathsbyfoodtotal.append(deathsbyfood)
+ 
             if pop ==0:
                 self.time_elapsed.append(self.time_ms)
                 self.deadcount.append(len(self.dead)/(self.time_ms))
@@ -364,6 +385,9 @@ class Environment(object):
                 self.deathsbyanti.append(deathsbyanti)
                 self.dormancy_count.append(dormancy_count)
                 self.deathsbyfood.append(deathsbyfood)
+                self.deathsbyimmunetotal.append(deathsbyimmune)
+                self.deathsbyantitotal.append(deathsbyanti)
+                self.deathsbyfoodtotal.append(deathsbyfood)
  
  
  
@@ -376,9 +400,11 @@ class Environment(object):
         dormancy_df['time'] = pd.Series(self.time_elapsed)
         dormancy_df['dormancy'] = pd.Series(self.dormancy_count)
  
-        pop=list(total.count())
-        resistant=list(resistant.count())
-        #print(data)
+        resistant = pd.concat(dataframes, axis=1)
+        total=pd.concat(dataframes2, axis=1)
+        pop=pd.DataFrame({"population" :total.count()})
+        respop=pd.DataFrame({"population" :resistant.count()})
+
         #print(pop)
         pl.figure(1)
         pl.plot(self.time_elapsed, self.deathsbyimmune, 'r', label = "immune system")
@@ -407,16 +433,27 @@ class Environment(object):
 
         pl.figure(4)
         pl.plot(self.time_elapsed, pop, label='Total Population')
-        pl.plot(self.time_elapsed, resistant, label = 'Resistant Population')
+        pl.plot(self.time_elapsed, self.resistancepop, label = 'Resistant Population')
         pl.title("Population vs time")
         pl.xlabel("Time Elapsed")
         pl.ylabel("Population")
         pl.grid(True, which='both')
         pl.legend()
+
+        pl.figure(5)
+        pl.plot(self.time_elapsed, self.deathsbyimmunetotal, label = "immune system")
+        pl.plot(self.time_elapsed, self.deathsbyantitotal, label = "antibioticst")
+        pl.plot(self.time_elapsed, self.deathsbyfoodtotal, label = "movement")
+        pl.title("Cumulitive Cause of Death")
+        pl.xlabel("Time Elapsed")
+        pl.ylabel("Frequency")
+        pl.grid(True, which='both')
+        pl.legend()
+
  
         print(self.time_ms)
         #plots.dormancytime_hist(self.hist_dormancy_time, self.time_ms/self.hist_freq)
         # plots.dormancyfreq_hist(self.hist_dormancy_freq, self.time_ms/self.hist_freq)
         # plots.dormancyfreqplustime_hist(self.hist_dormancyfreqplustime , self.time_ms/self.hist_freq)
         plots.generations_hist(self.hist_dormancy_time, self.hist_dormancy_freq, self.time_ms/self.hist_freq)
-        return [resistant, total, dormancy_df]
+        return ["resistant", total, dormancy_df]
