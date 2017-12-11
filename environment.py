@@ -69,7 +69,7 @@ class Environment(object):
         self.resistancepop = []
         self.deathsbyimmunetotal = []
         self.deathsbyantitotal = []
-        self.deathsbyfood = []
+        self.deathsbyfoodtotal = []
  
  
     def addfood(self, food_coverage):
@@ -173,6 +173,9 @@ class Environment(object):
         #data = pd.DataFrame(columns=pd.Series(time_elapsed))
         dataframes = []
         dataframes2 = []
+        deathsbyimmunetotal = 0
+        deathsbyantitotal = 0
+        deathsbyfoodtotal = 0 
  
         while running:
             print(self.time_ms, len(self.agents))
@@ -265,6 +268,7 @@ class Environment(object):
                     if self.agents:
                         del self.agents[random.choice(list(self.agents.keys()))]
                         deathsbyimmune += 1
+                        deathsbyimmunetotal += 1
             resistant_agents=[]
             for i in self.agents: 
                 #change colour dep on resistance
@@ -302,6 +306,8 @@ class Environment(object):
                         self.dead_key.append(i)
                         #print(i, "move")
                         deathsbyfood += 1
+                        deathsbyfoodtotal += 1
+
  
                     # #print(self.agents[i].reproduction)
                     # reproduction += self.agents[i].reproduction#
@@ -318,6 +324,8 @@ class Environment(object):
                                 if kill==True:
                                     self.agents[i].neutralise(i)
                                     deathsbyanti += 1
+                                    deathsbyantitotal += 1
+
                     #print(self.agents[i].dormancy_time)
  
 
@@ -368,9 +376,9 @@ class Environment(object):
                 self.deathsbyanti.append(deathsbyanti)
                 self.deathsbyfood.append(deathsbyfood)
                 self.dormancy_count.append(dormancy_count)
-                self.deathsbyimmunetotal.append(deathsbyimmune)
-                self.deathsbyantitotal.append(deathsbyanti)
-                self.deathsbyfoodtotal.append(deathsbyfood)
+                self.deathsbyimmunetotal.append(deathsbyimmunetotal)
+                self.deathsbyantitotal.append(deathsbyantitotal)
+                self.deathsbyfoodtotal.append(deathsbyfoodtotal)
  
             if pop ==0:
                 self.time_elapsed.append(self.time_ms)
@@ -385,9 +393,9 @@ class Environment(object):
                 self.deathsbyanti.append(deathsbyanti)
                 self.dormancy_count.append(dormancy_count)
                 self.deathsbyfood.append(deathsbyfood)
-                self.deathsbyimmunetotal.append(deathsbyimmune)
-                self.deathsbyantitotal.append(deathsbyanti)
-                self.deathsbyfoodtotal.append(deathsbyfood)
+                self.deathsbyimmunetotal.append(deathsbyimmunetotal)
+                self.deathsbyantitotal.append(deathsbyantitotal)
+                self.deathsbyfoodtotal.append(deathsbyfoodtotal)
  
  
  
@@ -442,9 +450,9 @@ class Environment(object):
 
         pl.figure(5)
         pl.plot(self.time_elapsed, self.deathsbyimmunetotal, label = "immune system")
-        pl.plot(self.time_elapsed, self.deathsbyantitotal, label = "antibioticst")
+        pl.plot(self.time_elapsed, self.deathsbyantitotal, label = "antibiotics")
         pl.plot(self.time_elapsed, self.deathsbyfoodtotal, label = "movement")
-        pl.title("Cumulitive Cause of Death")
+        pl.title("Cumulative Cause of Death")
         pl.xlabel("Time Elapsed")
         pl.ylabel("Frequency")
         pl.grid(True, which='both')
