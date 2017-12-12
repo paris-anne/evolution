@@ -49,8 +49,8 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.set_numberofdoses(numberofdoses)
 	enviro.add_agents(numberofagents)
 	enviro.set_plotlabel(plotlabel)
-	data = enviro.display(350000, display = True)
-	#plots.population(data)
+	data = enviro.display(250000, display = True)
+	plots.population(data)
 	# pl.plot(data[0].columns(),data[0].count())
 	# pl.show()
  #    #data[0].to_pickle("resistant.pkl")
@@ -109,11 +109,11 @@ def changing_freq():
     #pl.plot(conc, fin)
     #pl.show()
  
-run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [5,6,7,8,9] , double_doses = [], numberofdoses = 19, numberofagents = 500) #first dose, anti_conc,
+run(first_dose = 0, anti_conc = 0.01, anti_freq = 10000, anti_halflife = 5000, skipped_doses = [] , double_doses = [], numberofdoses = 50, numberofagents = 500, plotlabel = None) #first dose, anti_conc,
 
-# for i in range(1, 10):
-#  	run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = "Miss dose number: " + str(i)) #first dose, anti_conc,
-# pl.show()
+# for i in range(1, 9):
+#   	run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i, i+1] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = str(i))
+pl.show()
 
 # for i in range(1, 10):
 # 	print("dose {}".format(i))
@@ -127,3 +127,4 @@ pl.show()
 #antibiotics(0.1, 43200, 14400); agents = 250
 #df = pd.read_csv('bacteria_wo_antibiotics.csv', low_memory=False)
 #plots.LV_plots(df)s
+#plots.generations_hist()

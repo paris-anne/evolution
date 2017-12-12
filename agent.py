@@ -39,12 +39,14 @@ class Agent(p.Particle):
         offspring_dict = {2:4, 4:6, 6:8, 8:10, 10:15, 2.5:4.5, 4.5:6.5, 6.5:8.5, 8.5:10.5, 10.5:15.5}
         new_foodlevel = self.food_level/float(self.reproduction)
         child_generation = self.generation + 1
-        #new_reproduce_level = self.reproduce_level*np.sqrt(self.reproduction)
+        new_reproduce_level = self.reproduce_level*np.sqrt(self.reproduction)
         self.reproduce_level = offspring_dict[self.reproduction]
         self.food_level = new_foodlevel
         for i in range(int(self.reproduction)):
             child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [0.9, 0.1])
+
             if child_resistance != self.resistance:
+
                 if self.reproduce_level%1==0:
                     child_reproduce_level = self.reproduce_level + (child_resistance * self.fitness_cost)
             else:
@@ -52,16 +54,21 @@ class Agent(p.Particle):
             reproduction = [2.0, 4.0, 6.0, 8.0, 10.0]
             reproduction.remove(self.reproduction)
             reproduction.append(self.reproduction)
-            child_reproduction = np.random.choice(reproduction, p = [np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, 0.9])
-            dormancy_time_mutation = np.random.uniform(1000,5000)
+            #child_reproduction = np.random.choice(reproduction, p = [np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, 0.9])
+            child_reproduction = self.reproduction
+            child_dormancy_gene = np.random.choice([self.resistance, (1-self.resistance)], p = [0.9, 0.1])
+
+            dormancy_time_mutation = np.random.uniform(0,15000)
             child_dormancy_time = np.random.choice([self.dormancy_time, dormancy_time_mutation], p = [0.9, 0.1])
- 
+            ##child_dormancy_time = self.dormancy_time
+
             dormancy_period_mutation = np.random.uniform(10000,40000) #this should be distribution but with constant probability?
             # dormancy_period.remove(self.dormancy_period)
             # dormancy_period.append(self.dormancy_period)
             child_dormancy_period = np.random.choice([self.dormancy_period, dormancy_period_mutation], p = [0.9, 0.1])
+            #child_dormancy_period = self.dormancy_period
             child = Agent(x=self.x, y=self.y, environment=self.enviro, food_level = new_foodlevel, resistance = child_resistance, 
-                reproduction = child_reproduction, dormancy_time = child_dormancy_time, dormancy_period = child_dormancy_period, reproduce_level=child_reproduce_level, generation = child_generation)
+                reproduction = child_reproduction, dormancy_time = child_dormancy_time, dormancy_period = child_dormancy_period, reproduce_level=child_reproduce_level, generation = child_generation, dormancy_gene = child_dormancy_gene)
             self.enviro.agents[self.key] = child
  
     def eat(self):

@@ -141,13 +141,15 @@ def histogram(data):
     pl.savefig("histogram.png")
     #pl.show()
  
-def generations_hist(data, data1, frames):
-    def update_hist(num, data, data1):
+def generations_hist(data, frames):
+    offspring = pd.DataFrame(data.iloc[:,-1].dropna().apply(lambda x: x.reproduction))
+
+    def update_hist(num, data):
         pl.clf()
-        pl.hist2d(data[num][0], data1[num][0], bins=50, cmap='Blues')
-        pl.title("Dormancy time and frequency distribution at time: " + str(data[num][1]))
+        pl.hist2d(data[num][0], offspring, bins=50, cmap='Blues')
+        pl.title("Dormancy time and offspring number distribution at: " + str(data[num][1]))
         pl.xlabel("Dormancy time")
-        pl.ylabel("Dormancy Frequency")
+        pl.ylabel("Number of offspring")
         cb = pl.colorbar()
         cb.set_label('counts in bin')
  
@@ -160,9 +162,9 @@ def generations_hist(data, data1, frames):
  
     fig = pl.figure(11)
  
-    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (data, data1))
+    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (data, offspring))
     #ani.save('animation.gif', writer = "imagemagick")
-    #pl.show()
+    pl.show()
  
  
 def dormancytime_hist(hist_data, frames):
@@ -179,12 +181,12 @@ def dormancytime_hist(hist_data, frames):
     #writer = animation.ImageMagickFileWriter()
  
  
-    fig = pl.figure(11)
+    fig = pl.figure(1001)
     ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_data,))
     ani.save('blaisematuidi.gif', writer = "imagemagick", fps=60)
     print(animation.writers.list())
  
-    #pl.show()
+    pl.show()
  
 def dormancyfreq_hist(hist_data, frames):
     def update_hist(num, data):
