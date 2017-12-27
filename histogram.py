@@ -97,7 +97,7 @@ def histo_offspring(dataframe):
     'y':list(dataframe[t].dropna().apply(lambda x: x.dormancy_period).values),
     'x':list(dataframe[t].dropna().apply(lambda x: x.reproduction).values),
     'autobinx':False,
-    'xbins':dict(start=1.5, end=17.5, size=2),
+    'xbins':dict(start=1.5, end=10.5, size=2),
     'autobiny':False,
     'ybins':dict(start=0000, end=5000, size=300),
     "colorscale":'YIGnBu',
