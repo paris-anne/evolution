@@ -33,7 +33,7 @@ class Agent(p.Particle):
  
  
     def __reduce__(self):
-        return (self.__class__, (self.reproduction, self.dormancy_time, self.dormancy_period))
+        return (self.__class__, (self.reproduction, self.dormancy_time, self.dormancy_period, self.enviro))
  
     def reproduce(self):
         offspring_dict = {2:4, 4:6, 6:8, 8:10, 10:15, 2.5:4.5, 4.5:6.5, 6.5:8.5, 8.5:10.5, 10.5:15.5}

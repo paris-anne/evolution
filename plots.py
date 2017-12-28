@@ -22,9 +22,97 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.add_agents(numberofagents)
 	enviro.set_plotlabel(plotlabel)
 	data = enviro.display(250000, display = True)
-	population(data)
-	return enviro
+	#population(data)
+	return data
 
+def deaths(dataframes):
+    time_elapsed = list(dataframes.columns.values)
+    print(time_elapsed)
+    print(dataframes)
+    deathsbyimmune = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyimmune
+    deathsbyanti = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyanti
+    deathsbyfood = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyfood
+    pl.figure("Deathsplot") # + str(self.plotlabel)
+    pl.plot(time_elapsed, deathsbyimmune, 'r', label = "immune system")
+    pl.plot(time_elapsed, deathsbyanti, 'g', label = "antibiotics")
+    pl.plot(time_elapsed, deathsbyfood, 'b', label = "movement")
+    pl.title("Cause of Death")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Frequency")
+    pl.legend()
+    pl.grid(True, which='both')
+    pl.show()
+
+def dormancy_count(dataframes):
+    time_elapsed = list(dataframes.columns.values)
+    dormant = dataframes.iloc[:,0].tolist()[0].enviro.dormancy_count
+    pl.figure("Dormancy") # + str(self.plotlabel)
+    pl.plot(time_elapsed, dormant)
+    pl.title("Dormant Agents")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Number of Agents Dormant")
+    pl.legend()
+    pl.grid(True, which='both')
+    pl.show()
+
+def dormancytime_hist(dataframes):
+    time_elapsed = list(dataframes.columns.values)[-1]
+    hist_data = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_time
+    hist_freq = dataframes.iloc[:,0].tolist()[0].enviro.hist_freq
+    frames = np.divide(time_elapsed, hist_freq)
+    def update_hist(num, data):
+        pl.cla()
+        pl.hist(hist_data[num][0])
+        pl.title("Dormancy time distribution at time: " + str(hist_data[num][1] ))
+        pl.xlabel("Dormancy time")
+        pl.ylabel("Frequency")
+    frames1 = int(frames - frames%1)
+    fig = pl.figure(1001)
+    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_data,))
+    # ani.save('blaisematuidi.gif', writer = "imagemagick", fps=60)
+    # print(animation.writers.list())
+    pl.show()
+
+def finish_early(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofagents = 500):
+    pl.figure("Finish Course Early") # + str(self.plotlabel)
+    for i in range(1, 10):
+        #print("dose {}".format(i))
+        data = run(first_dose = first_dose, anti_conc = anti_conc, anti_freq = anti_freq, anti_halflife =anti_halflife, skipped_doses =skipped_doses, double_doses =double_doses, numberofagents =numberofagents, numberofdoses = i)
+        pl.plot(list(data.columns.values), data.count(), label = "Stopped after {} doses".format(i))
+    pl.title("Population vs time")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Population")
+    pl.grid(True, which='both')
+    pl.legend()
+    pl.show()
+
+def skip_doses(skip, first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, double_doses = [], numberofdoses = 10, numberofagents = 500):
+    pl.figure("Skip Doses") # + str(self.plotlabel)
+    miss = []
+    for i in skip:
+        miss.append(i)
+        data = run(first_dose = first_dose, anti_conc = anti_conc, anti_freq = anti_freq, anti_halflife = anti_halflife, skipped_doses = miss , double_doses = double_doses, numberofdoses = numberofdoses, numberofagents = numberofagents) #first dose, anti_conc,
+        pl.plot(list(data.columns.values), data.count(), label = "Missed doses: {}".format(miss))
+    pl.title("Population vs time")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Population")
+    pl.grid(True, which='both')
+    pl.legend()
+    pl.show()
+
+def skip_one_dose(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, double_doses = [], numberofdoses = 10, numberofagents = 500):
+    pl.figure("Skip Doses") # + str(self.plotlabel)
+    for i in range(10):
+        data = run(first_dose = first_dose, anti_conc = anti_conc, anti_freq = anti_freq, anti_halflife = anti_halflife, skipped_doses = [i] , double_doses = double_doses, numberofdoses = numberofdoses, numberofagents = numberofagents) #first dose, anti_conc,
+        pl.plot(list(data.columns.values), data.count(), label = "Missed dose: {}".format(i))
+    pl.title("Population vs time")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Population")
+    pl.grid(True, which='both')
+    pl.legend()
+    pl.show()
+
+#I HAVENT DONE THE PLOTS BELOW
 def plot(dataframe):
         ax1 = pl.subplot(511)
         pl.plot(dataframe.loc(0), dataframe['Population'])
@@ -186,26 +274,26 @@ def generations_hist(data, frames):
     pl.show()
  
  
-def dormancytime_hist(hist_data, frames):
-    def update_hist(num, data):
-        pl.cla()
-        pl.hist(hist_data[num][0])
-        pl.title("Dormancy time distribution at time: " + str(hist_data[num][1] ))
-        pl.xlabel("Dormancy time")
-        pl.ylabel("Frequency")
-    frames1 = int(frames - frames%1)
+# def dormancytime_hist(hist_data, frames):
+#     def update_hist(num, data):
+#         pl.cla()
+#         pl.hist(hist_data[num][0])
+#         pl.title("Dormancy time distribution at time: " + str(hist_data[num][1] ))
+#         pl.xlabel("Dormancy time")
+#         pl.ylabel("Frequency")
+#     frames1 = int(frames - frames%1)
  
-    # Writer = animation.writers['imagemagick']
-    # writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
-    #writer = animation.ImageMagickFileWriter()
+#     # Writer = animation.writers['imagemagick']
+#     # writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+#     #writer = animation.ImageMagickFileWriter()
  
  
-    fig = pl.figure(1001)
-    # ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_data,))
-    # ani.save('blaisematuidi.gif', writer = "imagemagick", fps=60)
-    # print(animation.writers.list())
+#     fig = pl.figure(1001)
+#     # ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_data,))
+#     # ani.save('blaisematuidi.gif', writer = "imagemagick", fps=60)
+#     # print(animation.writers.list())
  
-    pl.show()
+#     pl.show()
  
 def dormancyfreq_hist(hist_data, frames):
     def update_hist(num, data):
@@ -309,3 +397,71 @@ def skip_double_doses():
 	for i in range(1, 9):
 		run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i, i+1] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = str(i))
 		pl.show()
+
+def deaths(dataframes):
+    time_elapsed = list(dataframes.columns.values)
+    print(time_elapsed)
+    print(dataframes)
+    deathsbyimmune = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyimmune
+    deathsbyanti = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyanti
+    deathsbyfood = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyfood
+    pl.figure("Deathsplot") # + str(self.plotlabel)
+    pl.plot(time_elapsed, deathsbyimmune, 'r', label = "immune system")
+    pl.plot(time_elapsed, deathsbyanti, 'g', label = "antibiotics")
+    pl.plot(time_elapsed, deathsbyfood, 'b', label = "movement")
+    pl.title("Cause of Death")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Frequency")
+    pl.legend()
+    pl.grid(True, which='both')
+    pl.show()
+
+    # pl.figure(2)
+    # pl.plot(self.time_elapsed, self.av_resistance, label='Miss dose number: ' + str(self.plotlabel))
+    # pl.title("Average resistance")
+    # pl.xlabel("Time Elapsed")
+    # pl.ylabel("Average resistance")
+    # pl.legend()
+    # pl.grid(True, which='both')
+
+
+    # pl.figure("averageresistamce" +str(self.plotlabel))
+    # pl.plot(self.time_elapsed, self.av_resistance)
+    # pl.title("Average resistance")
+    # pl.xlabel("Time Elapsed")
+    # pl.ylabel("Average resistance")
+    # pl.grid(True, which='both')
+
+    # pl.figure("pop/res plot, individual, missing dose no " +str(self.plotlabel) )
+    # pl.plot(self.time_elapsed, pop, label='Total Population')
+    # pl.plot(self.time_elapsed, self.resistancepop, label = "'Resistant Population'")
+    # pl.title("Population vs time")
+    # pl.xlabel("Time Elapsed")
+    # pl.ylabel("Population")
+    # pl.grid(True, which='both')
+    # pl.legend()
+
+    # pl.figure("deathsplotcum " + str(self.plotlabel))
+    # pl.plot(self.time_elapsed, self.deathsbyimmune, label = "immune system")
+    # pl.plot(self.time_elapsed, self.deathsbyanti, label = "antibiotics")
+    # pl.plot(self.time_elapsed, self.deathsbyfood, label = "movement")
+    # pl.title("Cumulative Cause of Death")
+    # pl.xlabel("Time Elapsed")
+    # pl.ylabel("Frequency")
+    # pl.grid(True, which='both')
+    # pl.legend()
+
+    # pl.figure(100 )
+    # pl.plot(self.time_elapsed, pop, label='Miss dose number: ' + str(self.plotlabel))
+    # pl.title("Population vs time")
+    # pl.xlabel("Time Elapsed")
+    # pl.ylabel("Population")
+    # pl.grid(True, which='both')
+    # pl.legend()
+
+    # pl.figure("number dormant")
+    # pl.plot(self.time_elapsed, self.avnumberdormant, label = "dormant pop")
+    # pl.title("dormant")
+
+    # print(self.time_ms)
+    # plots.dormancytime_hist(self.hist_dormancy_time, self.time_ms/self.hist_freq)
