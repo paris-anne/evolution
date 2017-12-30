@@ -47,7 +47,7 @@ class Environment(object):
         self.time_ms = 0
         self.antibiotics_count = 1
 
-        self.immune_system = 400
+        self.immune_system = 500
         self.killfrac = 0.02
 
         self.skipped_doses = []
@@ -128,7 +128,7 @@ class Environment(object):
 
     		for i in np.arange(0 , self.width +(self.width/np.sqrt(amount))/2, self.width/np.sqrt(amount)):
     			for j in np.arange(0, self.height + (self.height/np.sqrt(amount))/2, self.height/np.sqrt(amount)):
-    				self.antibiotics.append(ant.Antibiotic(i, j, size = 5))
+    				self.antibiotics.append(ant.Antibiotic(i, j, size = self.anti_radius))
 
     def set_first_dose(self, time):
         self.tbirths=time
@@ -252,20 +252,20 @@ class Environment(object):
             if (self.time_ms%self.immune_system) == 0:
 
                 killfrac = self.killfrac
-                numberkill = math.floor(killfrac*len(self.agents))
-                remainder = len(self.agents)*killfrac - numberkill
-                remainder = round(remainder, 1)
-                numberkill += np.random.choice((1,0), p = [remainder, 1 - remainder])
+                # numberkill = math.floor(killfrac*len(self.agents))
+                # remainder = len(self.agents)*killfrac - numberkill
+                # remainder = round(remainder, 1)
+                # numberkill += np.random.choice((1,0), p = [remainder, 1 - remainder])
 
-                for i in range(numberkill):
-                    if self.agents:
-                        del self.agents[random.choice(list(self.agents.keys()))]
-                        deathsbyimmune += 1
-
-                # for i in range(math.ceil(0.01*len(self.agents))):
+                # for i in range(numberkill):
                 #     if self.agents:
                 #         del self.agents[random.choice(list(self.agents.keys()))]
                 #         deathsbyimmune += 1
+
+                for i in range(math.ceil(killfrac*len(self.agents))):
+                    if self.agents:
+                        del self.agents[random.choice(list(self.agents.keys()))]
+                        deathsbyimmune += 1
             
             resistant_agents=[]
             self.dead_key=[]
@@ -417,7 +417,7 @@ class Environment(object):
 
         # print(slope,intercept)
 
-       
+
 
 
 

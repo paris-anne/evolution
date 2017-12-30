@@ -21,7 +21,7 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.set_numberofdoses(numberofdoses)
 	enviro.add_agents(numberofagents)
 	enviro.set_plotlabel(plotlabel)
-	data = enviro.display(500000, display = True)
+	data = enviro.display(250000, display = True)
 
 	population(data)
 	return data
@@ -136,7 +136,7 @@ def population(data):
     pl.xlabel("Time Elapsed")
     pl.ylabel("Population")
     pl.grid()
-    pl.show()
+    #pl.show()
 
 def reproductiondeathrates(dataframes):
     time_elapsed = list(dataframes.columns.values)
