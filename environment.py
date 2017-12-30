@@ -89,7 +89,6 @@ class Environment(object):
     		offspring_dict = {2:4, 4:6, 6:8, 8:10, 10:15, 2.5:4.5, 4.5:6.5, 6.5:8.5, 8.5:10.5, 10.5:15.5}
     		x = random.randint(size, self.width - size)
     		y = random.randint(size, self.height - size)
-    		dormancy_time = np.random.uniform(1000,5000)
     		reproduction = np.random.choice([2.0, 4.0, 6.0, 8.0, 10.0],  p = [0.9, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4])         
     		agent = ag.Agent(reproduction = reproduction, dormancy_time = np.random.uniform(0,15000), dormancy_period = np.random.uniform(10000,40000), x=x, y=y, environment=self, size = size, 
     			resistance  = np.random.choice([0, 1], p = [.9, 0.1]), 
