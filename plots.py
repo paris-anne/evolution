@@ -22,8 +22,7 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.add_agents(numberofagents)
 	enviro.set_plotlabel(plotlabel)
 	data = enviro.display(250000, display = True)
-
-	population(data)
+	#population(data)
 	return data
 
 def deaths(dataframes):
@@ -79,7 +78,7 @@ def finish_early(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halfl
     for i in range(1, 10):
         #print("dose {}".format(i))
         data = run(first_dose = first_dose, anti_conc = anti_conc, anti_freq = anti_freq, anti_halflife =anti_halflife, skipped_doses =skipped_doses, double_doses =double_doses, numberofagents =numberofagents, numberofdoses = i)
-        deaths(data)
+        #deaths(data)
         pl.plot(list(data.columns.values), data.count(), label = "Stopped after {} doses".format(i))
     pl.title("Population vs time")
     pl.xlabel("Time Elapsed")
@@ -170,7 +169,6 @@ def dPbydt_vs_P(dataframes):
     slope, intercept = np.polyfit(population, reproductionrate_moving_average, 1)
     print(slope,intercept)
 
-
     pl.title("Rate of change of population as a function of population")
     pl.xlabel("Population")
     pl.ylabel("Rate of change of population")
@@ -178,34 +176,46 @@ def dPbydt_vs_P(dataframes):
     pl.grid(True, which='both')
     pl.show()    
 
+#••••••
+def resistant_total_pop(dataframes):
+    time_elapsed = list(dataframes.columns.values)
+    resistance = dataframes.apply(lambda x: x.resistance if (np.all(pd.notnull(x))) else x)
+    pl.plot(time_elapsed, 'r', label = "Not resistant")
+    pl.plot(time_elapsed, 'g', label = "Resistant")
+    pl.title("Population v Time")
+    pl.xlabel("Time")
+    pl.ylabel("Population")
+    pl.legend()
+    pl.grid(True, which='both')
+    pl.show()
 
 #I HAVENT DONE THE PLOTS BELOW
 def plot(dataframe):
-        ax1 = pl.subplot(511)
-        pl.plot(dataframe.loc(0), dataframe['Population'])
-        ax1.title.set_text("Population") # add caption
-        pl.plot(dataframe['Time Elapsed'], dataframe["Population"])
-        pl.setp(ax1.get_xticklabels(), fontsize=6)
-        ax2 = pl.subplot(412, sharex=ax1) 
-        ax2.title.set_text("Death Rate")
-        pl.plot(dataframe['Time Elapsed'], dataframe['Deadcount'])      
-        pl.setp(ax2.get_xticklabels(), visible=False)
-        ax3 = pl.subplot(413, sharex=ax1)
-        ax3.title.set_text("Reproduction Rate")
-        pl.plot(dataframe['Time Elapsed'], dataframe['Reproduction'])
-        # ax4 = pl.subplot(514, sharex=ax1)
-        # pl.plot(dataframe['Time Elapsed'], dataframe['Resistance'])
-        # pl.setp(ax3.get_xticklabels(), visible=False)
-        # ax4.title.set_text("Resistance")
-        # ax5 = pl.subplot(515, sharex=ax1)
-        # pl.plot(dataframe['Time Elapsed'], dataframe['Reproduction Count'])
-        # pl.setp(ax4.get_xticklabels(), visible=False)
-        # ax5.title.set_text("Reproduction Count")
-        ax4 = pl.subplot(414)
-        ax4.title.set_text("Food Population")
-        pl.plot(dataframe['Time Elapsed'], dataframe['Food Population'])
-        pl.savefig('plots.png')
-        pl.show()
+    ax1 = pl.subplot(511)
+    pl.plot(dataframe.loc(0), dataframe['Population'])
+    ax1.title.set_text("Population") # add caption
+    pl.plot(dataframe['Time Elapsed'], dataframe["Population"])
+    pl.setp(ax1.get_xticklabels(), fontsize=6)
+    ax2 = pl.subplot(412, sharex=ax1) 
+    ax2.title.set_text("Death Rate")
+    pl.plot(dataframe['Time Elapsed'], dataframe['Deadcount'])      
+    pl.setp(ax2.get_xticklabels(), visible=False)
+    ax3 = pl.subplot(413, sharex=ax1)
+    ax3.title.set_text("Reproduction Rate")
+    pl.plot(dataframe['Time Elapsed'], dataframe['Reproduction'])
+    # ax4 = pl.subplot(514, sharex=ax1)
+    # pl.plot(dataframe['Time Elapsed'], dataframe['Resistance'])
+    # pl.setp(ax3.get_xticklabels(), visible=False)
+    # ax4.title.set_text("Resistance")
+    # ax5 = pl.subplot(515, sharex=ax1)
+    # pl.plot(dataframe['Time Elapsed'], dataframe['Reproduction Count'])
+    # pl.setp(ax4.get_xticklabels(), visible=False)
+    # ax5.title.set_text("Reproduction Count")
+    ax4 = pl.subplot(414)
+    ax4.title.set_text("Food Population")
+    pl.plot(dataframe['Time Elapsed'], dataframe['Food Population'])
+    pl.savefig('plots.png')
+    pl.show()
  
 def func(x, a, c, d):
     return a*np.exp(c*x)+d
