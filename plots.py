@@ -21,8 +21,9 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.set_numberofdoses(numberofdoses)
 	enviro.add_agents(numberofagents)
 	enviro.set_plotlabel(plotlabel)
-	data = enviro.display(250000, display = True)
-	#population(data)
+	data = enviro.display(500000, display = True)
+
+	population(data)
 	return data
 
 def deaths(dataframes):
@@ -78,6 +79,7 @@ def finish_early(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halfl
     for i in range(1, 10):
         #print("dose {}".format(i))
         data = run(first_dose = first_dose, anti_conc = anti_conc, anti_freq = anti_freq, anti_halflife =anti_halflife, skipped_doses =skipped_doses, double_doses =double_doses, numberofagents =numberofagents, numberofdoses = i)
+        deaths(data)
         pl.plot(list(data.columns.values), data.count(), label = "Stopped after {} doses".format(i))
     pl.title("Population vs time")
     pl.xlabel("Time Elapsed")
@@ -85,6 +87,7 @@ def finish_early(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halfl
     pl.grid(True, which='both')
     pl.legend()
     pl.show()
+
 
 def skip_doses(skip, first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, double_doses = [], numberofdoses = 10, numberofagents = 500):
     pl.figure("Skip Doses") # + str(self.plotlabel)
@@ -111,6 +114,70 @@ def skip_one_dose(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_half
     pl.grid(True, which='both')
     pl.legend()
     pl.show()
+
+
+def calibration(first_dose = 500000, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [], double_doses = [], numberofdoses = 10, numberofagents = 200):
+    pl.figure("Normal person") # + str(self.plotlabel)
+    for i in range(5):
+        data = run(first_dose = first_dose, anti_conc = anti_conc, anti_freq = anti_freq, anti_halflife = anti_halflife, skipped_doses = skipped_doses, double_doses = double_doses, numberofdoses = numberofdoses, numberofagents = numberofagents) #first dose, anti_conc,
+        pl.plot(list(data.columns.values), data.count(), label = "Run: {}".format(i+1))
+    pl.title("Population vs time")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Population")
+    pl.xlim([0,500000])
+    pl.ylim([0,400])
+    pl.grid(True, which='both')
+    pl.legend()
+    pl.show()
+
+def population(data):
+    pl.figure("Population vs time")
+    pl.plot(list(data.columns.values), data.count())
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Population")
+    pl.grid()
+    pl.show()
+
+def reproductiondeathrates(dataframes):
+    time_elapsed = list(dataframes.columns.values)
+    print(time_elapsed)
+    print(dataframes)
+    reproductionrate_moving_average = dataframes.iloc[:,0].tolist()[0].enviro.reproduct_MA
+    deathrate_moving_average = dataframes.iloc[:,0].tolist()[0].enviro.deaths_MA
+
+    pl.figure("Moving averages for reproduction and death rate") # + str(self.plotlabel)
+    pl.plot(time_elapsed, reproductionrate_moving_average, 'r', label = "Reproductions")
+    pl.plot(time_elapsed, deathrate_moving_average, 'g', label = "Deaths")
+    pl.title("Moving averages for reproduction and death rate")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Frequency per ms")
+    pl.legend()
+    pl.grid(True, which='both')
+    pl.show()       
+
+def dPbydt_vs_P(dataframes):
+    time_elapsed = list(dataframes.columns.values)
+    print(time_elapsed)
+    print(dataframes)
+    reproductionrate_moving_average = dataframes.iloc[:,0].tolist()[0].enviro.reproduct_MA
+    deathrate_moving_average = dataframes.iloc[:,0].tolist()[0].enviro.deaths_MA
+    combined = np.subtract(reproductionrate_moving_average, deathrate_moving_average)
+    population = dataframes.iloc[:,0].tolist()[0].enviro.population_count
+
+    pl.figure("Rate of change of population as a function of population") # + str(self.plotlabel)
+    # pl.scatter(population, combined)
+    pl.scatter(population, reproductionrate_moving_average)
+    slope, intercept = np.polyfit(population, reproductionrate_moving_average, 1)
+    print(slope,intercept)
+
+
+    pl.title("Rate of change of population as a function of population")
+    pl.xlabel("Population")
+    pl.ylabel("Rate of change of population")
+    pl.legend()
+    pl.grid(True, which='both')
+    pl.show()    
+
 
 #I HAVENT DONE THE PLOTS BELOW
 def plot(dataframe):
@@ -225,17 +292,7 @@ def resistance(data):
     #print(resistance, "resistance")
     print(data.iloc['resistance':,-1].dropna())
  
-def population(data):
-    population=pd.DataFrame(data[1].count())
-    print(population)
-    pl.plot(list(data[1]), population.ix[:,0])
-    # pl.setp(ax1.get_xticklabels(), visible=False)
-    # ax2 = pl.subplot(212, sharex=ax1)
-    # ax2.title.set_text("Antibiotics Concentration")
-    # pl.plot(list(data), antibiotics)
-    # pl.setp(ax2.get_xticklabels(), fontsize=6)
-    # pl.savefig("bacteria_population.png")
-    pl.show()
+
 def histogram(data):
     df = pd.DataFrame(data.iloc[:,-1])
     df = df.dropna()
@@ -388,10 +445,10 @@ def changing_freq(enviro):
     pl.plot(conc, fin)
     pl.show()
 
-def skip_doses():
-	for i in range(1, 10):
-		print("dose {}".format(i))
-		main.run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = "Stop after " + str(i) + " treatments") #first dose, anti_conc,
+# def skip_doses():
+# 	for i in range(1, 10):
+# 		print("dose {}".format(i))
+# 		main.run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = "Stop after " + str(i) + " treatments") #first dose, anti_conc,
 
 def skip_double_doses():
 	for i in range(1, 9):
@@ -405,10 +462,28 @@ def deaths(dataframes):
     deathsbyimmune = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyimmune
     deathsbyanti = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyanti
     deathsbyfood = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyfood
+
+    cum_deathsbyimmune = np.cumsum(deathsbyimmune)
+    cum_deathsbyanti = np.cumsum(deathsbyanti)
+    cum_deathsbyfood = np.cumsum(deathsbyfood)
+
+
+
+
     pl.figure("Deathsplot") # + str(self.plotlabel)
     pl.plot(time_elapsed, deathsbyimmune, 'r', label = "immune system")
     pl.plot(time_elapsed, deathsbyanti, 'g', label = "antibiotics")
     pl.plot(time_elapsed, deathsbyfood, 'b', label = "movement")
+    pl.title("Cause of Death")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Frequency")
+    pl.legend()
+    pl.grid(True, which='both')
+
+    pl.figure("Cumulative Deathsplot") # + str(self.plotlabel)
+    pl.plot(time_elapsed, cum_deathsbyimmune, 'r', label = "immune system")
+    pl.plot(time_elapsed, cum_deathsbyanti, 'g', label = "antibiotics")
+    pl.plot(time_elapsed, cum_deathsbyfood, 'b', label = "movement")
     pl.title("Cause of Death")
     pl.xlabel("Time Elapsed")
     pl.ylabel("Frequency")

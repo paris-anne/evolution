@@ -38,6 +38,7 @@ class Environment(object):
         self.deathsbyfood = []
         self.deathsbyanti = []
         self.deathsbyimmune = []
+        # self.deathstotal = [0,0,0,0,0] + np.add(np.add(self.deathsbyfood, self.deathsbyanti), self.deathsbyimmune)
 
         self.antibiotics = []
         self.anti_freq = 0
@@ -46,7 +47,8 @@ class Environment(object):
         self.time_ms = 0
         self.antibiotics_count = 1
 
-        self.immune_system = 3000
+        self.immune_system = 400
+        self.killfrac = 0.02
 
         self.skipped_doses = []
         self.double_doses = []
@@ -62,6 +64,12 @@ class Environment(object):
         self.hist_dormancyfreqplustime = []
         self.dormancyfreqplustime_list = []
         self.plotlabel = 0
+
+        self.reproduction_counter = [0]*101
+        self.reproduct_MA = []
+
+        self.deaths_counter = [0] *101
+        self.deaths_MA = []
 
         self.dead_key = []
 
@@ -167,6 +175,8 @@ class Environment(object):
         # dataframes2 = []
 
         while running:
+            #print((self.time_ms, len(self.agents)))
+
             food_amount = 0
             reproduction = 0
             resistance = 0
@@ -175,6 +185,7 @@ class Environment(object):
             deathsbyanti = 0
             deathsbyfood = 0    
             dormancy_count = 0
+            reproduction_counter = 0
             # resistant = pd.DataFrame()
             # agents = list(self.agents.values())
             # for i in agents:
@@ -229,7 +240,7 @@ class Environment(object):
                         if self.antibiotics_count in double_doses:
                             self.add_antibiotics(double_dose = True)
                             #print("double_dose")
-                        elif:
+                        elif self.antibiotics_count not in double_doses:
                             #print("single_dose")
                             self.add_antibiotics(double_dose = False)
                         self.antibiotics[0].effectiveness = 1
@@ -238,10 +249,22 @@ class Environment(object):
                     self.antibiotics_count += 1
 
             if (self.time_ms%self.immune_system) == 0:
-                for i in range(math.ceil(0.05*len(self.agents))):
+
+                killfrac = self.killfrac
+                numberkill = math.floor(killfrac*len(self.agents))
+                remainder = len(self.agents)*killfrac - numberkill
+                remainder = round(remainder, 1)
+                numberkill += np.random.choice((1,0), p = [remainder, 1 - remainder])
+
+                for i in range(numberkill):
                     if self.agents:
                         del self.agents[random.choice(list(self.agents.keys()))]
                         deathsbyimmune += 1
+
+                # for i in range(math.ceil(0.01*len(self.agents))):
+                #     if self.agents:
+                #         del self.agents[random.choice(list(self.agents.keys()))]
+                #         deathsbyimmune += 1
             
             resistant_agents=[]
             self.dead_key=[]
@@ -294,7 +317,9 @@ class Environment(object):
             if reproduce_key:
             	for j in reproduce_key:
             		if j in self.agents.keys():
-            			self.agents[j].reproduce()
+            			offspring = self.agents[j].reproduce()
+            			reproduction_counter += offspring
+
             if self.dead_key:
                 for k in self.dead_key:
                     del self.agents[k]
@@ -315,10 +340,12 @@ class Environment(object):
             for i in self.antibiotics:
             	if i.colour[0]<254 and i.colour[1]<254 and i.colour[2]<254:
             		i.colour = np.add(i.colour, (3,1,3))
+            deathstotal = np.add(np.add(self.deathsbyfood, self.deathsbyanti), self.deathsbyimmune)
 
             if pop != 0:
             	self.time_elapsed.append(self.time_ms)
             	self.reproduction_rate.append(reproduction_count/(self.time_ms))
+            	self.reproduction_counter.append(reproduction_counter)
             	self.population_count.append(pop)
             	self.resistant_count.append(float(resistance))
             	self.av_reproduction.append(reproduction/pop)
@@ -326,9 +353,15 @@ class Environment(object):
             	self.deathsbyanti.append(deathsbyanti)
             	self.deathsbyfood.append(deathsbyfood)
             	self.dormancy_count.append(dormancy_count)
+            	self.reproduct_MA.append(sum(self.reproduction_counter[-101:-1])/10000)
+            	self.deaths_MA.append(sum(deathstotal[-101:-1])/10000)
+
+
+
             else:
                 self.time_elapsed.append(self.time_ms)
                 self.reproduction_rate.append(reproduction_count/(self.time_ms))
+                self.reproduction_counter.append(reproduction_counter)
                 self.population_count.append(pop)
                 self.av_reproduction.append(0)
                 self.resistant_count.append(float(resistance))
@@ -336,6 +369,15 @@ class Environment(object):
                 self.deathsbyanti.append(deathsbyanti)
                 self.dormancy_count.append(dormancy_count)
                 self.deathsbyfood.append(deathsbyfood)
+                self.reproduct_MA.append(sum(self.reproduction_counter[-101:-1])/10000)
+                self.deaths_MA.append(-sum(deathstotal[-101:-1])/10000)
+
+
+
+            print(self.time_ms, pop)
+            #print(sum(self.reproduction_counter[-5:-1]))
+
+
 
 
 
@@ -347,11 +389,36 @@ class Environment(object):
         # dormancy_df = pd.DataFrame()
         # dormancy_df['time'] = pd.Series(self.time_elapsed)
         # dormancy_df['dormancy'] = pd.Series(self.dormancy_count)
+        #print(self.reproduct_MA)
+        #print(self.deaths_MA)
 
+
+        print(len(self.reproduction_counter[-5:-1]))
         # resistant = pd.concat(dataframes, axis=1)
         total=pd.concat(dataframes, axis=1)
         # pop=pd.DataFrame({"population" :total.count()})
         # respop=pd.DataFrame({"population" :resistant.count()})
+        # pl.figure("reproduction")
+        # pl.plot(self.time_elapsed, self.reproduct_MA, label = "reproduction rate")
+        # pl.plot(self.time_elapsed, self.deaths_MA, label = "death rate")
+        # pl.legend()
+        # pl.grid(which = "both")
+
+
+        # pl.figure("tot")
+        # pl.plot(self.time_elapsed, np.subtract(self.reproduct_MA, self.deaths_MA))
+        # pl.grid(which = "both")
+        # #pl.show()
+        # pl.figure("repr,pop")
+        # pl.scatter(self.population_count, self.reproduct_MA, marker = '.')
+        # slope, intercept = np.polyfit(self.population_count, self.reproduct_MA, 1)
+        # pl.grid(which = "both")
+
+        # print(slope,intercept)
+
+       
+
+
 
         # #print(pop)
         # pl.figure("Deathsplot" + str(self.plotlabel))
