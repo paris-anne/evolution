@@ -70,6 +70,7 @@ class Agent(p.Particle):
             child = Agent(x=self.x, y=self.y, environment=self.enviro, food_level = new_foodlevel, resistance = child_resistance, 
                 reproduction = child_reproduction, dormancy_time = child_dormancy_time, dormancy_period = child_dormancy_period, reproduce_level=child_reproduce_level, generation = child_generation, dormancy_gene = child_dormancy_gene)
             self.enviro.agents[self.key] = child
+        return self.reproduction
  
     def eat(self):
         for food in self.enviro.food:
