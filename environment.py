@@ -65,10 +65,10 @@ class Environment(object):
         self.dormancyfreqplustime_list = []
         self.plotlabel = 0
 
-        self.reproduction_counter = [0]*101
+        self.reproduction_counter = [0]*1001
         self.reproduct_MA = []
 
-        self.deaths_counter = [0] *101
+        self.deaths_counter = [0] *1001
         self.deaths_MA = []
 
         self.dead_key = []
@@ -127,7 +127,7 @@ class Environment(object):
 
     		for i in np.arange(0 , self.width +(self.width/np.sqrt(amount))/2, self.width/np.sqrt(amount)):
     			for j in np.arange(0, self.height + (self.height/np.sqrt(amount))/2, self.height/np.sqrt(amount)):
-    				self.antibiotics.append(ant.Antibiotic(i, j, size = self.anti_radius))
+    				self.antibiotics.append(ant.Antibiotic(i, j, size = 5))
 
     def set_first_dose(self, time):
         self.tbirths=time
@@ -285,7 +285,8 @@ class Environment(object):
                     resistance += self.agents[i].resistance
                     dormant +=self.agents[i].dormancy_gene
                     if self.agents[i].dormancy_gene == 1:
-                    	self.agents[i].dormancy(i, self.agents[i].dormancy_time)
+                    	#self.agents[i].dormancy(i, self.agents[i].dormancy_time)
+                        self.agents[i].dormancy2(i,self.agents[i].dormancy_time, self.agents[i].dormancy_period)
                     if self.agents[i].speed == 0:
                     	self.agents[i]. colour = (255,0,0)
                     	dormancy_count+=1
@@ -369,8 +370,8 @@ class Environment(object):
                 self.deathsbyanti.append(deathsbyanti)
                 self.dormancy_count.append(dormancy_count)
                 self.deathsbyfood.append(deathsbyfood)
-                self.reproduct_MA.append(sum(self.reproduction_counter[-101:-1])/10000)
-                self.deaths_MA.append(-sum(deathstotal[-101:-1])/10000)
+                self.reproduct_MA.append(sum(self.reproduction_counter[-1001:-1])/100000)
+                self.deaths_MA.append(-sum(deathstotal[-1001:-1])/100000)
 
 
 
@@ -486,8 +487,8 @@ class Environment(object):
 
         # print(self.time_ms)
         # plots.dormancytime_hist(self.hist_dormancy_time, self.time_ms/self.hist_freq)
-        # plots.dormancyfreq_hist(self.hist_dormancy_freq, self.time_ms/self.hist_freq)
+        #plots.dormancyfreq_hist((self.hist_dormancy_freq, self.hist_dormancy_time), self.time_ms/self.hist_freq)
         # plots.dormancyfreqplustime_hist(self.hist_dormancyfreqplustime , self.time_ms/self.hist_freq)
-        #plots.generations_hist(self.hist_dormancy_time, self.time_ms/self.hist_freq)
+        #plots.generations_hist(data = (self.hist_dormancy_time, self.hist_dormancy_freq), frames =  self.time_ms/self.hist_freq)
         # return ["resistant", total, dormancy_df]
         return total

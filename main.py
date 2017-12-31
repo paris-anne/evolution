@@ -20,8 +20,16 @@ enviro = plots.run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_hal
 #plots.calibration()
 #plots types of deaths by count
 #
+plots.dormancytime_hist(enviro)
+
+#plots.calibration()
+
+#plots types of deaths by count
 #plots.deaths(enviro)
-# plots.reproductiondeathrates(enviro)
+#plots.reproductiondeathrates(enviro)
+
+#plots.skip_two_doses(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000 , double_doses = [], numberofdoses = 10, numberofagents = 500)
+#plots.skip_one_dose(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000 , double_doses = [], numberofagents = 500)
 
 #plots population for antiobitics courses with length 1-10
 #run for weak immune system too just change immune in environment
@@ -39,6 +47,8 @@ plots.av_resistance(enviro)
 
 #resistant v total pop
 plots.resistant_total_pop(enviro)
+
+#plots.skip_three_doses(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000 , double_doses = [], numberofdoses = 10, numberofagents = 500)
 
 #number of dormant v time
 #plots.dormancy_count(enviro)
