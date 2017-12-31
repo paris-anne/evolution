@@ -48,7 +48,7 @@ class Environment(object):
         self.antibiotics_count = 1
 
         self.immune_system = 2400
-        self.killfrac = 0.1
+        self.killfrac = 0.0#0.1
 
         self.skipped_doses = []
         self.double_doses = []
@@ -101,7 +101,7 @@ class Environment(object):
     		y = random.randint(size, self.height - size)
     		reproduction = np.random.choice([2.0, 4.0, 6.0, 8.0, 10.0],  p = [0.9, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4])         
     		agent = ag.Agent(reproduction = reproduction, dormancy_time = np.random.uniform(0,15000), dormancy_period = np.random.uniform(10000,40000), x=x, y=y, environment=self, size = size, 
-    			resistance  = np.random.choice([0, 1], p = [.9, 0.1]), 
+    			resistance  = np.random.choice([0, 1], p = [1., 0.]), 
     			dormancy_gene = np.random.choice([0, 1], p = [0.9, 0.1]), reproduce_level=offspring_dict[reproduction]
     			)
     		self.agents[agent.key] = agent
@@ -335,11 +335,11 @@ class Environment(object):
                 self.hist_dormancy_time.append((self.dormancy_time_list, self.time_ms))
                 self.hist_dormancy_freq.append((self.dormancy_freq_list, self.time_ms))
                 self.hist_dormancyfreqplustime.append((self.dormancyfreqplustime_list, self.time_ms))
-                self.generations = []
-                self.dormancy_time_list = []
-                self.dormancy_freq_list = []
-                self.offspring_list = []
-                self.dormancyfreqplustime_list = []
+            self.generations = []
+            self.dormancy_time_list = []
+            self.dormancy_freq_list = []
+            self.offspring_list = []
+            self.dormancyfreqplustime_list = []
 
             pop = len(self.agents)
             self.time_ms+=100
@@ -374,7 +374,7 @@ class Environment(object):
                 self.resistant_count.append(float(resistance))
                 self.deathsbyimmune.append(deathsbyimmune)
                 self.deathsbyanti.append(deathsbyanti)
-                self.dormancy_count.append(dormancy_count)
+                self.dormancy_count.append(0)
                 self.deathsbyfood.append(deathsbyfood)
                 self.reproduct_MA.append(sum(self.reproduction_counter[-1001:-1])/100000)
                 self.deaths_MA.append(-sum(deathstotal[-1001:-1])/100000)

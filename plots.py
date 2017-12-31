@@ -24,7 +24,7 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	data = enviro.display(250000, display = True)
 	return data
 
-def no_dormant(enviro):
+def no_dormant(dataframes):
     time_elapsed = list(dataframes.columns.values)
     dormant = dataframes.iloc[:,0].tolist()[0].enviro.dormancy_count
     pl.plot(time_elapsed, dormant)
@@ -79,6 +79,24 @@ def dormancytime_hist(dataframes):
     frames1 = int(frames - frames%1)
     fig = pl.figure(1001)
     ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_data,))
+    # ani.save('blaisematuidi.gif', writer = "imagemagick", fps=60)
+    # print(animation.writers.list())
+    pl.show()
+
+def offspring_hist(dataframes):
+    time_elapsed = list(dataframes.columns.values)[-1]
+    hist_offspring = dataframes.iloc[:,0].tolist()[0].enviro.hist_offspring
+    hist_freq = dataframes.iloc[:,0].tolist()[0].enviro.hist_freq
+    frames = np.divide(time_elapsed, hist_freq)
+    def update_hist(num, data):
+        pl.cla()
+        pl.hist(hist_offspring[num][0], ec = 'black')
+        pl.title("Number of Offspring distribution at time: " + str(hist_offspring[num][1] ))
+        pl.xlabel("Number of Offspring each Reproduction")
+        pl.ylabel("Frequency")
+    frames1 = int(frames - frames%1)
+    fig = pl.figure(1001)
+    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_offspring,))
     # ani.save('blaisematuidi.gif', writer = "imagemagick", fps=60)
     # print(animation.writers.list())
     pl.show()

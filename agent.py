@@ -40,7 +40,7 @@ class Agent(p.Particle):
         self.reproduce_level = offspring_dict[self.reproduction]
         self.food_level = new_foodlevel
         for i in range(int(self.reproduction)):
-            child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [0.9, 0.1])
+            child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [1., 0.])
 
             if child_resistance != self.resistance:
 

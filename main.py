@@ -16,11 +16,14 @@ import pandas as pd
 #SET DISPLAY LENGTH OF TIME IN THE PLOTS FILE & remember to change the dormancy method used to try each
 
 #returns dataframe of all agents 
-enviro = plots.run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = None) #first dose, anti_conc,
+enviro = plots.run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = None) #first dose, anti_conc,
 #plots.calibration()
 #plots types of deaths by count
 #
-
+plots.no_dormant(enviro)
+plots.offspring_hist(enviro)
+plots.dormancytime_hist(enviro)
+plots.hist_2d_dormancy_time_vs_dormancy_freq(enviro)
 plots.hist_2d_offspring_vs_dormancy_freq(enviro)
 
 #plots.dormancytime_hist(enviro)
