@@ -87,6 +87,23 @@ def finish_early(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halfl
     pl.legend()
     pl.show()
 
+def dormancy_2d_hist(data, frames):
+    offspring = pd.DataFrame(data.iloc[:,-1].dropna().apply(lambda x: x.reproduction))
+
+    def update_hist(num, data):
+        pl.clf()
+        pl.hist2d(data[num][0], offspring, bins=50, cmap='Blues')
+        pl.title("Dormancy time and offspring number distribution at: " + str(data[num][1]))
+        pl.xlabel("Dormancy time")
+        pl.ylabel("Number of offspring")
+        cb = pl.colorbar()
+        cb.set_label('counts in bin')
+
+    frames1 = int(frames - frames%1)
+    fig = pl.figure(11)
+    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (data, offspring))
+    #ani.save('animation.gif', writer = "imagemagick")
+    pl.show()
 
 def skip_doses(skip, first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, double_doses = [], numberofdoses = 10, numberofagents = 500):
     pl.figure("Skip Doses") # + str(self.plotlabel)
@@ -135,7 +152,7 @@ def population(data):
     pl.xlabel("Time Elapsed")
     pl.ylabel("Population")
     pl.grid()
-    #pl.show()
+    pl.show()
 
 def reproductiondeathrates(dataframes):
     time_elapsed = list(dataframes.columns.values)
@@ -176,17 +193,40 @@ def dPbydt_vs_P(dataframes):
     pl.grid(True, which='both')
     pl.show()    
 
+def av_resistance(dataframes):
+    av_resistance = dataframes.iloc[:,0].tolist()[0].enviro.av_resistance
+    time_elapsed = list(dataframes.columns.values)
+    pl.figure("averageresistacce")
+    pl.plot(time_elapsed, av_resistance)
+    pl.title("Average Resistance of Total Population")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Average Resistance")
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
+    pl.show()
+
 #••••••
 def resistant_total_pop(dataframes):
     time_elapsed = list(dataframes.columns.values)
-    resistance = dataframes.apply(lambda x: x.resistance if (np.all(pd.notnull(x))) else x)
-    pl.plot(time_elapsed, 'r', label = "Not resistant")
-    pl.plot(time_elapsed, 'g', label = "Resistant")
+    resistance = pd.DataFrame(dataframes.applymap(lambda x: x.resistance if (np.all(pd.notnull(x))) else x))
+    resistant = resistance.apply(pd.value_counts).iloc[0,:].tolist()
+    not_resistant = resistance.apply(pd.value_counts).iloc[1,:].tolist()
+    pl.plot(time_elapsed, resistant, 'r', label = "Resistant")
+    pl.plot(time_elapsed, not_resistant, 'g', label = "Not Resistant")
     pl.title("Population v Time")
     pl.xlabel("Time")
     pl.ylabel("Population")
     pl.legend()
     pl.grid(True, which='both')
+    pl.show()
+    resist_prop=np.divide(resistant, dataframes.count())
+    pl.plot(time_elapsed, resist_prop)
+    pl.title("Resistant Fraction of Total Population")
+    pl.xlabel("Time")
+    pl.ylim(0,1)
+    pl.ylabel("Fraction Resistant")
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.show()
 
 #I HAVENT DONE THE PLOTS BELOW
@@ -510,12 +550,7 @@ def deaths(dataframes):
     # pl.grid(True, which='both')
 
 
-    # pl.figure("averageresistamce" +str(self.plotlabel))
-    # pl.plot(self.time_elapsed, self.av_resistance)
-    # pl.title("Average resistance")
-    # pl.xlabel("Time Elapsed")
-    # pl.ylabel("Average resistance")
-    # pl.grid(True, which='both')
+
 
     # pl.figure("pop/res plot, individual, missing dose no " +str(self.plotlabel) )
     # pl.plot(self.time_elapsed, pop, label='Total Population')

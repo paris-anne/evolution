@@ -47,8 +47,8 @@ class Environment(object):
         self.time_ms = 0
         self.antibiotics_count = 1
 
-        self.immune_system = 500
-        self.killfrac = 0.02
+        self.immune_system = 2400
+        self.killfrac = 0.1
 
         self.skipped_doses = []
         self.double_doses = []
@@ -176,7 +176,7 @@ class Environment(object):
 
         while running:
             #print((self.time_ms, len(self.agents)))
-
+            print(self.av_resistance)
             food_amount = 0
             reproduction = 0
             resistance = 0
@@ -392,7 +392,8 @@ class Environment(object):
         #print(self.reproduct_MA)
         #print(self.deaths_MA)
 
-
+        self.av_resistance = np.divide(self.resistant_count, self.population_count)
+        self.avnumberdormant = np.divide(self.dormancy_count, self.population_count)
         print(len(self.reproduction_counter[-5:-1]))
         # resistant = pd.concat(dataframes, axis=1)
         total=pd.concat(dataframes, axis=1)
