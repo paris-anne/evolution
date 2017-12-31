@@ -35,7 +35,7 @@ enviro = plots.run(first_dose = 0, anti_conc = 0.02, anti_freq = 16000, anti_hal
 #plots.skip_one_dose(first_dose = 0, anti_conc = 0.02, anti_freq = 10000, anti_halflife = 5000 , double_doses = [], numberofdoses = 10, numberofagents = 500)
 
 #av_resistance
-#plots.av_resistance(enviro)
+plots.av_resistance(enviro)
 
 #resistant v total pop
 plots.resistant_total_pop(enviro)
