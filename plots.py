@@ -24,10 +24,19 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	data = enviro.display(250000, display = True)
 	return data
 
+def no_dormant(enviro):
+    time_elapsed = list(dataframes.columns.values)
+    dormant = dataframes.iloc[:,0].tolist()[0].enviro.dormancy_count
+    pl.plot(time_elapsed, dormant)
+    pl.title("Dormant Population")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Number of Bacteria Dormant")
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
+    pl.show()
+
 def deaths(dataframes):
     time_elapsed = list(dataframes.columns.values)
-    print(time_elapsed)
-    print(dataframes)
     deathsbyimmune = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyimmune
     deathsbyanti = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyanti
     deathsbyfood = dataframes.iloc[:,0].tolist()[0].enviro.deathsbyfood
@@ -39,7 +48,8 @@ def deaths(dataframes):
     pl.xlabel("Time Elapsed")
     pl.ylabel("Frequency")
     pl.legend()
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.show()
 
 def dormancy_count(dataframes):
@@ -51,7 +61,8 @@ def dormancy_count(dataframes):
     pl.xlabel("Time Elapsed")
     pl.ylabel("Number of Agents Dormant")
     pl.legend()
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.show()
 
 def dormancytime_hist(dataframes):
@@ -105,7 +116,6 @@ def hist_2d_offspring_vs_dormancy_freq(dataframes):
     #dormancy_time = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_time
     dormancy_freq = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_freq
     hist_freq = dataframes.iloc[:,0].tolist()[0].enviro.hist_freq
-
     frames = np.divide(time_elapsed, hist_freq)
 
     def update_hist(num, data):
@@ -126,8 +136,6 @@ def hist_2d_offspring_vs_dormancy_freq(dataframes):
     ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = ((dormancy_freq, hist_offspring),))
     #ani.save('animation.gif', writer = "imagemagick")
     pl.show()
-
-
 
 def finish_early(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofagents = 500):
     pl.figure("Finish Course Early") # + str(self.plotlabel)
@@ -170,7 +178,8 @@ def skip_doses(skip, first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_h
     pl.title("Population vs time")
     pl.xlabel("Time Elapsed")
     pl.ylabel("Population")
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.legend()
     pl.show()
 
@@ -182,7 +191,8 @@ def skip_one_dose(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_half
     pl.title("Population vs time")
     pl.xlabel("Time Elapsed")
     pl.ylabel("Population")
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.legend()
     pl.show()
 
@@ -194,7 +204,8 @@ def skip_two_doses(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_hal
     pl.title("Population vs time")
     pl.xlabel("Time Elapsed")
     pl.ylabel("Population")
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.legend()
     pl.show()
 
@@ -207,10 +218,10 @@ def skip_three_doses(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_h
     pl.title("Population vs time")
     pl.xlabel("Time Elapsed")
     pl.ylabel("Population")
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.legend()
     pl.show()
-
 
 def calibration(first_dose = 500000, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [], double_doses = [], numberofdoses = 10, numberofagents = 200):
     pl.figure("Normal person") # + str(self.plotlabel)
@@ -222,7 +233,8 @@ def calibration(first_dose = 500000, anti_conc = 0.01, anti_freq = 16000, anti_h
     pl.ylabel("Population")
     pl.xlim([0,500000])
     pl.ylim([0,400])
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')    
     pl.legend()
     pl.show()
 
@@ -231,7 +243,8 @@ def population(data):
     pl.plot(list(data.columns.values), data.count())
     pl.xlabel("Time Elapsed")
     pl.ylabel("Population")
-    pl.grid()
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.show()
 
 def reproductiondeathrates(dataframes):
@@ -246,9 +259,10 @@ def reproductiondeathrates(dataframes):
     pl.plot(time_elapsed, deathrate_moving_average, 'g', label = "Deaths")
     pl.title("Moving averages for reproduction and death rate")
     pl.xlabel("Time Elapsed")
-    pl.ylabel("Frequency per ms")
+    pl.ylabel("Frequency per steps")
     pl.legend()
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.show()       
 
 def dPbydt_vs_P(dataframes):
@@ -270,7 +284,8 @@ def dPbydt_vs_P(dataframes):
     pl.xlabel("Population")
     pl.ylabel("Rate of change of population")
     pl.legend()
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.show()    
 
 def av_resistance(dataframes):
@@ -296,7 +311,8 @@ def resistant_total_pop(dataframes):
     pl.xlabel("Time")
     pl.ylabel("Population")
     pl.legend()
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.show()
     resist_prop=np.divide(resistant, dataframes.count())
     pl.plot(time_elapsed, resist_prop)
@@ -309,36 +325,9 @@ def resistant_total_pop(dataframes):
     pl.show()
 
 #I HAVENT DONE THE PLOTS BELOW
-def plot(dataframe):
-    ax1 = pl.subplot(511)
-    pl.plot(dataframe.loc(0), dataframe['Population'])
-    ax1.title.set_text("Population") # add caption
-    pl.plot(dataframe['Time Elapsed'], dataframe["Population"])
-    pl.setp(ax1.get_xticklabels(), fontsize=6)
-    ax2 = pl.subplot(412, sharex=ax1) 
-    ax2.title.set_text("Death Rate")
-    pl.plot(dataframe['Time Elapsed'], dataframe['Deadcount'])      
-    pl.setp(ax2.get_xticklabels(), visible=False)
-    ax3 = pl.subplot(413, sharex=ax1)
-    ax3.title.set_text("Reproduction Rate")
-    pl.plot(dataframe['Time Elapsed'], dataframe['Reproduction'])
-    # ax4 = pl.subplot(514, sharex=ax1)
-    # pl.plot(dataframe['Time Elapsed'], dataframe['Resistance'])
-    # pl.setp(ax3.get_xticklabels(), visible=False)
-    # ax4.title.set_text("Resistance")
-    # ax5 = pl.subplot(515, sharex=ax1)
-    # pl.plot(dataframe['Time Elapsed'], dataframe['Reproduction Count'])
-    # pl.setp(ax4.get_xticklabels(), visible=False)
-    # ax5.title.set_text("Reproduction Count")
-    ax4 = pl.subplot(414)
-    ax4.title.set_text("Food Population")
-    pl.plot(dataframe['Time Elapsed'], dataframe['Food Population'])
-    pl.savefig('plots.png')
-    pl.show()
- 
 def func(x, a, c, d):
     return a*np.exp(c*x)+d
- 
+
 def LotkaVolterra(state,t):
   #x = state[0]
   y = state[0]
@@ -403,37 +392,7 @@ def antibiotic_conc_v_population(data):
     pl.setp(ax2.get_xticklabels(), fontsize=6)
     pl.savefig("antibiotics_bacteria.png")
     #pl.show()   
- 
-def histogram(data):
-    df = pd.DataFrame(data.iloc[:,-1])
-    df = df.dropna()
-    offspring = pd.DataFrame(data.iloc[:,-1].dropna().apply(lambda x: x.reproduction))
-    dormancy = pd.DataFrame(data.iloc[:,-1].dropna().apply(lambda x: x.dormancy_time))
-    print(offspring.iloc[:,0].values)
-    pl.hist2d(offspring.iloc[:,0].values, dormancy.iloc[:,0].values, bins=100, cmap='Blues')
-    cb = pl.colorbar()
-    cb.set_label('counts in bin')
-    pl.savefig("histogram.png")
-    #pl.show()
- 
-def resistance(data):
-    #resistance = pd.DataFrame.sum(data.iloc[:,-1].dropna().apply(lambda x: x.resistance))
-    #print(resistance, "resistance")
-    print(data.iloc['resistance':,-1].dropna())
- 
 
-def histogram(data):
-    df = pd.DataFrame(data.iloc[:,-1])
-    df = df.dropna()
-    offspring = pd.DataFrame(data.iloc[:,-1].dropna().apply(lambda x: x.reproduction))
-    dormancy = pd.DataFrame(data.iloc[:,-1].dropna().apply(lambda x: x.dormancy_time))
-    print(offspring.iloc[:,0].values)
-    pl.hist2d(offspring.iloc[:,0].values, dormancy.iloc[:,0].values, bins=100, cmap='Blues')
-    cb = pl.colorbar()
-    cb.set_label('counts in bin')
-    pl.savefig("histogram.png")
-    #pl.show()
- 
 def generations_hist(data, frames):
     #offspring = pd.DataFrame(data.iloc[:,-1].dropna().apply(lambda x: x.reproduction))
     time = data[0]
@@ -510,24 +469,10 @@ def dormancyfreqplustime_hist(hist_data, frames):
         pl.xlabel("Dormancy freq + time")
         pl.ylabel("Frequency")
     frames1 = int(frames - frames%1)
- 
-    # Writer = animation.writers['imagemagick_file']
-    # writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
-    #writer = animation.ImageMagickFileWriter()
-     
-    # FFMpegWriter = manimation.writers['ffmpeg']
-    # metadata = dict(title='Movie Test', artist='Matplotlib',
- #                comment='Movie support!')
-    # writer = FFMpegWriter(fps=15, metadata=metadata)
- 
- 
- 
     fig = pl.figure(13)
     ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_data,))
     #ani.save('animation.gif', writer = "imagemagick_file")
     #pl.show()
-
-
 
 def deaths(dataframes):
     time_elapsed = list(dataframes.columns.values)
@@ -541,9 +486,6 @@ def deaths(dataframes):
     cum_deathsbyanti = np.cumsum(deathsbyanti)
     cum_deathsbyfood = np.cumsum(deathsbyfood)
 
-
-
-
     pl.figure("Deathsplot") # + str(self.plotlabel)
     pl.plot(time_elapsed, deathsbyimmune, 'r', label = "immune system")
     pl.plot(time_elapsed, deathsbyanti, 'g', label = "antibiotics")
@@ -552,7 +494,8 @@ def deaths(dataframes):
     pl.xlabel("Time Elapsed")
     pl.ylabel("Frequency")
     pl.legend()
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
 
     pl.figure("Cumulative Deathsplot") # + str(self.plotlabel)
     pl.plot(time_elapsed, cum_deathsbyimmune, 'r', label = "immune system")
@@ -562,7 +505,8 @@ def deaths(dataframes):
     pl.xlabel("Time Elapsed")
     pl.ylabel("Frequency")
     pl.legend()
-    pl.grid(True, which='both')
+    pl.grid(True, which='major')
+    pl.grid(True, which='minor')
     pl.show()
 
     # pl.figure(2)
@@ -572,9 +516,6 @@ def deaths(dataframes):
     # pl.ylabel("Average resistance")
     # pl.legend()
     # pl.grid(True, which='both')
-
-
-
 
     # pl.figure("pop/res plot, individual, missing dose no " +str(self.plotlabel) )
     # pl.plot(self.time_elapsed, pop, label='Total Population')

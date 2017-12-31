@@ -4,7 +4,6 @@ import particle as p
 import random
 import antibiotic as ant
  
- 
 class Agent(p.Particle):
     key = -1
     def __init__(self, reproduction, dormancy_time, dormancy_period, x=0, y=0, environment=None, size = 3.0, colour = (0, 0,0), reproduce_level = 4.0,  food_level = float(3.0),
@@ -25,7 +24,6 @@ class Agent(p.Particle):
         self.min_dist = 100000
         self.generation = generation
         self.eatcount = 0
- 
         #self.antibiotic_eff = ant.Antibiotic.effectiveness
         #self.dormancy_freq
         Agent.key += 1
