@@ -21,7 +21,7 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.set_numberofdoses(numberofdoses)
 	enviro.add_agents(numberofagents)
 	enviro.set_plotlabel(plotlabel)
-	data = enviro.display(250000, display = True)
+	data = enviro.display(500000, display = True)
 
 	population(data)
 	return data
@@ -63,7 +63,7 @@ def dormancytime_hist(dataframes):
     frames = np.divide(time_elapsed, hist_freq)
     def update_hist(num, data):
         pl.cla()
-        pl.hist(hist_data[num][0])
+        pl.hist(hist_data[num][0], ec = 'black')
         pl.title("Dormancy time distribution at time: " + str(hist_data[num][1] ))
         pl.xlabel("Dormancy time")
         pl.ylabel("Frequency")
@@ -74,12 +74,43 @@ def dormancytime_hist(dataframes):
     # print(animation.writers.list())
     pl.show()
 
+def hist_2d_dormancy_time_vs_dormancy_freq(dataframes):
+    time_elapsed = list(dataframes.columns.values)[-1]
+    dormancy_time = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_time
+    dormancy_freq = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_freq
+    hist_freq = dataframes.iloc[:,0].tolist()[0].enviro.hist_freq
+
+    frames = np.divide(time_elapsed, hist_freq)
+
+
+
+    def update_hist(num, data):
+        pl.clf()
+        pl.hist2d(dormancy_time[num][0],dormancy_freq[num][0],bins =25)
+        pl.title("Dormancy freq distribution at time: " + str(dormancy_time[num][1] ))
+        pl.xlabel("Dormancy time")
+        pl.ylabel("Dormancy freq")
+        cb = pl.colorbar()
+        cb.set_label('counts in bin')
+
+    frames1 = int(frames - frames%1)
+
+ 
+    # Writer = animation.writers['imagemagick']
+    # writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+    #writer = animation.ImageMagickFileWriter()
+ 
+ 
+    fig = pl.figure(12)
+    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = ((dormancy_time,dormancy_freq),))
+    #ani.save('animation.gif', writer = "imagemagick")
+    pl.show()
+
 def finish_early(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofagents = 500):
     pl.figure("Finish Course Early") # + str(self.plotlabel)
     for i in range(1, 10):
         #print("dose {}".format(i))
         data = run(first_dose = first_dose, anti_conc = anti_conc, anti_freq = anti_freq, anti_halflife =anti_halflife, skipped_doses =skipped_doses, double_doses =double_doses, numberofagents =numberofagents, numberofdoses = i)
-        deaths(data)
         pl.plot(list(data.columns.values), data.count(), label = "Stopped after {} doses".format(i))
     pl.title("Population vs time")
     pl.xlabel("Time Elapsed")
@@ -105,9 +136,34 @@ def skip_doses(skip, first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_h
 
 def skip_one_dose(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, double_doses = [], numberofdoses = 10, numberofagents = 500):
     pl.figure("Skip Doses") # + str(self.plotlabel)
-    for i in range(10):
+    for i in range(1,11):
         data = run(first_dose = first_dose, anti_conc = anti_conc, anti_freq = anti_freq, anti_halflife = anti_halflife, skipped_doses = [i] , double_doses = double_doses, numberofdoses = numberofdoses, numberofagents = numberofagents) #first dose, anti_conc,
         pl.plot(list(data.columns.values), data.count(), label = "Missed dose: {}".format(i))
+    pl.title("Population vs time")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Population")
+    pl.grid(True, which='both')
+    pl.legend()
+    pl.show()
+
+def skip_two_doses(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, double_doses = [], numberofdoses = 10, numberofagents = 500):
+    pl.figure("Skip 2 Doses") # + str(self.plotlabel)
+    for i in range(1,10):
+        data = run(first_dose = first_dose, anti_conc = anti_conc, anti_freq = anti_freq, anti_halflife = anti_halflife, skipped_doses = [i,i+1] , double_doses = double_doses, numberofdoses = numberofdoses, numberofagents = numberofagents) #first dose, anti_conc,
+        pl.plot(list(data.columns.values), data.count(), label = "Missed doses: {}".format(str((i,i+1))))
+    pl.title("Population vs time")
+    pl.xlabel("Time Elapsed")
+    pl.ylabel("Population")
+    pl.grid(True, which='both')
+    pl.legend()
+    pl.show()
+
+def skip_three_doses(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, double_doses = [], numberofdoses = 10, numberofagents = 500):
+    pl.figure("Skip 3 Doses") # + str(self.plotlabel)
+    for i in range(1,9):
+        data = run(first_dose = first_dose, anti_conc = anti_conc, anti_freq = anti_freq, anti_halflife = anti_halflife, skipped_doses = [i,i+1,i+1] , double_doses = double_doses, numberofdoses = numberofdoses, numberofagents = numberofagents) #first dose, anti_conc,
+        pl.plot(list(data.columns.values), data.count(), label = "Missed doses: {}".format(str((i,i+1, i+2))))
+
     pl.title("Population vs time")
     pl.xlabel("Time Elapsed")
     pl.ylabel("Population")
@@ -306,11 +362,13 @@ def histogram(data):
     #pl.show()
  
 def generations_hist(data, frames):
-    offspring = pd.DataFrame(data.iloc[:,-1].dropna().apply(lambda x: x.reproduction))
+    #offspring = pd.DataFrame(data.iloc[:,-1].dropna().apply(lambda x: x.reproduction))
+    time = data[0]
+    freq = data[1]
 
     def update_hist(num, data):
         pl.clf()
-        pl.hist2d(data[num][0], offspring, bins=50, cmap='Blues')
+        pl.hist2d(time[num], freq[num], bins=50, cmap='Blues')
         pl.title("Dormancy time and offspring number distribution at: " + str(data[num][1]))
         pl.xlabel("Dormancy time")
         pl.ylabel("Number of offspring")
@@ -326,7 +384,7 @@ def generations_hist(data, frames):
  
     fig = pl.figure(11)
  
-    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (data, offspring))
+    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (time,freq))
     #ani.save('animation.gif', writer = "imagemagick")
     pl.show()
  
@@ -352,24 +410,24 @@ def generations_hist(data, frames):
  
 #     pl.show()
  
-def dormancyfreq_hist(hist_data, frames):
-    def update_hist(num, data):
-        pl.cla()
-        pl.hist(hist_data[num][0])
-        pl.title("Dormancy freq distribution at time: " + str(hist_data[num][1] ))
-        pl.xlabel("Dormancy freq")
-        pl.ylabel("Frequency")
-    frames1 = int(frames - frames%1)
+# def dormancyfreq_hist(hist_data, frames):
+#     def update_hist(num, data):
+#         pl.cla()
+#         pl.hist2d(hist_data[0][num][0],hist_data[1][num][0],bins =25)
+#         pl.title("Dormancy freq distribution at time: " + str(hist_data[0][num][1] ))
+#         pl.xlabel("Dormancy freq")
+#         pl.ylabel("Frequency")
+#     frames1 = int(frames - frames%1)
  
-    # Writer = animation.writers['imagemagick']
-    # writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
-    #writer = animation.ImageMagickFileWriter()
+#     # Writer = animation.writers['imagemagick']
+#     # writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+#     #writer = animation.ImageMagickFileWriter()
  
  
-    fig = pl.figure(12)
-    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_data,))
-    #ani.save('animation.gif', writer = "imagemagick")
-    #pl.show()
+#     fig = pl.figure(12)
+#     ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = (hist_data,))
+#     #ani.save('animation.gif', writer = "imagemagick")
+#     pl.show()
  
 def dormancyfreqplustime_hist(hist_data, frames):
     def update_hist(num, data):
@@ -396,64 +454,7 @@ def dormancyfreqplustime_hist(hist_data, frames):
     #ani.save('animation.gif', writer = "imagemagick_file")
     #pl.show()
 
-def plot(i):
-        pl.figure(3)
-        pl.plot(self.time_elapsed, pop)
-        pl.title("Population vs time")
-        pl.xlabel("Time Elapsed")
-        pl.ylabel("Population")
-        pl.grid(True, which='both')
- 
-def changing_conc(enviro):
-    conc = []
-    fin = []
-    for i in np.arange(0.1,0.5,0.1):
-        enviro.remove_agents_and_anti()
-        enviro.set_first_dose(2000)
-        enviro.set_anti_conc(i)
-        enviro.set_anti_freq(10000)
-        enviro.set_anti_halflife(10000) 
-        enviro.set_skipped_doses([2,5]) 
-        enviro.add_agents(50)
-        data = enviro.display(300000, display = True)
-        pop=pd.DataFrame({"population" :data.count()})
-        final_pop = int((pop["population"].iloc[-1]))
-        conc.append(i)
-        fin.append(final_pop)
-        print(fin)
-    pl.plot(conc, fin)
-    pl.show()
- 
-def changing_freq(enviro):
-    freq = []
-    fin = []
-    for i in np.arange(10000,40000,10000):
-        enviro.remove_agents_and_anti()
-        enviro.set_first_dose(2000)
-        enviro.set_anti_conc(0.3)
-        enviro.set_anti_freq(i)
-        enviro.set_anti_halflife(10000) 
-        enviro.set_skipped_doses([2,5]) 
-        enviro.add_agents(50)
-        data = enviro.display(300000, display = True)
-        pop=pd.DataFrame({"population" :data.count()})
-        final_pop = int((pop["population"].iloc[-1]))
- 
-        conc.append(i)
-        fin.append(final_pop)
-        print(fin)
-    pl.plot(conc, fin)
-    pl.show()
 
-# def skip_doses():
-# 	for i in range(1, 10):
-# 		print("dose {}".format(i))
-# 		main.run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = "Stop after " + str(i) + " treatments") #first dose, anti_conc,
-
-def skip_double_doses():
-	for i in range(1, 9):
-		run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [i, i+1] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = str(i))
-		pl.show()
 
 def deaths(dataframes):
     time_elapsed = list(dataframes.columns.values)
@@ -491,52 +492,3 @@ def deaths(dataframes):
     pl.grid(True, which='both')
     pl.show()
 
-    # pl.figure(2)
-    # pl.plot(self.time_elapsed, self.av_resistance, label='Miss dose number: ' + str(self.plotlabel))
-    # pl.title("Average resistance")
-    # pl.xlabel("Time Elapsed")
-    # pl.ylabel("Average resistance")
-    # pl.legend()
-    # pl.grid(True, which='both')
-
-
-    # pl.figure("averageresistamce" +str(self.plotlabel))
-    # pl.plot(self.time_elapsed, self.av_resistance)
-    # pl.title("Average resistance")
-    # pl.xlabel("Time Elapsed")
-    # pl.ylabel("Average resistance")
-    # pl.grid(True, which='both')
-
-    # pl.figure("pop/res plot, individual, missing dose no " +str(self.plotlabel) )
-    # pl.plot(self.time_elapsed, pop, label='Total Population')
-    # pl.plot(self.time_elapsed, self.resistancepop, label = "'Resistant Population'")
-    # pl.title("Population vs time")
-    # pl.xlabel("Time Elapsed")
-    # pl.ylabel("Population")
-    # pl.grid(True, which='both')
-    # pl.legend()
-
-    # pl.figure("deathsplotcum " + str(self.plotlabel))
-    # pl.plot(self.time_elapsed, self.deathsbyimmune, label = "immune system")
-    # pl.plot(self.time_elapsed, self.deathsbyanti, label = "antibiotics")
-    # pl.plot(self.time_elapsed, self.deathsbyfood, label = "movement")
-    # pl.title("Cumulative Cause of Death")
-    # pl.xlabel("Time Elapsed")
-    # pl.ylabel("Frequency")
-    # pl.grid(True, which='both')
-    # pl.legend()
-
-    # pl.figure(100 )
-    # pl.plot(self.time_elapsed, pop, label='Miss dose number: ' + str(self.plotlabel))
-    # pl.title("Population vs time")
-    # pl.xlabel("Time Elapsed")
-    # pl.ylabel("Population")
-    # pl.grid(True, which='both')
-    # pl.legend()
-
-    # pl.figure("number dormant")
-    # pl.plot(self.time_elapsed, self.avnumberdormant, label = "dormant pop")
-    # pl.title("dormant")
-
-    # print(self.time_ms)
-    # plots.dormancytime_hist(self.hist_dormancy_time, self.time_ms/self.hist_freq)
