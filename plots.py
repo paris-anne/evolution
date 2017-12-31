@@ -80,8 +80,6 @@ def hist_2d_dormancy_time_vs_dormancy_freq(dataframes):
 
     frames = np.divide(time_elapsed, hist_freq)
 
-
-
     def update_hist(num, data):
         pl.clf()
         pl.hist2d(dormancy_time[num][0],dormancy_freq[num][0],bins =25)
@@ -92,17 +90,44 @@ def hist_2d_dormancy_time_vs_dormancy_freq(dataframes):
         cb.set_label('counts in bin')
 
     frames1 = int(frames - frames%1)
-
- 
     # Writer = animation.writers['imagemagick']
     # writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
     #writer = animation.ImageMagickFileWriter()
- 
  
     fig = pl.figure(12)
     ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = ((dormancy_time,dormancy_freq),))
     #ani.save('animation.gif', writer = "imagemagick")
     pl.show()
+
+def hist_2d_offspring_vs_dormancy_freq(dataframes):
+    time_elapsed = list(dataframes.columns.values)[-1]
+    hist_offspring = dataframes.iloc[:,0].tolist()[0].enviro.hist_offspring
+    #dormancy_time = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_time
+    dormancy_freq = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_freq
+    hist_freq = dataframes.iloc[:,0].tolist()[0].enviro.hist_freq
+
+    frames = np.divide(time_elapsed, hist_freq)
+
+    def update_hist(num, data):
+        pl.clf()
+        pl.hist2d(dormancy_freq[num][0],hist_offspring[num][0],bins =25)
+        pl.title("Dormancy freq distribution at time: " + str(dormancy_freq[num][1] ))
+        pl.xlabel("Dormancy freq")
+        pl.ylabel("Offspring")
+        cb = pl.colorbar()
+        cb.set_label('counts in bin')
+
+    frames1 = int(frames - frames%1)
+    # Writer = animation.writers['imagemagick']
+    # writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+    #writer = animation.ImageMagickFileWriter()
+ 
+    fig = pl.figure(12)
+    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = ((dormancy_freq, hist_offspring),))
+    #ani.save('animation.gif', writer = "imagemagick")
+    pl.show()
+
+
 
 def finish_early(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofagents = 500):
     pl.figure("Finish Course Early") # + str(self.plotlabel)
@@ -263,8 +288,8 @@ def av_resistance(dataframes):
 def resistant_total_pop(dataframes):
     time_elapsed = list(dataframes.columns.values)
     resistance = pd.DataFrame(dataframes.applymap(lambda x: x.resistance if (np.all(pd.notnull(x))) else x))
-    resistant = resistance.apply(pd.value_counts).iloc[0,:].tolist()
-    not_resistant = resistance.apply(pd.value_counts).iloc[1,:].tolist()
+    not_resistant = resistance.apply(pd.value_counts).iloc[0,:].tolist()
+    resistant = resistance.apply(pd.value_counts).iloc[1,:].tolist()
     pl.plot(time_elapsed, resistant, 'r', label = "Resistant")
     pl.plot(time_elapsed, not_resistant, 'g', label = "Not Resistant")
     pl.title("Population v Time")

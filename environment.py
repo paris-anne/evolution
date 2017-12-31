@@ -57,6 +57,8 @@ class Environment(object):
 
         self.hist_data = []
         self.hist_freq = 1000
+        self.hist_offspring = []
+        self.offspring_list = []
         self.hist_dormancy_time = []
         self.dormancy_time_list = []
         self.hist_dormancy_freq = []
@@ -270,9 +272,11 @@ class Environment(object):
             self.dead_key=[]
             reproduce_key =[]
             
+            #change looping to list of agents.apply???
             if self.agents:
                 for i in self.agents: 
                     self.generations.append(self.agents[i].generation)
+                    self.offspring_list.append(self.agents[i].reproduction)
                     self.dormancy_time_list.append(self.agents[i].dormancy_time)
                     self.dormancy_freq_list.append(self.agents[i].dormancy_period)
                     self.dormancyfreqplustime_list.append(self.agents[i].dormancy_time + self.agents[i].dormancy_period)
@@ -285,8 +289,8 @@ class Environment(object):
                     resistance += self.agents[i].resistance
                     dormant +=self.agents[i].dormancy_gene
                     if self.agents[i].dormancy_gene == 1:
-                    	#self.agents[i].dormancy(i, self.agents[i].dormancy_time)
-                        self.agents[i].dormancy2(i,self.agents[i].dormancy_time, self.agents[i].dormancy_period)
+                    	self.agents[i].dormancy(i, self.agents[i].dormancy_time)
+                        #self.agents[i].dormancy2(i,self.agents[i].dormancy_time, self.agents[i].dormancy_period)
                     if self.agents[i].speed == 0:
                     	self.agents[i]. colour = (255,0,0)
                     	dormancy_count+=1
@@ -327,12 +331,14 @@ class Environment(object):
 
             if self.time_ms% self.hist_freq == 0:
                 self.hist_data.append((self.generations, self.time_ms))
+                self.hist_offspring.append((self.offspring_list, self.time_ms))
                 self.hist_dormancy_time.append((self.dormancy_time_list, self.time_ms))
                 self.hist_dormancy_freq.append((self.dormancy_freq_list, self.time_ms))
                 self.hist_dormancyfreqplustime.append((self.dormancyfreqplustime_list, self.time_ms))
                 self.generations = []
                 self.dormancy_time_list = []
                 self.dormancy_freq_list = []
+                self.offspring_list = []
                 self.dormancyfreqplustime_list = []
 
             pop = len(self.agents)
