@@ -51,14 +51,13 @@ class Agent(p.Particle):
             reproduction = [2.0, 4.0, 6.0, 8.0, 10.0]
             reproduction.remove(self.reproduction)
             reproduction.append(self.reproduction)
-            #child_reproduction = np.random.choice(reproduction, p = [np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, 0.9])
-            child_reproduction = self.reproduction
+            child_reproduction = np.random.choice(reproduction, p = [np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, 0.9])
+            #child_reproduction = np.random.choice([2.0, 4.0, 6.0, 8.0, 10.0],  p = [0.9, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4])         
             child_dormancy_gene = np.random.choice([self.resistance, (1-self.resistance)], p = [0.9, 0.1])
 
             dormancy_time_mutation = np.random.uniform(0,15000)
             child_dormancy_time = np.random.choice([self.dormancy_time, dormancy_time_mutation], p = [0.9, 0.1])
             ##child_dormancy_time = self.dormancy_time
-
             dormancy_period_mutation = np.random.uniform(10000,40000) #this should be distribution but with constant probability?
             # dormancy_period.remove(self.dormancy_period)
             # dormancy_period.append(self.dormancy_period)
