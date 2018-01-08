@@ -47,8 +47,8 @@ class Environment(object):
         self.time_ms = 0
         self.antibiotics_count = 1
 
-        self.immune_system = 2400
-        self.killfrac = 0.0#0.1
+        self.immune_system = 2500
+        self.killfrac = 0.09
 
         self.skipped_doses = []
         self.double_doses = []
@@ -59,8 +59,8 @@ class Environment(object):
         self.hist_freq = 1000
         self.hist_offspring = []
         self.offspring_list = []
-        self.hist_dormancy_time = []
-        self.dormancy_time_list = []
+        self.hist_dormancy_period = []
+        self.dormancy_period_list = []
         self.hist_dormancy_freq = []
         self.dormancy_freq_list = []
         self.hist_dormancyfreqplustime = []
@@ -100,18 +100,13 @@ class Environment(object):
     		x = random.randint(size, self.width - size)
     		y = random.randint(size, self.height - size)
     		reproduction = np.random.choice([2.0, 4.0, 6.0, 8.0, 10.0],  p = [0.9, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4])         
-    		agent = ag.Agent(reproduction = reproduction, dormancy_time = np.random.uniform(0,15000), dormancy_period = np.random.uniform(10000,40000), x=x, y=y, environment=self, size = size, 
-    			resistance  = np.random.choice([0, 1], p = [1., 0.]), 
-    			dormancy_gene = np.random.choice([0, 1], p = [0.9, 0.1]), reproduce_level=offspring_dict[reproduction]
+    		agent = ag.Agent(reproduction = reproduction, dormancy_period = np.random.uniform(0,15000), dormancy_freq = np.random.uniform(10000,40000), x=x, y=y, environment=self, size = size, 
+    			resistance  = np.random.choice([0, 1], p = [0.9, 0.1]), reproduce_level=offspring_dict[reproduction]
     			)
     		self.agents[agent.key] = agent
 
     def remove_agent(self, key):
     	del self.agents[key]
-
-    # def remove_agents_and_anti(self):
-    #     self.agents={}
-    #     self.antibiotics = []
 
     def add_antibiotics(self, double_dose):
     	amount = 0
@@ -129,11 +124,10 @@ class Environment(object):
 
     		for i in np.arange(0 , self.width +(self.width/np.sqrt(amount))/2, self.width/np.sqrt(amount)):
     			for j in np.arange(0, self.height + (self.height/np.sqrt(amount))/2, self.height/np.sqrt(amount)):
-    				self.antibiotics.append(ant.Antibiotic(i, j, size = 5))
+    				self.antibiotics.append(ant.Antibiotic(i, j, size = self.anti_radius))
 
     def set_first_dose(self, time):
         self.tbirths=time
-
 
     def set_anti_conc(self, conc):
         self.anti_conc = conc
@@ -170,11 +164,8 @@ class Environment(object):
         	pos = game_surf.get_rect()
         	game_surf = game_surf.convert_alpha()
         	for food in self.food: food.display(game_surf)
-        #time_elapsed = [i for i in range(0, time, 300)]
-        #data = pd.DataFrame(columns=pd.Series(time_elapsed))
 
         dataframes = []
-        # dataframes2 = []
 
         while running:
             #print((self.time_ms, len(self.agents)))
@@ -183,17 +174,14 @@ class Environment(object):
             reproduction = 0
             resistance = 0
             dormant = 0
+
             deathsbyimmune = 0
             deathsbyanti = 0
             deathsbyfood = 0    
+
             dormancy_count = 0
             reproduction_counter = 0
-            # resistant = pd.DataFrame()
-            # agents = list(self.agents.values())
-            # for i in agents:
-            #     if i.resistance == 0:
-            #         agents.remove(i)
-            # resistant[self.time_ms] = pd.Series(agents)
+
             total = pd.DataFrame()
             total[self.time_ms]=pd.Series(list(self.agents.values()))
             #print(total)
@@ -227,8 +215,9 @@ class Environment(object):
                 if i.effectiveness < (np.e)**(-(self.anti_freq)/self.anti_halflife)  :
                     self.antibiotics.remove(i)
 
-            if self.time_ms == self.tbirths:
-                self.add_antibiotics(double_dose = False)
+            if self.anti_conc != 0:
+                if self.time_ms == self.tbirths:
+                    self.add_antibiotics(double_dose = False)
 
             if self.antibiotics_count < self.numberofdoses:
                 if self.time_ms-self.tbirths >self.anti_freq:
@@ -250,23 +239,28 @@ class Environment(object):
                         	i.colour = (0,255,0)
                     self.antibiotics_count += 1
 
-            if (self.time_ms%self.immune_system) == 0:
+            if self.time_ms != 0:
+                if (self.time_ms%self.immune_system) == 0:
+                    if len(self.agents) < 250:
+                        killfrac = self.killfrac
+                    # numberkill = math.floor(killfrac*len(self.agents))
+                    # remainder = len(self.agents)*killfrac - numberkill
+                    # remainder = round(remainder, 1)
+                    # numberkill += np.random.choice((1,0), p = [remainder, 1 - remainder])
 
-                killfrac = self.killfrac
-                # numberkill = math.floor(killfrac*len(self.agents))
-                # remainder = len(self.agents)*killfrac - numberkill
-                # remainder = round(remainder, 1)
-                # numberkill += np.random.choice((1,0), p = [remainder, 1 - remainder])
+                    # for i in range(numberkill):
+                    #     if self.agents:
+                    #         del self.agents[random.choice(list(self.agents.keys()))]
+                    #         deathsbyimmune += 1
 
-                # for i in range(numberkill):
-                #     if self.agents:
-                #         del self.agents[random.choice(list(self.agents.keys()))]
-                #         deathsbyimmune += 1
+                        for i in range(math.ceil(killfrac*len(self.agents))):
+                            if self.agents:
+                                del self.agents[random.choice(list(self.agents.keys()))]
+                                deathsbyimmune += 1
+                    else:
+                        for i in range(25):
+                            del self.agents[random.choice(list(self.agents.keys()))]
 
-                for i in range(math.ceil(killfrac*len(self.agents))):
-                    if self.agents:
-                        del self.agents[random.choice(list(self.agents.keys()))]
-                        deathsbyimmune += 1
             
             resistant_agents=[]
             self.dead_key=[]
@@ -277,20 +271,17 @@ class Environment(object):
                 for i in self.agents: 
                     self.generations.append(self.agents[i].generation)
                     self.offspring_list.append(self.agents[i].reproduction)
-                    self.dormancy_time_list.append(self.agents[i].dormancy_time)
-                    self.dormancy_freq_list.append(self.agents[i].dormancy_period)
-                    self.dormancyfreqplustime_list.append(self.agents[i].dormancy_time + self.agents[i].dormancy_period)
+                    self.dormancy_period_list.append(self.agents[i].dormancy_period)
+                    self.dormancy_freq_list.append(self.agents[i].dormancy_freq)
+                    self.dormancyfreqplustime_list.append(self.agents[i].dormancy_freq + self.agents[i].dormancy_period)
                     if self.agents[i].resistance == 1:
                     	self.agents[i].colour = (0,0,255)
                     	resistant_agents.append(self.agents[i])
                     else:
                     	self.agents[i].colour = (0,0,0)
-                    #self.agents[i].dormancy2(i, self.agents[i].dormancy_period ,self.agents[i].dormancy_time) # time between dormancies, time of dormancy
                     resistance += self.agents[i].resistance
-                    dormant +=self.agents[i].dormancy_gene
-                    if self.agents[i].dormancy_gene == 1:
-                    	self.agents[i].dormancy(i, self.agents[i].dormancy_time)
-                        #self.agents[i].dormancy2(i,self.agents[i].dormancy_time, self.agents[i].dormancy_period)
+                    #self.agents[i].dormancy(i, self.agents[i].dormancy_period)
+                    self.agents[i].dormancy2(i,self.agents[i].dormancy_freq, self.agents[i].dormancy_period)
                     if self.agents[i].speed == 0:
                     	self.agents[i]. colour = (255,0,0)
                     	dormancy_count+=1
@@ -332,7 +323,7 @@ class Environment(object):
             if self.time_ms% self.hist_freq == 0:
                 self.hist_data.append((self.generations, self.time_ms))
                 self.hist_offspring.append((self.offspring_list, self.time_ms))
-                self.hist_dormancy_time.append((self.dormancy_time_list, self.time_ms))
+                self.hist_dormancy_period.append((self.dormancy_period_list, self.time_ms))
                 self.hist_dormancy_freq.append((self.dormancy_freq_list, self.time_ms))
                 self.hist_dormancyfreqplustime.append((self.dormancyfreqplustime_list, self.time_ms))
             self.generations = []

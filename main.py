@@ -17,14 +17,16 @@ import pandas as pd
 
 #returns dataframe of all agents 
 enviro = plots.run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = None) #first dose, anti_conc,
+plots.pop(enviro)
+
 #plots.calibration()
 #plots types of deaths by count
 #
-plots.no_dormant(enviro)
-plots.offspring_hist(enviro)
-plots.dormancytime_hist(enviro)
-plots.hist_2d_dormancy_time_vs_dormancy_freq(enviro)
-plots.hist_2d_offspring_vs_dormancy_freq(enviro)
+# plots.no_dormant(enviro)
+# plots.offspring_hist(enviro)
+# plots.dormancytime_hist(enviro)
+# plots.hist_2d_dormancy_time_vs_dormancy_freq(enviro)
+# plots.hist_2d_offspring_vs_dormancy_freq(enviro)
 
 #plots.dormancytime_hist(enviro)
 
@@ -39,7 +41,7 @@ plots.hist_2d_offspring_vs_dormancy_freq(enviro)
 
 #plots population for antiobitics courses with length 1-10
 #run for weak immune system too just change immune in environment
-#plots.finish_early(first_dose = 0, anti_conc = 0.02, anti_freq = 10000, anti_halflife = 5000 , double_doses = [], numberofagents = 500)
+#plots.finish_early(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000 , double_doses = [], numberofagents = 200)
 
 #loops through list missing more doses 
 #plots.skip_doses(skip = [5,6,7,8], first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, double_doses = [], numberofdoses = 10, numberofagents = 500)

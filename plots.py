@@ -21,8 +21,13 @@ def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_do
 	enviro.set_numberofdoses(numberofdoses)
 	enviro.add_agents(numberofagents)
 	enviro.set_plotlabel(plotlabel)
-	data = enviro.display(250000, display = True)
+	data = enviro.display(300000, display = True)
 	return data
+
+def pop(data):
+    pl.plot(list(data.columns.values), data.count())
+    pl.show()
+
 
 def no_dormant(dataframes):
     time_elapsed = list(dataframes.columns.values)
@@ -67,7 +72,7 @@ def dormancy_count(dataframes):
 
 def dormancytime_hist(dataframes):
     time_elapsed = list(dataframes.columns.values)[-1]
-    hist_data = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_time
+    hist_data = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_period
     hist_freq = dataframes.iloc[:,0].tolist()[0].enviro.hist_freq
     frames = np.divide(time_elapsed, hist_freq)
     def update_hist(num, data):
@@ -103,7 +108,7 @@ def offspring_hist(dataframes):
 
 def hist_2d_dormancy_time_vs_dormancy_freq(dataframes):
     time_elapsed = list(dataframes.columns.values)[-1]
-    dormancy_time = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_time
+    dormancy_period = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_period
     dormancy_freq = dataframes.iloc[:,0].tolist()[0].enviro.hist_dormancy_freq
     hist_freq = dataframes.iloc[:,0].tolist()[0].enviro.hist_freq
 
@@ -111,8 +116,8 @@ def hist_2d_dormancy_time_vs_dormancy_freq(dataframes):
 
     def update_hist(num, data):
         pl.clf()
-        pl.hist2d(dormancy_time[num][0],dormancy_freq[num][0],bins =25)
-        pl.title("Dormancy freq distribution at time: " + str(dormancy_time[num][1] ))
+        pl.hist2d(dormancy_period[num][0],dormancy_freq[num][0],bins =25)
+        pl.title("Dormancy freq distribution at time: " + str(dormancy_period[num][1] ))
         pl.xlabel("Dormancy time")
         pl.ylabel("Dormancy freq")
         cb = pl.colorbar()
@@ -124,7 +129,7 @@ def hist_2d_dormancy_time_vs_dormancy_freq(dataframes):
     #writer = animation.ImageMagickFileWriter()
  
     fig = pl.figure(12)
-    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = ((dormancy_time,dormancy_freq),))
+    ani = animation.FuncAnimation(fig, update_hist, frames1, fargs = ((dormancy_period,dormancy_freq),))
     #ani.save('animation.gif', writer = "imagemagick")
     pl.show()
 
@@ -527,45 +532,5 @@ def deaths(dataframes):
     pl.grid(True, which='minor')
     pl.show()
 
-    # pl.figure(2)
-    # pl.plot(self.time_elapsed, self.av_resistance, label='Miss dose number: ' + str(self.plotlabel))
-    # pl.title("Average resistance")
-    # pl.xlabel("Time Elapsed")
-    # pl.ylabel("Average resistance")
-    # pl.legend()
-    # pl.grid(True, which='both')
-
-    # pl.figure("pop/res plot, individual, missing dose no " +str(self.plotlabel) )
-    # pl.plot(self.time_elapsed, pop, label='Total Population')
-    # pl.plot(self.time_elapsed, self.resistancepop, label = "'Resistant Population'")
-    # pl.title("Population vs time")
-    # pl.xlabel("Time Elapsed")
-    # pl.ylabel("Population")
-    # pl.grid(True, which='both')
-    # pl.legend()
-
-    # pl.figure("deathsplotcum " + str(self.plotlabel))
-    # pl.plot(self.time_elapsed, self.deathsbyimmune, label = "immune system")
-    # pl.plot(self.time_elapsed, self.deathsbyanti, label = "antibiotics")
-    # pl.plot(self.time_elapsed, self.deathsbyfood, label = "movement")
-    # pl.title("Cumulative Cause of Death")
-    # pl.xlabel("Time Elapsed")
-    # pl.ylabel("Frequency")
-    # pl.grid(True, which='both')
-    # pl.legend()
-
-    # pl.figure(100 )
-    # pl.plot(self.time_elapsed, pop, label='Miss dose number: ' + str(self.plotlabel))
-    # pl.title("Population vs time")
-    # pl.xlabel("Time Elapsed")
-    # pl.ylabel("Population")
-    # pl.grid(True, which='both')
-    # pl.legend()
-
-    # pl.figure("number dormant")
-    # pl.plot(self.time_elapsed, self.avnumberdormant, label = "dormant pop")
-    # pl.title("dormant")
-
-    # print(self.time_ms)
-    # plots.dormancytime_hist(self.hist_dormancy_time, self.time_ms/self.hist_freq)
+    
 
