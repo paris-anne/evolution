@@ -104,10 +104,11 @@ class Agent(p.Particle):
         dormancy_freq = dormancy_freq - (float(dormancy_freq)%100)
         dormancy_period = dormancy_period - (dormancy_period%100)
         if (self.enviro.time_ms%dormancy_freq) == 0:
-                self.enviro.agents[i].speed = 0
+            self.enviro.agents[i].speed = 0
+            self.colour = (255,0,0)
         if (self.enviro.time_ms%dormancy_freq) == dormancy_period:
-                self.enviro.agents[i].speed = 2
- 
+            self.enviro.agents[i].speed = 2
+            self.colour = (0,0,0)
  
     def min_distance_antibiotic(self):
         distances = []
