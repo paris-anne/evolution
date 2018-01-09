@@ -6,7 +6,7 @@ import antibiotic as ant
  
 class Agent(p.Particle):
     key = -1
-    def __init__(self, reproduction, dormancy_period, dormancy_freq, x=0, y=0, environment=None, size = 3.0, colour = (0, 0,0), reproduce_level = 4.0,  food_level = float(3.0),
+    def __init__(self, reproduction, dormancy_period, dormancy_freq, x=0, y=0, environment=None, size = 3.0, colour = (0,0,0), reproduce_level = 4.0,  food_level = float(3.0),
      resistance = 0, generation = 1):
         super().__init__(x, y, size, colour)
         self.food_level = food_level
@@ -23,24 +23,19 @@ class Agent(p.Particle):
         self.min_dist = 100000
         self.generation = generation
         self.eatcount = 0
-        #self.antibiotic_eff = ant.Antibiotic.effectiveness
-        #self.dormancy_freq
         Agent.key += 1
- 
  
     def __reduce__(self):
         return (self.__class__, (self.reproduction, self.dormancy_period, self.dormancy_freq, self.enviro, self.resistance))
  
     def reproduce(self):
         offspring_dict = {2:4, 4:6, 6:8, 8:10, 10:15, 2.5:4.5, 4.5:6.5, 6.5:8.5, 8.5:10.5, 10.5:15.5}
-        new_foodlevel = self.food_level/float(self.reproduction)
+        self.food_level = self.food_level/float(self.reproduction)
         child_generation = self.generation + 1
-        new_reproduce_level = self.reproduce_level*np.sqrt(self.reproduction)
+        new_reproduce_level = self.reproduce_level*np.sqrt(self.reproduction)  #??????
         self.reproduce_level = offspring_dict[self.reproduction]
-        self.food_level = new_foodlevel
         for i in range(int(self.reproduction)):
             child_resistance = np.random.choice([self.resistance, (1-self.resistance)], p = [0.9, 0.1])
-
             if child_resistance != self.resistance:
                 if self.reproduce_level%1==0:
                     child_reproduce_level = self.reproduce_level + (child_resistance * self.fitness_cost)
@@ -50,17 +45,14 @@ class Agent(p.Particle):
             reproduction.remove(self.reproduction)
             reproduction.append(self.reproduction)
             child_reproduction = np.random.choice(reproduction, p = [np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, 0.9])
-            #child_reproduction = np.random.choice([2.0, 4.0, 6.0, 8.0, 10.0],  p = [0.9, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4, np.float(0.1)/4])         
             dormancy_period_mutation = np.random.uniform(1,15000)
             child_dormancy_period = np.random.choice([self.dormancy_period, dormancy_period_mutation], p = [0.9, 0.1])
-            ##child_dormancy_time = self.dormancy_time
             dormancy_freq_mutation = np.random.uniform(10000,40000) #this should be distribution but with constant probability?
-            # dormancy_period.remove(self.dormancy_period)
-            # dormancy_period.append(self.dormancy_period)
             child_dormancy_freq = np.random.choice([self.dormancy_freq, dormancy_freq_mutation], p = [0.9, 0.1])
-            #child_dormancy_period = self.dormancy_period
-            child = Agent(x=self.x, y=self.y, environment=self.enviro, food_level = new_foodlevel, resistance = child_resistance, 
+            child = Agent(x=self.x, y=self.y, environment=self.enviro, food_level = self.food_level, resistance = child_resistance, 
                 reproduction = child_reproduction, dormancy_period = child_dormancy_period, dormancy_freq = child_dormancy_freq, reproduce_level=child_reproduce_level, generation = child_generation)
+            if child.resistance == 1:
+                child.colour = (0,0,255)
             self.enviro.agents[self.key] = child
         return self.reproduction
  
@@ -71,30 +63,21 @@ class Agent(p.Particle):
             if 0.95 * food.size < np.sqrt((self.x - foodpos_x)**2 + (self.y - foodpos_y)**2) < food.size:
                 #print("eat")
                 self.food_level += 0.5
-                #self.enviro.food[i].eaten(self)
  
     def neutralise(self,i):
         if i not in self.enviro.dead_key:
             self.enviro.dead_key.append(i)
  
-            #print("NEUTRALISE", i)
- 
     def dormancy(self, i, dormancy_period):
-        #print(dormancy_time, "dormancy_time")
-        #print(self.enviro.time_ms, self.enviro.tbirths[-1])
         if self.enviro.time_ms == self.enviro.tbirths + 100:
             self.min_dist = self.enviro.agents[i].min_distance_antibiotic()
  
         speed_of_info = 0.01
         retarded_time = self.min_dist/speed_of_info
- 
- 
         if self.enviro.tbirths + retarded_time + dormancy_period >= self.enviro.time_ms >= self.enviro.tbirths + retarded_time:
             self.enviro.agents[i].speed = 0
             self.enviro.agents[i].colour = (255,0,0)
- 
         else:
- 
             self.enviro.agents[i].speed = 2
             self.enviro.agents[i].colour = (0,0,0)
             self.min_distances = []
@@ -115,11 +98,8 @@ class Agent(p.Particle):
         for antibiotic in self.enviro.antibiotics:
             antibiotics_x = antibiotic.x
             antibiotics_y = antibiotic.y
-            #print(antibiotics_x, antibiotics_y)
             distances.append(np.sqrt((self.x - antibiotics_x)**2 + (self.y - antibiotics_y)**2))
         distances.sort()
-        #print(len(distances))
-        #print(min(distances))
         return min(distances)
  
     def die(self):

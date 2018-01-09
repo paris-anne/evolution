@@ -205,17 +205,14 @@ class Environment(object):
             #         self.add_antibiotics(double_dose = False)
                 if self.antibiotics_count < self.numberofdoses:
                     if self.time_ms-self.tbirths >self.anti_freq:
-                        tnextbirth = self.tbirths + self.anti_freq
-                        self.tbirths = tnextbirth
-                        missed_doses = self.skipped_doses
-                        double_doses = self.double_doses
+                        self.tbirths = self.tbirths + self.anti_freq
 
-                        if self.antibiotics_count not in missed_doses:
+                        if self.antibiotics_count not in self.skipped_doses:
                             #print(self.antibiotics_count + 1, "added")
-                            if self.antibiotics_count in double_doses:
+                            if self.antibiotics_count in self.double_doses:
                                 self.add_antibiotics(double_dose = True)
                                 #print("double_dose")
-                            elif self.antibiotics_count not in double_doses:
+                            elif self.antibiotics_count not in self.double_doses:
                                 #print("single_dose")
                                 self.add_antibiotics(double_dose = False)
                             self.antibiotics[0].effectiveness = 1
@@ -233,7 +230,6 @@ class Environment(object):
                         for i in range(25):
                             del self.agents[random.choice(list(self.agents.keys()))]
             
-            resistant_agents=[]
             self.dead_key=[]
             reproduce_key =[]
             
@@ -245,8 +241,6 @@ class Environment(object):
                     self.dormancy_period_list.append(self.agents[i].dormancy_period)
                     self.dormancy_freq_list.append(self.agents[i].dormancy_freq)
                     self.dormancyfreqplustime_list.append(self.agents[i].dormancy_freq + self.agents[i].dormancy_period)
-                    if self.agents[i].resistance == 1:
-                    	resistant_agents.append(self.agents[i])
                     resistance += self.agents[i].resistance
                     #self.agents[i].dormancy(i, self.agents[i].dormancy_period)
                     self.agents[i].dormancy2(i,self.agents[i].dormancy_freq, self.agents[i].dormancy_period)
@@ -260,8 +254,6 @@ class Environment(object):
                         if self.agents[i].food_level > self.agents[i].reproduce_level: 
                             reproduce_key.append(i)
                             reproduction_count += 1
-                        #print(self.antibiotics[0].effectiveness)
-                        #print(self.agents[i].dormancy_time)
                         if self.agents[i].food_level < 0.00:
                             if i not in self.dead_key:
                                 self.dead_key.append(i)
