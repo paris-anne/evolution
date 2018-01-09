@@ -6,6 +6,29 @@ from scipy.integrate import odeint
 import environment as enviro
 import matplotlib.animation as animation
 import environment as env
+from mpl_toolkits.mplot3d import Axes3D
+
+def cluster(data):
+    fig = pl.figure()
+    ax = Axes3D(fig)
+    agents = data.iloc[:,-1]
+    resistant = agents[agents.apply(lambda x: x.resistance if (np.all(pd.notnull(x))) else x) == 1]
+    not_resistant = agents[agents.apply(lambda x: x.resistance if (np.all(pd.notnull(x))) else x) == 0]
+
+    r_period = resistant.apply(lambda x: x.dormancy_period if (np.all(pd.notnull(x))) else x)
+    r_frequency = resistant.apply(lambda x: x.dormancy_freq if (np.all(pd.notnull(x))) else x)
+    r_offspring = resistant.apply(lambda x: x.reproduction if (np.all(pd.notnull(x))) else x)
+
+    period = not_resistant.apply(lambda x: x.dormancy_period if (np.all(pd.notnull(x))) else x)
+    frequency = not_resistant.apply(lambda x: x.dormancy_freq if (np.all(pd.notnull(x))) else x)
+    offspring = not_resistant.apply(lambda x: x.reproduction if (np.all(pd.notnull(x))) else x)
+
+    ax.scatter(r_period, r_frequency, r_offspring, c='#0000FF')
+    ax.scatter(period, frequency, offspring, c='#000000')
+    ax.set_xlabel('Dormancy Period')
+    ax.set_ylabel('Dormancy Frequency')
+    ax.set_zlabel('Offspring')
+    pl.show()
 
 def run(first_dose, anti_conc, anti_freq, anti_halflife, skipped_doses,double_doses, numberofdoses, numberofagents, plotlabel=None): #first dose, anti_conc, yyf y 
 	envirox = 600

@@ -17,7 +17,7 @@ import pandas as pd
 
 #returns dataframe of all agents 
 enviro = plots.run(first_dose = 0, anti_conc = 0.01, anti_freq = 16000, anti_halflife = 4000, skipped_doses = [] , double_doses = [], numberofdoses = 10, numberofagents = 500, plotlabel = None) #first dose, anti_conc,
-plots.pop(enviro)
+plots.cluster(enviro)
 
 #plots.calibration()
 #plots types of deaths by count
