@@ -108,12 +108,13 @@ class Environment(object):
 
     def add_antibiotics(self, double_dose):
         squares = [1,4,9,16,25,36,49,64,81,100]
+        takeClosest = lambda num,collection:min(collection,key=lambda x:abs(x-num))
         amount = takeClosest(np.sqrt(self.area),squares)
+
         if double_dose == True:
             concentration = 2 * self.anti_conc
             self.anti_radius = np.sqrt((concentration*self.area)/(amount * math.pi))
         else:
-            takeClosest = lambda num,collection:min(collection,key=lambda x:abs(x-num))
             self.anti_radius = np.sqrt((self.anti_conc*self.area)/(amount * math.pi))
 
         for i in np.arange(0 , self.width +(self.width/np.sqrt(amount))/2, self.width/np.sqrt(amount)):
@@ -200,36 +201,38 @@ class Environment(object):
                 if i.effectiveness < (np.e)**(-(self.anti_freq)/self.anti_halflife):
                     self.antibiotics.remove(i)
 
-            # if self.anti_conc != 0:
-            #     if self.time_ms == self.tbirths:
-            #         self.add_antibiotics(double_dose = False)
-                if self.antibiotics_count < self.numberofdoses:
-                    if self.time_ms-self.tbirths >self.anti_freq:
-                        self.tbirths = self.tbirths + self.anti_freq
+            if self.anti_conc != 0:
+                if self.time_ms == self.tbirths:
+                    self.add_antibiotics(double_dose = False)
+            if self.antibiotics_count < self.numberofdoses:
+                if self.time_ms-self.tbirths >self.anti_freq:
+                    self.tbirths = self.tbirths + self.anti_freq
 
-                        if self.antibiotics_count not in self.skipped_doses:
-                            #print(self.antibiotics_count + 1, "added")
-                            if self.antibiotics_count in self.double_doses:
-                                self.add_antibiotics(double_dose = True)
-                                #print("double_dose")
-                            elif self.antibiotics_count not in self.double_doses:
-                                #print("single_dose")
-                                self.add_antibiotics(double_dose = False)
-                            self.antibiotics[0].effectiveness = 1
-                            for i in self.antibiotics:
-                                i.colour = (0,255,0)
-                        self.antibiotics_count += 1
+                    if self.antibiotics_count not in self.skipped_doses:
+                        #print(self.antibiotics_count + 1, "added")
+                        if self.antibiotics_count in self.double_doses:
+                            self.add_antibiotics(double_dose = True)
+                            #print("double_dose")
+                        elif self.antibiotics_count not in self.double_doses:
+                            #print("single_dose")
+                            self.add_antibiotics(double_dose = False)
+                        self.antibiotics[0].effectiveness = 1
+                        for i in self.antibiotics:
+                            i.colour = (0,255,0)
+                    self.antibiotics_count += 1
 
-                if self.time_ms != 0 & (self.time_ms%self.immune_system) == 0:
-                    if len(self.agents) < 250:
-                        for i in range(math.ceil(self.killfrac*len(self.agents))):
-                            if self.agents:
+                if self.time_ms != 0:
+                    if self.time_ms%self.immune_system == 0:
+                        if len(self.agents) < 250:
+                            for i in range(math.ceil(self.killfrac*len(self.agents))):
+                                if self.agents:
+                                    del self.agents[random.choice(list(self.agents.keys()))]
+                                    deathsbyimmune += 1
+                                    print('immune')
+                        else:
+                            for i in range(25):
                                 del self.agents[random.choice(list(self.agents.keys()))]
-                                deathsbyimmune += 1
-                    else:
-                        for i in range(25):
-                            del self.agents[random.choice(list(self.agents.keys()))]
-            
+
             self.dead_key=[]
             reproduce_key =[]
             
@@ -258,6 +261,7 @@ class Environment(object):
                             if i not in self.dead_key:
                                 self.dead_key.append(i)
                                 deathsbyfood += 1
+                                print('food')
                     for antibiotic in self.antibiotics:
                         if  np.sqrt((self.agents[i].x - antibiotic.x)**2 + (self.agents[i].y - antibiotic.y)**2) < antibiotic.size:
                             if self.agents[i].resistance == 0:
@@ -265,6 +269,7 @@ class Environment(object):
                                 if kill==True:
                                     self.agents[i].neutralise(i)
                                     deathsbyanti += 1
+                                    print('anti')
             if reproduce_key:
                 for j in reproduce_key:
                     if j in self.agents.keys():
