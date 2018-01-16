@@ -5,7 +5,7 @@ import environment as enviro
 class Antibiotic(p.Particle):
 	count = 0
 
-	def __init__(self, x, y, size = 10.0, colour = (0, 169, 0), effectiveness = 1, halflife = 3000, coordinates = []):
+	def __init__(self, x, y, size = 10000.0, colour = (0, 169, 0), effectiveness = 1, halflife = 3000, coordinates = []):
 		super().__init__(x, y, size, colour)
 		self.key = self.count # need way of incrementing key
 		self.size = size
