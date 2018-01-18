@@ -1,3 +1,5 @@
+#all rights to file belong to Peter Collingridge at http://www.petercollingridge.co.uk/pygame-physics-simulation
+
 import pygame
 import math
 import random
